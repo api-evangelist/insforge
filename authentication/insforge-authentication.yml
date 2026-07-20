@@ -1,0 +1,95 @@
+generated: '2026-07-19'
+method: searched
+source: openapi/*.yaml + https://api.insforge.dev/.well-known/oauth-authorization-server
+docs: https://docs.insforge.dev/core-concepts/authentication/overview
+agent_auth:
+  supported: true
+  method: identity_assertion (WorkOS ID-JAG)
+  register_uri: https://api.insforge.dev/agent/auth
+  credential_type: api_key (uak_ user API key)
+  skill: https://api.insforge.dev/auth.md
+  note: >-
+    Autonomous agent registration (preview) — a participating provider mints a
+    WorkOS ID-JAG carrying the user's verified email; InsForge exchanges it for a
+    uak_ user API key with no human sign-up form.
+summary:
+  types:
+  - apiKey
+  - http
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - authorizationCode
+  - deviceCode
+schemes:
+- name: OAuth2
+  type: oauth2
+  source: https://api.insforge.dev/.well-known/oauth-authorization-server
+  flows:
+    authorizationCode:
+      authorizationUrl: https://api.insforge.dev/api/oauth/v1/authorize
+      tokenUrl: https://api.insforge.dev/api/oauth/v1/token
+      pkce: [S256, plain]
+    deviceCode:
+      deviceAuthorizationUrl: https://api.insforge.dev/api/oauth/v1/device_authorization
+      tokenUrl: https://api.insforge.dev/api/oauth/v1/token
+  scope_count: 11
+  scopes_artifact: scopes/insforge-scopes.yml
+  note: OAuth 2.0 is advertised via RFC 8414 authorization-server metadata, not in the per-service OpenAPI specs.
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  sources:
+  - openapi/insforge-ai-openapi.yaml
+  - openapi/insforge-auth-openapi.yaml
+  - openapi/insforge-deployments-openapi.yaml
+  - openapi/insforge-email-openapi.yaml
+  - openapi/insforge-functions-openapi.yaml
+  - openapi/insforge-logs-openapi.yaml
+  - openapi/insforge-metadata-openapi.yaml
+  - openapi/insforge-payments-openapi.yaml
+  - openapi/insforge-realtime-openapi.yaml
+  - openapi/insforge-records-openapi.yaml
+  - openapi/insforge-secrets-openapi.yaml
+  - openapi/insforge-tables-openapi.yaml
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: x-api-key
+  sources:
+  - openapi/insforge-auth-openapi.yaml
+  - openapi/insforge-deployments-openapi.yaml
+  - openapi/insforge-payments-openapi.yaml
+  - openapi/insforge-records-openapi.yaml
+  - openapi/insforge-storage-openapi.yaml
+- name: apiKey
+  type: apiKey
+  in: header
+  parameter: X-API-Key
+  sources:
+  - openapi/insforge-metadata-openapi.yaml
+  - openapi/insforge-realtime-openapi.yaml
+  - openapi/insforge-tables-openapi.yaml
+- name: stripeSignature
+  type: apiKey
+  in: header
+  parameter: stripe-signature
+  sources:
+  - openapi/insforge-payments-openapi.yaml
+- name: razorpaySignature
+  type: apiKey
+  in: header
+  parameter: x-razorpay-signature
+  sources:
+  - openapi/insforge-payments-openapi.yaml
+- name: s3SigV4
+  type: http
+  scheme: aws4-hmac-sha256
+  description: |-
+    AWS SigV4 authentication using S3 access keys minted by
+    `POST /api/storage/s3/access-keys`. Region must match the server's
+    `AWS_REGION` (default `us-east-2`); service scope must be `s3`.
+  sources:
+  - openapi/insforge-storage-openapi.yaml
