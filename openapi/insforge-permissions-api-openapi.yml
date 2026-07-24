@@ -1,0 +1,114 @@
+openapi: 3.0.3
+info:
+  title: Insforge AI Admin Permissions API
+  version: 1.0.0
+  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+tags:
+- name: Permissions
+  description: Manage helper endpoints for realtime RLS examples.
+paths:
+  /api/realtime/permissions:
+    get:
+      summary: Get Realtime Permissions
+      description: Retrieve RLS policies for subscribe (channels) and publish (messages) operations
+      tags:
+      - Permissions
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: Realtime RLS permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealtimePermissions'
+              example:
+                subscribe:
+                  policies:
+                  - policyName: allow_authenticated_subscribe
+                    tableName: channels
+                    command: SELECT
+                    roles:
+                    - authenticated
+                    using: enabled = true
+                    withCheck: null
+                publish:
+                  policies:
+                  - policyName: allow_authenticated_publish
+                    tableName: messages
+                    command: INSERT
+                    roles:
+                    - authenticated
+                    using: null
+                    withCheck: 'true'
+components:
+  schemas:
+    RlsPolicy:
+      type: object
+      required:
+      - policyName
+      - tableName
+      - command
+      - roles
+      properties:
+        policyName:
+          type: string
+          description: Name of the RLS policy
+          example: allow_authenticated_subscribe
+        tableName:
+          type: string
+          description: Table the policy applies to
+          example: channels
+        command:
+          type: string
+          description: SQL command the policy applies to (SELECT, INSERT, UPDATE, DELETE)
+          example: SELECT
+        roles:
+          type: array
+          items:
+            type: string
+          description: Database roles the policy applies to
+          example:
+          - authenticated
+        using:
+          type: string
+          nullable: true
+          description: USING clause for row-level filtering
+          example: enabled = true
+        withCheck:
+          type: string
+          nullable: true
+          description: WITH CHECK clause for row-level validation
+          example: null
+    RealtimePermissions:
+      type: object
+      required:
+      - subscribe
+      - publish
+      properties:
+        subscribe:
+          type: object
+          required:
+          - policies
+          properties:
+            policies:
+              type: array
+              description: RLS policies for channel subscriptions
+              items:
+                $ref: '#/components/schemas/RlsPolicy'
+        publish:
+          type: object
+          required:
+          - policies
+          properties:
+            policies:
+              type: array
+              description: RLS policies for message publishing
+              items:
+                $ref: '#/components/schemas/RlsPolicy'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

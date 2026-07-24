@@ -1,0 +1,4914 @@
+openapi: 3.0.3
+info:
+  title: Insforge AI Admin API
+  version: 1.0.0
+  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+tags:
+- name: Admin
+paths:
+  /api/ai/models:
+    get:
+      summary: Get all available AI models
+      description: Returns the normalized OpenRouter model catalog fetched from OpenRouter with output_modalities=all.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Flat array of available models from the OpenRouter catalog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListModelsResponse'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Failed to get models list
+  /api/ai/overview:
+    get:
+      summary: Get Model Gateway overview
+      description: Returns key-level OpenRouter usage and activity time series when the key has activity access.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Model Gateway overview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AIOverview'
+        '401':
+          description: Unauthorized
+        '500':
+          description: Failed to fetch overview
+  /api/ai/{provider}/api-key:
+    get:
+      summary: Get active provider API key
+      description: Returns the active provider API key details for admin copy workflows. Currently only `openrouter` is supported.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/AIProvider'
+      responses:
+        '200':
+          description: Active provider API key details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenRouterKeyResponse'
+        '400':
+          description: Missing or unsupported provider API key
+        '401':
+          description: Unauthorized
+        '500':
+          description: Failed to fetch API key details
+  /api/ai/{provider}/api-key/rotate:
+    post:
+      summary: Rotate provider API key
+      description: Rotate the active provider API key for cloud-managed Model Gateway credentials. Currently only `openrouter` is supported.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - $ref: '#/components/parameters/AIProvider'
+      responses:
+        '200':
+          description: API key rotated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpenRouterKeyResponse'
+        '400':
+          description: Unsupported provider
+        '401':
+          description: Unauthorized
+        '500':
+          description: Failed to rotate API key
+  /api/auth/config:
+    get:
+      summary: Get authentication configuration
+      description: Get current authentication settings including all configuration options (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Authentication configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  requireEmailVerification:
+                    type: boolean
+                  passwordMinLength:
+                    type: integer
+                    minimum: 4
+                    maximum: 128
+                  requireNumber:
+                    type: boolean
+                  requireLowercase:
+                    type: boolean
+                  requireUppercase:
+                    type: boolean
+                  requireSpecialChar:
+                    type: boolean
+                  verifyEmailMethod:
+                    type: string
+                    enum:
+                    - code
+                    - link
+                    description: Method for email verification (code = 6-digit OTP, link = magic link)
+                  resetPasswordMethod:
+                    type: string
+                    enum:
+                    - code
+                    - link
+                    description: Method for password reset (code = 6-digit OTP + exchange flow, link = magic link)
+                  allowedRedirectUrls:
+                    type: array
+                    items:
+                      type: string
+                    description: List of allowed URLs for authentication redirects. If empty, all redirects are allowed for smoother development UX. This is not recommended in production.
+                  disableSignup:
+                    type: boolean
+                    description: When true, public sign-up endpoints (POST /api/auth/users and first-time OAuth) are rejected with 403 AUTH_SIGNUP_DISABLED. Admin-authenticated user creation is unaffected.
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+    put:
+      summary: Update authentication configuration
+      description: Update authentication settings (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                requireEmailVerification:
+                  type: boolean
+                passwordMinLength:
+                  type: integer
+                  minimum: 4
+                  maximum: 128
+                requireNumber:
+                  type: boolean
+                requireLowercase:
+                  type: boolean
+                requireUppercase:
+                  type: boolean
+                requireSpecialChar:
+                  type: boolean
+                verifyEmailMethod:
+                  type: string
+                  enum:
+                  - code
+                  - link
+                  description: Method for email verification (code = 6-digit OTP, link = magic link)
+                resetPasswordMethod:
+                  type: string
+                  enum:
+                  - code
+                  - link
+                  description: Method for password reset (code = 6-digit OTP + exchange flow, link = magic link)
+                allowedRedirectUrls:
+                  type: array
+                  items:
+                    type: string
+                  description: List of allowed URLs for authentication redirects. If empty, all redirects are allowed for smoother development UX. This is not recommended in production.
+                disableSignup:
+                  type: boolean
+                  description: When true, public sign-up endpoints (POST /api/auth/users and first-time OAuth) are rejected with 403 AUTH_SIGNUP_DISABLED. Admin-authenticated user creation is unaffected.
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                  requireEmailVerification:
+                    type: boolean
+                  passwordMinLength:
+                    type: integer
+                    minimum: 4
+                    maximum: 128
+                  requireNumber:
+                    type: boolean
+                  requireLowercase:
+                    type: boolean
+                  requireUppercase:
+                    type: boolean
+                  requireSpecialChar:
+                    type: boolean
+                  verifyEmailMethod:
+                    type: string
+                    enum:
+                    - code
+                    - link
+                  resetPasswordMethod:
+                    type: string
+                    enum:
+                    - code
+                    - link
+                  allowedRedirectUrls:
+                    type: array
+                    items:
+                      type: string
+                    description: List of allowed URLs for authentication redirects. If empty, all redirects are allowed for smoother development UX. This is not recommended in production.
+                  disableSignup:
+                    type: boolean
+                    description: When true, public sign-up endpoints (POST /api/auth/users and first-time OAuth) are rejected with 403 AUTH_SIGNUP_DISABLED. Admin-authenticated user creation is unaffected.
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+  /api/auth/users:
+    get:
+      summary: List all users (admin only)
+      description: Returns paginated list of users
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: offset
+        in: query
+        schema:
+          type: string
+          default: '0'
+        description: Number of records to skip
+      - name: limit
+        in: query
+        schema:
+          type: string
+          default: '10'
+        description: Maximum number of records to return
+      - name: search
+        in: query
+        schema:
+          type: string
+        description: Search by email or name
+      responses:
+        '200':
+          description: List of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserResponse'
+                  pagination:
+                    type: object
+                    properties:
+                      offset:
+                        type: integer
+                      limit:
+                        type: integer
+                      total:
+                        type: integer
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+    delete:
+      summary: Delete users (admin only)
+      description: Delete multiple users by their IDs
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userIds:
+                  type: array
+                  items:
+                    type: string
+              required:
+              - userIds
+      responses:
+        '200':
+          description: Users deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  deletedCount:
+                    type: integer
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+  /api/auth/users/{userId}:
+    get:
+      summary: Get specific user
+      description: Get user details by ID (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: User ID
+      responses:
+        '200':
+          description: User details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '400':
+          description: Invalid user ID format
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '404':
+          description: User not found
+  /api/auth/admin/sessions:
+    post:
+      summary: Admin login
+      description: Authenticates admin user for dashboard access
+      tags:
+      - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - username
+              - password
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Admin login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projectAdmin:
+                    $ref: '#/components/schemas/ProjectAdminResponse'
+                  accessToken:
+                    type: string
+                  csrfToken:
+                    type: string
+                    description: CSRF token for `/api/auth/admin/refresh`
+        '401':
+          description: Invalid credentials
+        '403':
+          description: User is not an admin
+  /api/auth/admin/sessions/exchange:
+    post:
+      summary: Exchange cloud provider authorization code for admin session
+      description: Verifies an authorization code/JWT from from Insforge Cloud platform and issues an internal admin session token with project_admin role
+      tags:
+      - Admin
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - code
+              properties:
+                code:
+                  type: string
+                  description: Authorization code or JWT from the Insforge
+                  example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+      responses:
+        '200':
+          description: Cloud authorization verified, admin session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projectAdmin:
+                    $ref: '#/components/schemas/ProjectAdminResponse'
+                  accessToken:
+                    type: string
+                    description: Internal JWT for admin authentication
+                  csrfToken:
+                    type: string
+                    description: CSRF token for `/api/auth/admin/refresh`
+        '400':
+          description: Invalid authorization code or JWT verification failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/auth/admin/refresh:
+    post:
+      summary: Refresh admin dashboard access token
+      description: Uses the dashboard-only httpOnly `insforge_admin_refresh_token` cookie with an `X-CSRF-Token` header.
+      tags:
+      - Admin
+      parameters:
+      - name: X-CSRF-Token
+        in: header
+        required: true
+        schema:
+          type: string
+        description: CSRF token returned from admin login or admin refresh
+      responses:
+        '200':
+          description: Admin token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  projectAdmin:
+                    $ref: '#/components/schemas/ProjectAdminResponse'
+                  accessToken:
+                    type: string
+                  csrfToken:
+                    type: string
+                    description: CSRF token for the next admin refresh request
+        '401':
+          description: No admin refresh token provided or project admin not found
+        '403':
+          description: Invalid CSRF token
+  /api/auth/admin/logout:
+    post:
+      summary: Logout admin dashboard session
+      description: 'Clears the dashboard-only `insforge_admin_refresh_token` cookie.
+
+
+        If a valid admin refresh cookie is present, the request must include the `X-CSRF-Token`
+
+        header returned from admin login, admin session exchange, or admin refresh. Missing, expired,
+
+        invalid, or wrong-session-type admin refresh cookies are cleared idempotently and still return
+
+        success.
+
+        '
+      tags:
+      - Admin
+      parameters:
+      - name: X-CSRF-Token
+        in: header
+        schema:
+          type: string
+        description: CSRF token required when a valid admin refresh cookie is present
+      responses:
+        '200':
+          description: Logged out successfully. Also returned when the admin refresh cookie is missing, expired, invalid, or the wrong session type.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '403':
+          description: Invalid or missing CSRF token for a valid admin refresh cookie
+  /api/auth/tokens/anon:
+    post:
+      summary: Get anon key (deprecated)
+      deprecated: true
+      description: Deprecated - use GET /api/metadata/anon-key instead. Returns the project's opaque anon key (`anon_...`) under the legacy `accessToken` field for backward compatibility. The anon key is a non-secret client identifier that maps requests to the `anon` role; it replaces the former non-expiring anonymous JWT and can be rotated via POST /api/secrets/anon-key/rotate (admin only).
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Anon key retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: Opaque anon key (legacy field name kept for compatibility)
+                    example: anon_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcd
+                  message:
+                    type: string
+                    description: Success message
+                    example: Anon key retrieved successfully (deprecated route, use GET /api/metadata/anon-key)
+        '401':
+          description: Unauthorized - requires authentication
+        '403':
+          description: Forbidden - admin access required
+        '404':
+          description: Anon key not initialized
+  /api/auth/oauth/configs:
+    get:
+      summary: List all OAuth configurations
+      description: Get all configured OAuth providers (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: List of OAuth configurations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OAuthConfig'
+                  count:
+                    type: integer
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+    post:
+      summary: Create OAuth configuration
+      description: Create a new OAuth provider configuration (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - provider
+              properties:
+                provider:
+                  type: string
+                  enum:
+                  - google
+                  - github
+                  - discord
+                  - linkedin
+                  - facebook
+                  - instagram
+                  - tiktok
+                  - apple
+                  - x
+                  - spotify
+                  - microsoft
+                clientId:
+                  type: string
+                clientSecret:
+                  type: string
+                redirectUri:
+                  type: string
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                useSharedKey:
+                  type: boolean
+      responses:
+        '200':
+          description: OAuth configuration created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthConfig'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+  /api/auth/oauth/{provider}/config:
+    get:
+      summary: Get OAuth configuration for specific provider
+      description: Get OAuth configuration including client secret (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - google
+          - github
+          - discord
+          - linkedin
+          - facebook
+          - instagram
+          - tiktok
+          - apple
+          - x
+          - spotify
+          - microsoft
+      responses:
+        '200':
+          description: OAuth configuration
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/OAuthConfig'
+                - type: object
+                  properties:
+                    clientSecret:
+                      type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '404':
+          description: Configuration not found
+    put:
+      summary: Update OAuth configuration
+      description: Update OAuth provider configuration (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - google
+          - github
+          - discord
+          - linkedin
+          - facebook
+          - instagram
+          - tiktok
+          - apple
+          - x
+          - spotify
+          - microsoft
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clientId:
+                  type: string
+                clientSecret:
+                  type: string
+                redirectUri:
+                  type: string
+                scopes:
+                  type: array
+                  items:
+                    type: string
+                useSharedKey:
+                  type: boolean
+      responses:
+        '200':
+          description: Configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthConfig'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '404':
+          description: Configuration not found
+    delete:
+      summary: Delete OAuth configuration
+      description: Delete OAuth provider configuration (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - google
+          - github
+          - discord
+          - linkedin
+          - facebook
+          - instagram
+          - tiktok
+          - apple
+          - x
+          - spotify
+          - microsoft
+      responses:
+        '200':
+          description: Configuration deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '404':
+          description: Configuration not found
+  /api/auth/oauth/custom/configs:
+    get:
+      summary: List all custom OAuth configurations
+      description: Get all configured custom OAuth providers (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: List of custom OAuth configurations
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomOAuthConfig'
+                  count:
+                    type: integer
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+    post:
+      summary: Create custom OAuth configuration
+      description: Create a new custom OAuth provider configuration (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - key
+              - name
+              - discoveryEndpoint
+              - clientId
+              - clientSecret
+              properties:
+                key:
+                  type: string
+                name:
+                  type: string
+                discoveryEndpoint:
+                  type: string
+                  format: uri
+                clientId:
+                  type: string
+                clientSecret:
+                  type: string
+      responses:
+        '200':
+          description: Custom OAuth configuration created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomOAuthConfig'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '409':
+          description: Configuration already exists
+  /api/auth/oauth/custom/{key}/config:
+    get:
+      summary: Get custom OAuth configuration
+      description: Get a custom OAuth configuration including client secret (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Custom OAuth configuration
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/CustomOAuthConfig'
+                - type: object
+                  properties:
+                    clientSecret:
+                      type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '404':
+          description: Configuration not found
+    put:
+      summary: Update custom OAuth configuration
+      description: Update a custom OAuth provider configuration (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                discoveryEndpoint:
+                  type: string
+                  format: uri
+                clientId:
+                  type: string
+                clientSecret:
+                  type: string
+      responses:
+        '200':
+          description: Custom OAuth configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomOAuthConfig'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '404':
+          description: Configuration not found
+    delete:
+      summary: Delete custom OAuth configuration
+      description: Delete a custom OAuth provider configuration (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Configuration deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '404':
+          description: Configuration not found
+  /api/auth/admin/sessions/current:
+    get:
+      summary: Get current admin session
+      description: Returns the currently authenticated admin's basic info from the access token.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Current admin session info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  admin:
+                    type: object
+                    properties:
+                      sub:
+                        type: string
+                        description: Admin subject identifier
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin access required
+  /api/auth/smtp-config:
+    get:
+      summary: Get SMTP configuration
+      description: Get current SMTP email configuration (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      x-internal: true
+      responses:
+        '200':
+          description: SMTP configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmtpConfig'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+    put:
+      summary: Update SMTP configuration
+      description: 'Create or update SMTP email configuration (admin only).
+
+        When `enabled` is true, the fields `host`, `username`, `senderEmail`, and `senderName` are required by the backend validation.
+
+        When `enabled` is false, these fields may be empty.
+
+        '
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      x-internal: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - enabled
+              - port
+              properties:
+                enabled:
+                  type: boolean
+                  description: When true, host/username/senderEmail/senderName become required
+                host:
+                  type: string
+                  description: Required when enabled is true
+                port:
+                  type: integer
+                  enum:
+                  - 25
+                  - 465
+                  - 587
+                  - 2525
+                username:
+                  type: string
+                  description: Required when enabled is true
+                password:
+                  type: string
+                  description: SMTP password (optional on update if unchanged)
+                senderEmail:
+                  type: string
+                  format: email
+                  description: Required when enabled is true
+                senderName:
+                  type: string
+                  description: Required when enabled is true
+                minIntervalSeconds:
+                  type: integer
+                  minimum: 0
+                  default: 60
+                  description: Minimum interval between emails in seconds
+      responses:
+        '200':
+          description: SMTP configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmtpConfig'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+  /api/auth/email-templates:
+    get:
+      summary: Get all email templates
+      description: Returns all configurable email templates (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      x-internal: true
+      responses:
+        '200':
+          description: List of email templates
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EmailTemplate'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+  /api/auth/email-templates/{type}:
+    put:
+      summary: Update email template
+      description: Update a specific email template by type (admin only)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      x-internal: true
+      parameters:
+      - name: type
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - email-verification-code
+          - email-verification-link
+          - reset-password-code
+          - reset-password-link
+        description: Template type to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - subject
+              - bodyHtml
+              properties:
+                subject:
+                  type: string
+                  description: Email subject line
+                bodyHtml:
+                  type: string
+                  description: HTML body of the email template
+      responses:
+        '200':
+          description: Template updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailTemplate'
+        '400':
+          description: Invalid template type or request body
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+  /api/deployments:
+    get:
+      summary: List deployments
+      description: Returns deployment runs ordered by creation time descending. Pagination metadata is returned in `Content-Range` headers.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/Limit'
+      - $ref: '#/components/parameters/Offset'
+      responses:
+        '200':
+          $ref: '#/components/responses/DeploymentList'
+        '206':
+          $ref: '#/components/responses/DeploymentList'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '500':
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Create legacy deployment session (deprecated)
+      deprecated: true
+      description: Creates a `WAITING` deployment run and returns presigned form data for the legacy source-zip upload flow. New tooling should use `/api/deployments/direct`.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '201':
+          description: Legacy deployment session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDeploymentResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '503':
+          description: Deployment provider or legacy S3 staging is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/direct:
+    post:
+      summary: Create direct-upload deployment session
+      description: Registers a source file manifest and returns file IDs for direct file uploads.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDirectDeploymentRequest'
+      responses:
+        '201':
+          description: Direct deployment session created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateDirectDeploymentResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/metadata:
+    get:
+      summary: Get deployment metadata
+      description: Returns the latest ready deployment ID, the default deployment URL, and any custom domain URL known to the provider.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: Deployment metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentMetadata'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/slug:
+    put:
+      summary: Update InsForge-hosted slug
+      description: Updates the Cloud project slug used for the `.insforge.site` domain. Pass `null` to clear the slug.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateSlugRequest'
+      responses:
+        '200':
+          description: Slug updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateSlugResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '409':
+          description: Slug is already taken
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/env-vars:
+    get:
+      summary: List deployment environment variables
+      description: Lists provider environment variable keys and metadata. Values are not included.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: Environment variables
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListEnvVarsResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Create or update deployment environment variables
+      description: Upserts encrypted Vercel environment variables for production, preview, and development targets.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpsertEnvVarsRequest'
+      responses:
+        '201':
+          description: Environment variables saved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertEnvVarsResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/env-vars/{id}:
+    get:
+      summary: Get deployment environment variable
+      description: Returns one provider environment variable, including its decrypted value.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/EnvVarId'
+      responses:
+        '200':
+          description: Environment variable with value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetEnvVarResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+    delete:
+      summary: Delete deployment environment variable
+      description: Deletes a provider environment variable by Vercel environment variable ID.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/EnvVarId'
+      responses:
+        '200':
+          description: Environment variable deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/domains:
+    get:
+      summary: List custom domains
+      description: Lists user-owned custom domains configured on the provider project.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: Custom domains
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCustomDomainsResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+    post:
+      summary: Add custom domain
+      description: Registers a user-owned custom domain on the provider project and returns DNS setup instructions.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddCustomDomainRequest'
+      responses:
+        '201':
+          description: Custom domain added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomDomain'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/domains/{domain}/verify:
+    post:
+      summary: Verify custom domain
+      description: Re-checks DNS configuration for a custom domain and returns the latest provider verification state.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/Domain'
+      responses:
+        '200':
+          description: Custom domain verification state
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomDomain'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/domains/{domain}:
+    delete:
+      summary: Remove custom domain
+      description: Removes a user-owned custom domain from the provider project.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/Domain'
+      responses:
+        '200':
+          description: Custom domain removed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '503':
+          description: Deployment provider is not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/{id}:
+    get:
+      summary: Get deployment
+      description: Returns a deployment run by database ID.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/DeploymentId'
+      responses:
+        '200':
+          description: Deployment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/{id}/files/{fileId}/content:
+    put:
+      summary: Upload direct deployment file content
+      description: Streams one registered file through InsForge to the provider. The request body must match the manifest size and SHA-1 digest.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/DeploymentId'
+      - $ref: '#/components/parameters/FileId'
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: File uploaded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeploymentManifestFileUploaded'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '415':
+          description: File content must be uploaded as application/octet-stream
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '429':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/{id}/start:
+    post:
+      summary: Start deployment
+      description: Starts the provider deployment after source files are available.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/DeploymentId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartDeploymentRequest'
+      responses:
+        '200':
+          description: Deployment started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/{id}/sync:
+    post:
+      summary: Sync deployment status
+      description: Reads the latest provider state and stores it on the deployment run.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/DeploymentId'
+      responses:
+        '200':
+          description: Deployment synced
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '400':
+          $ref: '#/components/responses/Error'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/deployments/{id}/cancel:
+    post:
+      summary: Cancel deployment
+      description: Cancels a provider deployment when available and marks the run as `CANCELED`.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - $ref: '#/components/parameters/DeploymentId'
+      responses:
+        '200':
+          description: Deployment canceled
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteResponse'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Admin access required
+        '404':
+          $ref: '#/components/responses/Error'
+        '429':
+          $ref: '#/components/responses/Error'
+        '500':
+          $ref: '#/components/responses/Error'
+  /api/functions:
+    get:
+      summary: List all functions
+      description: Get all functions with their metadata
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: List of functions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FunctionMetadata'
+              example:
+              - id: 123e4567-e89b-12d3-a456-426614174000
+                slug: hello-world
+                name: Hello World Function
+                description: Returns a greeting message
+                status: active
+                created_at: '2024-01-21T10:30:00Z'
+                updated_at: '2024-01-21T10:35:00Z'
+                deployed_at: '2024-01-21T10:35:00Z'
+              - id: 223e4567-e89b-12d3-a456-426614174001
+                slug: process-webhook
+                name: Webhook Processor
+                description: Processes incoming webhooks
+                status: draft
+                created_at: '2024-01-22T14:20:00Z'
+                updated_at: '2024-01-22T14:20:00Z'
+                deployed_at: null
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '500':
+          description: Failed to list functions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+    post:
+      summary: Create new function
+      description: Create a new function with code that runs in Deno runtime
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - name
+              - code
+              properties:
+                name:
+                  type: string
+                  minLength: 1
+                  description: Display name for the function
+                  example: Hello World Function
+                slug:
+                  type: string
+                  pattern: ^[a-zA-Z0-9_-]+$
+                  description: URL-friendly identifier (auto-generated from name if not provided)
+                  example: hello-world
+                code:
+                  type: string
+                  minLength: 1
+                  description: JavaScript/TypeScript code that exports an async function
+                  example: "export default async function(request) {\n  const { name = 'World' } = await request.json();\n  return new Response(\n    JSON.stringify({ message: `Hello, ${name}!` }),\n    { headers: { 'Content-Type': 'application/json' } }\n  );\n}\n"
+                description:
+                  type: string
+                  description: Description of what the function does
+                  example: Returns a personalized greeting message
+                status:
+                  type: string
+                  enum:
+                  - draft
+                  - active
+                  default: active
+                  description: Initial status (draft or active/deployed)
+      responses:
+        '201':
+          description: Function created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  function:
+                    $ref: '#/components/schemas/FunctionMetadata'
+              example:
+                success: true
+                function:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  slug: hello-world
+                  name: Hello World Function
+                  description: Returns a greeting message
+                  status: active
+                  created_at: '2024-01-21T10:30:00Z'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              examples:
+                validation:
+                  value:
+                    error: Invalid request
+                    details:
+                    - code: too_small
+                      minimum: 1
+                      path:
+                      - name
+                      message: Name is required
+                dangerousCode:
+                  value:
+                    error: Code contains potentially dangerous patterns
+                    pattern: /Deno\.run/i
+        '409':
+          description: Function slug already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              example:
+                error: Function with this slug already exists
+                details: duplicate key value violates unique constraint
+        '500':
+          description: Failed to create function
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+  /api/functions/{slug}:
+    get:
+      summary: Get function details
+      description: Get a specific function including its code
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        description: Function slug identifier
+        example: hello-world
+      responses:
+        '200':
+          description: Function details with code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FunctionDetails'
+              example:
+                id: 123e4567-e89b-12d3-a456-426614174000
+                slug: hello-world
+                name: Hello World Function
+                description: Returns a greeting message
+                code: "export default async function(request) {\n  const { name = 'World' } = await request.json();\n  return new Response(\n    JSON.stringify({ message: `Hello, ${name}!` }),\n    { headers: { 'Content-Type': 'application/json' } }\n  );\n}\n"
+                status: active
+                created_at: '2024-01-21T10:30:00Z'
+                updated_at: '2024-01-21T10:35:00Z'
+                deployed_at: '2024-01-21T10:35:00Z'
+        '404':
+          description: Function not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              example:
+                error: Function not found
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+        '500':
+          description: Failed to get function
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+    put:
+      summary: Update function
+      description: Update an existing function's code or metadata
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        description: Function slug identifier
+        example: hello-world
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: New display name
+                code:
+                  type: string
+                  description: Updated function code
+                description:
+                  type: string
+                  description: Updated description
+                status:
+                  type: string
+                  enum:
+                  - draft
+                  - active
+                  - error
+                  description: Function status
+      responses:
+        '200':
+          description: Function updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  function:
+                    $ref: '#/components/schemas/FunctionMetadata'
+              example:
+                success: true
+                function:
+                  id: 123e4567-e89b-12d3-a456-426614174000
+                  slug: hello-world
+                  name: Hello World Function v2
+                  description: Returns a greeting message
+                  status: active
+                  updated_at: '2024-01-21T11:00:00Z'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+        '404':
+          description: Function not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              example:
+                error: Function not found
+        '500':
+          description: Failed to update function
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+    delete:
+      summary: Delete function
+      description: Permanently delete a function
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        description: Function slug identifier
+        example: hello-world
+      responses:
+        '200':
+          description: Function deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: true
+                message: Function hello-world deleted successfully
+        '404':
+          description: Function not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              example:
+                error: Function not found
+        '500':
+          description: Failed to delete function
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+  /api/logs:
+    get:
+      summary: List activity logs
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 100
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+      - name: action
+        in: query
+        schema:
+          type: string
+          enum:
+          - INSERT
+          - UPDATE
+          - DELETE
+          - LOGIN
+        description: Filter by action type
+      - name: table
+        in: query
+        schema:
+          type: string
+      responses:
+        '200':
+          description: List of logs with pagination
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: Total number of logs
+            X-Page:
+              schema:
+                type: integer
+              description: Current page number
+            X-Page-Size:
+              schema:
+                type: integer
+              description: Number of items per page
+            X-Total-Pages:
+              schema:
+                type: integer
+              description: Total number of pages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    timestamp:
+                      type: string
+                      format: date-time
+                    action:
+                      type: string
+                      enum:
+                      - INSERT
+                      - UPDATE
+                      - DELETE
+                      - LOGIN
+                    table:
+                      type: string
+                      nullable: true
+                    record_id:
+                      type: string
+                      nullable: true
+                    user_id:
+                      type: string
+                    details:
+                      type: object
+                      nullable: true
+              example:
+              - id: log-123
+                timestamp: '2024-01-21T10:30:00Z'
+                action: INSERT
+                table: posts
+                record_id: post-456
+                user_id: user-789
+                details:
+                  title: New Post
+                  author: John Doe
+              - id: log-124
+                timestamp: '2024-01-21T10:31:00Z'
+                action: LOGIN
+                table: null
+                record_id: null
+                user_id: user-789
+                details:
+                  ip: 192.168.1.1
+                  user_agent: Mozilla/5.0...
+    delete:
+      summary: Clear logs
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: before
+        in: query
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Logs cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  deleted_count:
+                    type: integer
+              example:
+                message: Logs cleared successfully
+                deleted_count: 150
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_4'
+              example:
+                error: INVALID_DATE
+                message: Invalid date format for 'before' parameter
+                statusCode: 400
+                nextAction: Use ISO 8601 date format (YYYY-MM-DDTHH:mm:ssZ)
+  /api/logs/stats:
+    get:
+      summary: Get logs statistics
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Logs statistics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  actionStats:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        action:
+                          type: string
+                        count:
+                          type: integer
+                  tableStats:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        table_name:
+                          type: string
+                        count:
+                          type: integer
+                  recentActivity:
+                    type: integer
+                    description: Count of logs in last 24 hours
+                  totalLogs:
+                    type: integer
+                    description: Total number of logs
+              example:
+                actionStats:
+                - action: INSERT
+                  count: 245
+                - action: UPDATE
+                  count: 189
+                - action: DELETE
+                  count: 34
+                - action: LOGIN
+                  count: 567
+                tableStats:
+                - table_name: posts
+                  count: 156
+                - table_name: comments
+                  count: 223
+                recentActivity: 47
+                totalLogs: 1035
+  /api/metadata:
+    get:
+      summary: Get app metadata
+      description: Returns aggregated application metadata (auth, database, storage, functions, realtime, deployments). Use the `format` query parameter to choose between JSON and Markdown output.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - markdown
+          default: json
+        description: Response format. `json` returns structured JSON (default). `markdown` returns a human-readable Markdown document suitable for AI coding tools and developer onboarding.
+      responses:
+        '200':
+          description: Application metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auth:
+                    type: object
+                    properties:
+                      oAuthProviders:
+                        type: array
+                        items:
+                          type: string
+                      requireEmailVerification:
+                        type: boolean
+                      disableSignup:
+                        type: boolean
+                  database:
+                    type: object
+                    properties:
+                      tables:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            tableName:
+                              type: string
+                            recordCount:
+                              type: integer
+                      totalSizeInGB:
+                        type: number
+                      hint:
+                        type: string
+                  storage:
+                    type: object
+                    properties:
+                      buckets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                            public:
+                              type: boolean
+                            objectCount:
+                              type: integer
+                      totalSizeInGB:
+                        type: number
+                  functions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        slug:
+                          type: string
+                        name:
+                          type: string
+                        status:
+                          type: string
+                        description:
+                          type: string
+                  realtime:
+                    type: object
+                    description: Optional; present when realtime is configured
+                    properties:
+                      channels:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                            pattern:
+                              type: string
+                  deployments:
+                    type: object
+                    description: Optional; present on cloud-hosted projects only
+                    properties:
+                      customSlug:
+                        type: string
+                        nullable: true
+                  version:
+                    type: string
+              example:
+                auth:
+                  oAuthProviders:
+                  - google
+                  - github
+                  requireEmailVerification: true
+                  disableSignup: false
+                database:
+                  tables:
+                  - tableName: users
+                    recordCount: 150
+                  - tableName: posts
+                    recordCount: 1200
+                  totalSizeInGB: 0.3
+                storage:
+                  buckets:
+                  - name: avatars
+                    public: true
+                    objectCount: 42
+                  totalSizeInGB: 0.5
+                functions:
+                - slug: hello-world
+                  name: hello-world
+                  status: active
+                  description: Test function
+                version: 2.0.0
+            text/markdown:
+              schema:
+                type: string
+              example: '# Project Metadata
+
+                > v2.0.0
+
+
+                ## Auth
+
+                - **OAuth providers**: google, github
+
+                - **Email verification**: required
+
+                - **Signup**: enabled
+
+                '
+        '400':
+          description: Invalid format parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+        '401':
+          description: Unauthorized — missing or invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+        '403':
+          description: Forbidden — authenticated but not an admin
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+  /api/metadata/database:
+    get:
+      summary: Get database metadata
+      description: Get database statistics and table information for dashboard
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: Database metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  tables:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        recordCount:
+                          type: integer
+                  totalTables:
+                    type: integer
+                  totalRecords:
+                    type: integer
+                  databaseSize:
+                    type: string
+                  lastUpdated:
+                    type: string
+                    format: date-time
+              example:
+                tables:
+                - name: posts
+                  recordCount: 5678
+                - name: comments
+                  recordCount: 9012
+                totalTables: 15
+                totalRecords: 16924
+                databaseSize: 125 MB
+                lastUpdated: '2024-01-21T10:30:00Z'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: UNAUTHORIZED
+                message: Invalid or missing authentication
+                statusCode: 401
+                nextAction: Please provide valid authentication credentials
+  /api/metadata/api-key:
+    get:
+      summary: Get API key
+      description: Admin-only endpoint to retrieve the API key
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: API key
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiKey:
+                    type: string
+              example:
+                apiKey: ins_1234567890abcdef1234567890abcdef
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: INSUFFICIENT_PERMISSIONS
+                message: Only admin users can access API keys
+                statusCode: 403
+                nextAction: Contact an administrator for API key access
+  /api/metadata/anon-key:
+    get:
+      summary: Get anon key
+      description: Admin-only endpoint to retrieve the project's opaque anon key (`anon_...`). The anon key is a non-secret client identifier that maps requests to the `anon` role - safe to embed in frontend bundles; row level security is the security boundary. Rotatable via POST /api/secrets/anon-key/rotate.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Anon key
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  anonKey:
+                    type: string
+              example:
+                anonKey: anon_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcd
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+        '404':
+          description: Anon key not initialized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+  /api/secrets:
+    get:
+      summary: List all secrets
+      description: Returns metadata for all secrets (without values)
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: List of secret metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  secrets:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SecretMetadata'
+              example:
+                secrets:
+                - id: 123e4567-e89b-12d3-a456-426614174000
+                  key: STRIPE_API_KEY
+                  isActive: true
+                  isReserved: false
+                  createdAt: '2024-01-21T10:30:00Z'
+                  updatedAt: '2024-01-21T10:30:00Z'
+                  expiresAt: null
+                - id: 223e4567-e89b-12d3-a456-426614174001
+                  key: OPENAI_API_KEY
+                  isActive: true
+                  isReserved: true
+                  createdAt: '2024-01-20T09:15:00Z'
+                  updatedAt: '2024-01-20T09:15:00Z'
+                  expiresAt: '2025-01-20T09:15:00Z'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+    post:
+      summary: Create a new secret
+      description: Create a new encrypted secret with a unique key
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - key
+              - value
+              properties:
+                key:
+                  type: string
+                  pattern: ^[A-Z0-9_]+$
+                  description: Unique key identifier (uppercase letters, numbers, underscores only)
+                  example: STRIPE_API_KEY
+                value:
+                  type: string
+                  description: Secret value to be encrypted
+                  example: sk_live_...
+                isReserved:
+                  type: boolean
+                  default: false
+                  description: Whether the secret is protected from deletion
+                expiresAt:
+                  type: string
+                  format: date-time
+                  nullable: true
+                  description: Optional expiration date for the secret
+      responses:
+        '201':
+          description: Secret created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  id:
+                    type: string
+                    format: uuid
+              example:
+                success: true
+                message: Secret STRIPE_API_KEY has been created successfully
+                id: 123e4567-e89b-12d3-a456-426614174000
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+              examples:
+                missingFields:
+                  value:
+                    error: INVALID_INPUT
+                    message: Both key and value are required
+                    statusCode: 400
+                invalidKeyFormat:
+                  value:
+                    error: INVALID_INPUT
+                    message: Invalid key format. Use uppercase letters, numbers, and underscores only (e.g., STRIPE_API_KEY)
+                    statusCode: 400
+        '409':
+          description: Secret already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+              example:
+                error: INVALID_INPUT
+                message: 'Secret already exists: STRIPE_API_KEY'
+                statusCode: 409
+  /api/secrets/{key}:
+    get:
+      summary: Get secret value
+      description: Retrieve the decrypted value of a specific secret by its key
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Z0-9_]+$
+        description: Secret key identifier
+        example: STRIPE_API_KEY
+      responses:
+        '200':
+          description: Secret value retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  value:
+                    type: string
+              example:
+                key: STRIPE_API_KEY
+                value: sk_live_...
+        '404':
+          description: Secret not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+              example:
+                error: NOT_FOUND
+                message: 'Secret not found: INVALID_KEY'
+                statusCode: 404
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin only
+    put:
+      summary: Update secret
+      description: Update an existing secret's value or metadata
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Z0-9_]+$
+        description: Secret key identifier
+        example: STRIPE_API_KEY
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                value:
+                  type: string
+                  description: New secret value (will be encrypted)
+                isActive:
+                  type: boolean
+                  description: Whether the secret is active
+                isReserved:
+                  type: boolean
+                  description: Whether the secret is protected from deletion
+                expiresAt:
+                  type: string
+                  format: date-time
+                  nullable: true
+                  description: Expiration date (null to remove expiration)
+      responses:
+        '200':
+          description: Secret updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: true
+                message: Secret STRIPE_API_KEY has been updated successfully
+        '404':
+          description: Secret not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+              example:
+                error: NOT_FOUND
+                message: 'Secret not found: INVALID_KEY'
+                statusCode: 404
+        '500':
+          description: Failed to update secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+              example:
+                error: INTERNAL_ERROR
+                message: 'Failed to update secret: STRIPE_API_KEY'
+                statusCode: 500
+    delete:
+      summary: Delete secret
+      description: Mark a secret as inactive (soft delete). Cannot delete reserved secrets.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[A-Z0-9_]+$
+        description: Secret key identifier
+        example: STRIPE_API_KEY
+      responses:
+        '200':
+          description: Secret deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+              example:
+                success: true
+                message: Secret STRIPE_API_KEY has been deleted successfully
+        '403':
+          description: Cannot delete reserved secret
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+              example:
+                error: FORBIDDEN
+                message: 'Cannot delete reserved secret: OPENAI_API_KEY'
+                statusCode: 403
+        '404':
+          description: Secret not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+              example:
+                error: NOT_FOUND
+                message: 'Secret not found: INVALID_KEY'
+                statusCode: 404
+  /api/secrets/api-key/rotate:
+    post:
+      summary: Rotate API key
+      description: Rotate the project's admin API key. A new key is generated and returned; the old key stays valid for the grace period (default 24 hours, max 168 / 7 days) so in-flight requests finish gracefully. Admin only.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gracePeriodHours:
+                  type: integer
+                  minimum: 0
+                  maximum: 168
+                  default: 24
+                  description: How long the old key remains valid after rotation
+      responses:
+        '200':
+          description: API key rotated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  apiKey:
+                    type: string
+                    description: The new API key
+                  oldKeyExpiresAt:
+                    type: string
+                    format: date-time
+                    description: When the previous key stops being accepted
+              example:
+                success: true
+                message: API key rotated successfully. Old key will remain valid during grace period.
+                apiKey: ik_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef
+                oldKeyExpiresAt: '2026-07-15T12:00:00.000Z'
+        '400':
+          description: Invalid grace period
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+        '401':
+          description: Unauthorized - missing or invalid admin token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+        '403':
+          description: Forbidden - admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+  /api/secrets/anon-key/rotate:
+    post:
+      summary: Rotate anon key
+      description: Rotate the project's opaque anon key (`anon_...`). A new key is generated and returned; the old key stays valid for the grace period (default 168 hours / 7 days, max 720) so already-deployed frontends and mobile binaries keep working while the new key ships. Admin only.
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gracePeriodHours:
+                  type: integer
+                  minimum: 0
+                  maximum: 720
+                  default: 168
+                  description: How long the old key remains valid after rotation
+      responses:
+        '200':
+          description: Anon key rotated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  anonKey:
+                    type: string
+                    description: The new anon key
+                  oldKeyExpiresAt:
+                    type: string
+                    format: date-time
+                    description: When the previous key stops being accepted
+              example:
+                success: true
+                message: Anon key rotated successfully. Old key will remain valid during grace period.
+                anonKey: anon_1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcd
+                oldKeyExpiresAt: '2026-06-18T00:00:00.000Z'
+        '400':
+          description: Invalid grace period
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+        '403':
+          description: Forbidden - admin access required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_6'
+  /api/storage/config:
+    get:
+      summary: Get storage configuration
+      description: Returns the current storage configuration including file size limits (admin only)
+      tags:
+      - Admin
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: Storage configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageConfig'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+        '403':
+          description: Forbidden - Admin only
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+    put:
+      summary: Update storage configuration
+      description: Update storage settings such as maximum file size (admin only)
+      tags:
+      - Admin
+      security:
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - maxFileSizeMb
+              properties:
+                maxFileSizeMb:
+                  type: integer
+                  minimum: 1
+                  maximum: 200
+                  description: Maximum file upload size in megabytes
+      responses:
+        '200':
+          description: Storage configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageConfig'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+        '403':
+          description: Forbidden - Admin only
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+  /api/storage/buckets:
+    get:
+      summary: List All Buckets
+      tags:
+      - Admin
+      security:
+      - apiKey: []
+      responses:
+        '200':
+          description: List of bucket names
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  buckets:
+                    type: array
+                    items:
+                      type: string
+                    example:
+                    - avatars
+                    - documents
+                    - uploads
+              example:
+                buckets:
+                - avatars
+                - documents
+                - uploads
+                - public
+                - private
+    post:
+      summary: Create New Bucket
+      tags:
+      - Admin
+      security:
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - bucketName
+              properties:
+                bucketName:
+                  type: string
+                  pattern: ^[a-zA-Z0-9_-]+$
+                  description: Bucket name (alphanumeric, underscore, and hyphen only)
+                  example: avatars
+                isPublic:
+                  type: boolean
+                  description: Whether the bucket is publicly accessible
+                  default: true
+                  example: true
+      responses:
+        '201':
+          description: Bucket created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bucket created successfully
+                  bucketName:
+                    type: string
+                    example: avatars
+              example:
+                message: Bucket created successfully
+                bucket: avatars
+        '400':
+          description: Invalid bucket name
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+              example:
+                error: INVALID_BUCKET_NAME
+                message: Bucket name must contain only alphanumeric characters, underscores, and hyphens
+                statusCode: 400
+                nextActions: Use a valid bucket name format
+        '409':
+          description: Bucket already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+              example:
+                error: BUCKET_EXISTS
+                message: Bucket 'avatars' already exists
+                statusCode: 409
+                nextActions: Choose a different bucket name
+  /api/storage/buckets/{bucketName}:
+    delete:
+      summary: Delete Bucket
+      description: Delete an entire bucket and all its objects
+      tags:
+      - Admin
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      responses:
+        '200':
+          description: Bucket deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  nextActions:
+                    type: string
+              example:
+                message: Bucket deleted successfully
+                nextActions: You can use POST /api/storage/buckets to create a new bucket, and GET /api/storage/buckets/:bucketName/objects to list the objects in the bucket.
+        '404':
+          description: Bucket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+              example:
+                error: BUCKET_NOT_FOUND
+                message: Bucket 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Check bucket name and try again
+    patch:
+      summary: Update Bucket
+      tags:
+      - Admin
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - is_public
+              properties:
+                isPublic:
+                  type: boolean
+                  description: Whether the bucket should be publicly accessible
+                  example: true
+      responses:
+        '200':
+          description: Bucket visibility updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Bucket visibility updated
+                  bucket:
+                    type: string
+                    example: avatars
+                  isPublic:
+                    type: boolean
+                    example: true
+              example:
+                message: Bucket visibility updated
+                bucket: avatars
+                isPublic: true
+        '404':
+          description: Bucket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_7'
+              example:
+                error: BUCKET_NOT_FOUND
+                message: Bucket 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Check bucket name and try again
+  /api/storage/buckets/{bucketName}/objects:
+    get:
+      summary: List Objects in Bucket
+      tags:
+      - Admin
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      - name: prefix
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Filter objects by key prefix
+        example: users/
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 100
+      - name: offset
+        in: query
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: search
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Search objects by key (partial match)
+        example: profile
+      responses:
+        '200':
+          description: List of objects in bucket
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StoredFile'
+                  pagination:
+                    type: object
+                    properties:
+                      offset:
+                        type: integer
+                        example: 0
+                      limit:
+                        type: integer
+                        example: 100
+                      total:
+                        type: integer
+                        example: 2
+                  nextActions:
+                    type: string
+                    example: You can use PUT /api/storage/buckets/:bucketName/objects/:objectKey to upload with a specific key, or POST /api/storage/buckets/:bucketName/objects to upload with auto-generated key, and GET /api/storage/buckets/:bucketName/objects/:objectKey to download an object.
+              example:
+                data:
+                - bucket: avatars
+                  key: users/user123.jpg
+                  size: 102400
+                  mimeType: image/jpeg
+                  uploadedAt: '2024-01-15T10:30:00Z'
+                  url: /api/storage/buckets/avatars/objects/users/user123.jpg
+                - bucket: avatars
+                  key: users/user456.png
+                  size: 204800
+                  mimeType: image/png
+                  uploadedAt: '2024-01-16T11:00:00Z'
+                  url: /api/storage/buckets/avatars/objects/users/user456.png
+                pagination:
+                  offset: 0
+                  limit: 100
+                  total: 2
+                nextActions: You can use PUT /api/storage/buckets/:bucketName/objects/:objectKey to upload with a specific key, or POST /api/storage/buckets/:bucketName/objects to upload with auto-generated key, and GET /api/storage/buckets/:bucketName/objects/:objectKey to download an object.
+  /api/database/tables:
+    get:
+      summary: List Tables
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: List of table names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+              example:
+              - posts
+              - comments
+              - categories
+    post:
+      summary: Create Table
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - tableName
+              - columns
+              properties:
+                tableName:
+                  type: string
+                columns:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                    - name
+                    - type
+                    - nullable
+                    properties:
+                      name:
+                        type: string
+                      type:
+                        type: string
+                        enum:
+                        - string
+                        - datetime
+                        - integer
+                        - float
+                        - boolean
+                        - uuid
+                        - json
+                        - file
+                      nullable:
+                        type: boolean
+                      unique:
+                        type: boolean
+                      defaultValue:
+                        type: string
+                foreignKeys:
+                  type: array
+                  description: Table-level foreign key constraints
+                  items:
+                    $ref: '#/components/schemas/ForeignKeyConstraint'
+                rlsEnabled:
+                  type: boolean
+                  default: false
+                  description: Enable Row Level Security on the table
+      responses:
+        '201':
+          description: Table created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  table_name:
+                    type: string
+              example:
+                message: Table created successfully
+                tableName: posts
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_8'
+              example:
+                error: VALIDATION_ERROR
+                message: Table name already exists
+                statusCode: 400
+                nextActions: Choose a different table name
+        '422':
+          description: Unprocessable entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_8'
+              example:
+                error: INVALID_FIELD_TYPE
+                message: 'Invalid field type: ''text''. Valid types are: string, integer, float, boolean, datetime, uuid, json, file'
+                statusCode: 422
+                nextActions: Use one of the valid field types
+  /api/database/tables/{tableName}/schema:
+    get:
+      summary: Get Table Schema
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Table schema
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  table_name:
+                    type: string
+                  columns:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        type:
+                          type: string
+                        nullable:
+                          type: boolean
+                        unique:
+                          type: boolean
+                        default:
+                          type: string
+                          nullable: true
+                        isPrimaryKey:
+                          type: boolean
+                  foreignKeys:
+                    type: array
+                    description: Table-level foreign key constraints (one entry per constraint)
+                    items:
+                      $ref: '#/components/schemas/ForeignKeyConstraint'
+              example:
+                tableName: posts
+                columns:
+                - name: id
+                  type: uuid
+                  nullable: false
+                  unique: true
+                  default: gen_random_uuid()
+                  isPrimaryKey: true
+                - name: title
+                  type: string
+                  nullable: false
+                  unique: false
+                  default: null
+                  isPrimaryKey: false
+                - name: userId
+                  type: uuid
+                  nullable: false
+                  unique: false
+                  default: null
+                  isPrimaryKey: false
+                foreignKeys:
+                - constraintName: fk_userId_auth_users_id
+                  referenceTable: auth.users
+                  referenceColumns:
+                  - sourceColumn: userId
+                    referenceColumn: id
+                  onDelete: CASCADE
+                  onUpdate: CASCADE
+        '404':
+          description: Table not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_8'
+              example:
+                error: TABLE_NOT_FOUND
+                message: Table 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Check table name and try again
+    patch:
+      summary: Update Table Schema
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                addColumns:
+                  type: array
+                  description: Add new columns to the table
+                  items:
+                    type: object
+                    required:
+                    - columnName
+                    - type
+                    properties:
+                      columnName:
+                        type: string
+                        description: Name of the new column
+                      type:
+                        type: string
+                        enum:
+                        - string
+                        - integer
+                        - float
+                        - boolean
+                        - datetime
+                        - uuid
+                        - json
+                        - file
+                        description: Data type of the column
+                      isNullable:
+                        type: boolean
+                        default: true
+                        description: Whether the column allows NULL values
+                      isUnique:
+                        type: boolean
+                        default: false
+                        description: Whether the column values must be unique
+                      defaultValue:
+                        type: string
+                        description: Default value for the column
+                dropColumns:
+                  type: array
+                  description: Remove columns from the table
+                  items:
+                    type: string
+                    description: Name of the column to drop
+                updateColumns:
+                  type: array
+                  description: Modify existing columns (rename or change default)
+                  items:
+                    type: object
+                    required:
+                    - columnName
+                    properties:
+                      columnName:
+                        type: string
+                        description: Current name of the column
+                      newColumnName:
+                        type: string
+                        description: New name for the column (optional)
+                        minLength: 1
+                        maxLength: 64
+                      defaultValue:
+                        type: string
+                        description: New default value for the column (optional)
+                addForeignKeys:
+                  type: array
+                  description: Add foreign key constraints (one entry per constraint; composite keys list multiple column mappings)
+                  items:
+                    $ref: '#/components/schemas/ForeignKeyConstraint'
+                dropForeignKeys:
+                  type: array
+                  description: Constraint names of foreign keys to drop
+                  items:
+                    type: string
+                    description: Name of the foreign key constraint to drop
+                renameTable:
+                  type: object
+                  description: Rename the table
+                  required:
+                  - newTableName
+                  properties:
+                    newTableName:
+                      type: string
+                      description: New name for the table
+                      minLength: 1
+                      maxLength: 64
+      responses:
+        '200':
+          description: Table schema updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Success message
+                  tableName:
+                    type: string
+                    description: Name of the updated table
+                  operations:
+                    type: array
+                    description: List of operations performed
+                    items:
+                      type: string
+              example:
+                message: Table schema updated successfully
+                tableName: posts
+                operations:
+                - added 2 columns
+                - dropped 1 columns
+                - renamed 1 columns
+                - added 1 foreign keys
+                - dropped 1 foreign keys
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_8'
+              examples:
+                columnExists:
+                  value:
+                    error: COLUMN_EXISTS
+                    message: Column 'title' already exists in table 'posts'
+                    statusCode: 400
+                    nextActions: Choose a different column name or drop it first
+                columnNotFound:
+                  value:
+                    error: COLUMN_NOT_FOUND
+                    message: Column 'nonexistent' not found in table 'posts'
+                    statusCode: 400
+                    nextActions: Check column name with GET /api/tables/{tableName}/schema
+                foreignKeyExists:
+                  value:
+                    error: FOREIGN_KEY_EXISTS
+                    message: Foreign key on column 'user_id' already exists
+                    statusCode: 400
+                    nextActions: Drop the existing foreign key first or use a different column
+        '404':
+          description: Table not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_8'
+              example:
+                error: TABLE_NOT_FOUND
+                message: Table 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Check table name and try again
+  /api/database/tables/{tableName}:
+    delete:
+      summary: Delete Table
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Table deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  table_name:
+                    type: string
+              example:
+                message: Table deleted successfully
+                tableName: posts
+        '404':
+          description: Table not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_8'
+              example:
+                error: TABLE_NOT_FOUND
+                message: Table 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Check table name and try again
+  /api/database/migrations:
+    get:
+      summary: List Database Migrations
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: List successful custom migrations
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - migrations
+                properties:
+                  migrations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Migration'
+              example:
+                migrations:
+                - version: '20260416170500'
+                  name: create_posts_table
+                  statements:
+                  - CREATE TABLE posts (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), title TEXT NOT NULL);
+                  createdAt: '2026-04-16T17:05:00.000Z'
+    post:
+      summary: Create and Execute Database Migration
+      tags:
+      - Admin
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - version
+              - name
+              - sql
+              properties:
+                version:
+                  type: string
+                  description: Numeric migration version. Accepts Drizzle-style sequential prefixes (e.g. `0001`) or a `YYYYMMDDHHmmss` timestamp. Versions are compared numerically.
+                  pattern: ^\d{1,64}$
+                  maxLength: 64
+                name:
+                  type: string
+                  description: Migration name
+                  minLength: 1
+                sql:
+                  type: string
+                  description: SQL text to parse and execute immediately
+                  minLength: 1
+            example:
+              version: '20260416170500'
+              name: create_posts_table
+              sql: CREATE TABLE posts (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), title TEXT NOT NULL);
+      responses:
+        '201':
+          description: Migration executed and recorded successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/Migration'
+                - type: object
+                  required:
+                  - message
+                  properties:
+                    message:
+                      type: string
+              example:
+                version: '20260416170500'
+                name: create_posts_table
+                statements:
+                - CREATE TABLE posts (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), title TEXT NOT NULL);
+                createdAt: '2026-04-16T17:05:00.000Z'
+                message: Migration executed successfully
+        '400':
+          description: Invalid migration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_8'
+              examples:
+                invalidPayload:
+                  value:
+                    error: INVALID_INPUT
+                    message: 'sql: Migration SQL is required'
+                    statusCode: 400
+                transactionStatement:
+                  value:
+                    error: DATABASE_FORBIDDEN
+                    message: Custom migrations cannot manage their own transactions.
+                    statusCode: 400
+        '409':
+          description: Migration version already exists or is not newer than the latest applied migration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_8'
+              example:
+                error: ALREADY_EXISTS
+                message: Migration version already exists.
+                statusCode: 409
+components:
+  schemas:
+    GetEnvVarResponse:
+      type: object
+      required:
+      - envVar
+      properties:
+        envVar:
+          $ref: '#/components/schemas/DeploymentEnvVarWithValue'
+    ListCustomDomainsResponse:
+      type: object
+      required:
+      - domains
+      properties:
+        domains:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomDomain'
+    AIOverviewMetricPoint:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: number
+    DeleteResponse:
+      type: object
+      required:
+      - success
+      - message
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+    UpsertEnvVarsResponse:
+      type: object
+      required:
+      - success
+      - message
+      - count
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        count:
+          type: integer
+          minimum: 1
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        profile:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: User profile data (name, avatar_url, and custom fields)
+          properties:
+            name:
+              type: string
+            avatar_url:
+              type: string
+              format: uri
+        metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: System metadata (device ID, login IP, etc.)
+        emailVerified:
+          type: boolean
+        providers:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    UpdateSlugResponse:
+      type: object
+      required:
+      - success
+      - slug
+      - domain
+      properties:
+        success:
+          type: boolean
+        slug:
+          type: string
+          nullable: true
+        domain:
+          type: string
+          nullable: true
+    ErrorResponse_8:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+        message:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+    CustomOAuthConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+        name:
+          type: string
+        discoveryEndpoint:
+          type: string
+          format: uri
+        clientId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ListModelsResponse:
+      type: array
+      description: Normalized OpenRouter model catalog returned by GET /api/ai/models.
+      items:
+        $ref: '#/components/schemas/AIModel'
+    DeploymentManifestFileUploaded:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
+      - type: object
+        required:
+        - fileId
+        - uploadedAt
+        properties:
+          fileId:
+            type: string
+            format: uuid
+          uploadedAt:
+            type: string
+            format: date-time
+    UpdateSlugRequest:
+      type: object
+      required:
+      - slug
+      properties:
+        slug:
+          type: string
+          nullable: true
+          minLength: 3
+          maxLength: 63
+          pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$
+    SmtpConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        enabled:
+          type: boolean
+        host:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        hasPassword:
+          type: boolean
+          description: Whether a password is set (actual password is never exposed)
+        senderEmail:
+          type: string
+          format: email
+        senderName:
+          type: string
+        minIntervalSeconds:
+          type: integer
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    EmailTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        templateType:
+          type: string
+          enum:
+          - email-verification-code
+          - email-verification-link
+          - reset-password-code
+          - reset-password-link
+        subject:
+          type: string
+        bodyHtml:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    FunctionDetails:
+      allOf:
+      - $ref: '#/components/schemas/FunctionMetadata'
+      - type: object
+        properties:
+          code:
+            type: string
+            description: The function's JavaScript/TypeScript code
+        required:
+        - code
+    CreateDirectDeploymentResponse:
+      type: object
+      required:
+      - id
+      - status
+      - files
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/DeploymentStatus'
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeploymentManifestFile'
+    ForeignKeyConstraint:
+      type: object
+      description: A table-level foreign key constraint. One entry per constraint; composite keys list multiple column mappings.
+      required:
+      - referenceTable
+      - referenceColumns
+      - onDelete
+      - onUpdate
+      properties:
+        constraintName:
+          type: string
+          description: Constraint name. Returned when reading the schema; derived by the backend on create.
+        referenceTable:
+          type: string
+          minLength: 1
+          description: Table being referenced
+        referenceColumns:
+          type: array
+          minItems: 1
+          description: Ordered (source → reference) column pairs
+          items:
+            type: object
+            required:
+            - sourceColumn
+            - referenceColumn
+            properties:
+              sourceColumn:
+                type: string
+                description: Column in the current table
+              referenceColumn:
+                type: string
+                description: Column in the referenced table
+        onDelete:
+          type: string
+          enum:
+          - CASCADE
+          - SET NULL
+          - SET DEFAULT
+          - NO ACTION
+          - RESTRICT
+        onUpdate:
+          type: string
+          enum:
+          - CASCADE
+          - SET NULL
+          - SET DEFAULT
+          - NO ACTION
+          - RESTRICT
+    DeploymentEnvVar:
+      type: object
+      required:
+      - id
+      - key
+      - type
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        type:
+          type: string
+          enum:
+          - plain
+          - encrypted
+          - secret
+          - sensitive
+          - system
+        updatedAt:
+          type: integer
+          description: Unix timestamp in milliseconds.
+    UpsertEnvVarsRequest:
+      type: object
+      required:
+      - envVars
+      properties:
+        envVars:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+    OAuthConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider:
+          type: string
+          enum:
+          - google
+          - github
+          - discord
+          - linkedin
+          - facebook
+          - instagram
+          - tiktok
+          - apple
+          - x
+          - spotify
+          - microsoft
+        clientId:
+          type: string
+          nullable: true
+        redirectUri:
+          type: string
+          nullable: true
+        scopes:
+          type: array
+          items:
+            type: string
+          nullable: true
+        useSharedKey:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    OpenRouterKeyResponse:
+      type: object
+      properties:
+        apiKey:
+          type: string
+          description: Active OpenRouter API key for admin copy workflows
+        maskedKey:
+          type: string
+          description: Masked OpenRouter API key for display
+    DomainVerificationRecord:
+      type: object
+      required:
+      - type
+      - domain
+      - value
+      properties:
+        type:
+          type: string
+          example: TXT
+        domain:
+          type: string
+        value:
+          type: string
+    StartDeploymentRequest:
+      type: object
+      properties:
+        projectSettings:
+          $ref: '#/components/schemas/ProjectSettings'
+        envVars:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+        meta:
+          type: object
+          additionalProperties:
+            type: string
+    DeploymentStatus:
+      type: string
+      enum:
+      - WAITING
+      - UPLOADING
+      - QUEUED
+      - BUILDING
+      - READY
+      - ERROR
+      - CANCELED
+    AIModel:
+      type: object
+      properties:
+        id:
+          type: string
+          example: openai/gpt-4o
+        created:
+          type: integer
+        inputModality:
+          type: array
+          items:
+            type: string
+          example:
+          - text
+          - image
+        outputModality:
+          type: array
+          items:
+            type: string
+          example:
+          - text
+        provider:
+          type: string
+          example: openrouter
+        modelId:
+          type: string
+          example: openai/gpt-4o
+        inputPrice:
+          type: number
+          description: Input price per million tokens in USD when token pricing is available.
+        outputPrice:
+          type: number
+          description: Output price per million tokens in USD when token pricing is available.
+        inputPriceLabel:
+          type: string
+          description: Human-readable input pricing label, such as "$2.50 / 1M tokens" or "Free", when available.
+        outputPriceLabel:
+          type: string
+          description: Human-readable output pricing label, such as "$10.00 / 1M tokens" or "Free", when available.
+    DeploymentMetadata:
+      type: object
+      required:
+      - currentDeploymentId
+      - defaultDomainUrl
+      - customDomainUrl
+      properties:
+        currentDeploymentId:
+          type: string
+          format: uuid
+          nullable: true
+        defaultDomainUrl:
+          type: string
+          nullable: true
+        customDomainUrl:
+          type: string
+          nullable: true
+    ListEnvVarsResponse:
+      type: object
+      required:
+      - envVars
+      properties:
+        envVars:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeploymentEnvVar'
+    Deployment:
+      type: object
+      required:
+      - id
+      - providerDeploymentId
+      - provider
+      - status
+      - url
+      - metadata
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        providerDeploymentId:
+          type: string
+          nullable: true
+          description: Provider deployment ID. Null until the provider deployment is created.
+        provider:
+          type: string
+          example: vercel
+        status:
+          $ref: '#/components/schemas/DeploymentStatus'
+        url:
+          type: string
+          nullable: true
+          example: https://my-app.vercel.app
+        metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CustomDomain:
+      type: object
+      required:
+      - domain
+      - apexDomain
+      - verified
+      - misconfigured
+      - verification
+      - cnameTarget
+      - aRecordValue
+      properties:
+        domain:
+          type: string
+          example: app.example.com
+        apexDomain:
+          type: string
+          example: example.com
+        verified:
+          type: boolean
+        misconfigured:
+          type: boolean
+        verification:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainVerificationRecord'
+        cnameTarget:
+          type: string
+          nullable: true
+        aRecordValue:
+          type: string
+          nullable: true
+    StorageConfig:
+      type: object
+      required:
+      - id
+      - maxFileSizeMb
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        maxFileSizeMb:
+          type: integer
+          minimum: 1
+          maximum: 200
+          description: Maximum file upload size in megabytes
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ProjectSettings:
+      type: object
+      properties:
+        buildCommand:
+          type: string
+          nullable: true
+        outputDirectory:
+          type: string
+          nullable: true
+        installCommand:
+          type: string
+          nullable: true
+        devCommand:
+          type: string
+          nullable: true
+        rootDirectory:
+          type: string
+          nullable: true
+    ErrorResponse_7:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
+    DeploymentManifestFile:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
+      - type: object
+        required:
+        - fileId
+        - uploadedAt
+        properties:
+          fileId:
+            type: string
+            format: uuid
+          uploadedAt:
+            type: string
+            format: date-time
+            nullable: true
+    FunctionMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the function
+        slug:
+          type: string
+          description: URL-friendly identifier
+          example: hello-world
+        name:
+          type: string
+          description: Display name for the function
+          example: Hello World Function
+        description:
+          type: string
+          nullable: true
+          description: Description of what the function does
+        status:
+          type: string
+          enum:
+          - draft
+          - active
+          - error
+          description: Current status of the function
+        created_at:
+          type: string
+          format: date-time
+          description: When the function was created
+        updated_at:
+          type: string
+          format: date-time
+          description: When the function was last updated
+        deployed_at:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the function was last deployed (null if never deployed)
+      required:
+      - id
+      - slug
+      - name
+      - status
+      - created_at
+      - updated_at
+    ProjectAdminResponse:
+      type: object
+      required:
+      - subject
+      - username
+      properties:
+        subject:
+          type: string
+          example: local:admin
+        username:
+          type: string
+          example: admin
+    EnvVarInput:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ErrorResponse_3:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: object
+          - type: object
+          description: Additional error details
+        message:
+          type: string
+          description: Detailed error message
+        pattern:
+          type: string
+          description: Pattern that caused validation failure (for dangerous code detection)
+    AddCustomDomainRequest:
+      type: object
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
+          example: app.example.com
+          description: User-owned domain. Domains ending in `.insforge.site` are reserved.
+    AIOverview:
+      type: object
+      properties:
+        key:
+          type: object
+          properties:
+            label:
+              type: string
+            limit:
+              type: number
+              nullable: true
+            limitRemaining:
+              type: number
+              nullable: true
+            limitReset:
+              type: string
+              nullable: true
+            usage:
+              type: number
+            usageDaily:
+              type: number
+            usageWeekly:
+              type: number
+            usageMonthly:
+              type: number
+            isFreeTier:
+              type: boolean
+            observabilityAvailable:
+              type: boolean
+            observabilityError:
+              type: string
+        charts:
+          type: object
+          properties:
+            spend:
+              type: array
+              items:
+                $ref: '#/components/schemas/AIOverviewMetricPoint'
+            requests:
+              type: array
+              items:
+                $ref: '#/components/schemas/AIOverviewMetricPoint'
+            tokens:
+              type: array
+              items:
+                $ref: '#/components/schemas/AIOverviewMetricPoint'
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Email is already in use
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Please use a different email address
+    DeploymentEnvVarWithValue:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentEnvVar'
+      - type: object
+        required:
+        - value
+        properties:
+          value:
+            type: string
+    SecretMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the secret
+        key:
+          type: string
+          description: Unique key identifier (uppercase with underscores)
+          example: STRIPE_API_KEY
+        isActive:
+          type: boolean
+          description: Whether the secret is currently active
+        isReserved:
+          type: boolean
+          description: Whether the secret is protected from deletion
+        createdAt:
+          type: string
+          format: date-time
+          description: When the secret was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the secret was last updated
+        expiresAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: When the secret expires (null if no expiration)
+      required:
+      - id
+      - key
+      - isActive
+      - isReserved
+      - createdAt
+      - updatedAt
+    ErrorResponse_4:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+        message:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+        nextAction:
+          type: string
+          description: Suggested action to resolve the error
+    ErrorResponse_5:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+        message:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+        nextAction:
+          type: string
+          description: Suggested action to resolve the error
+    ErrorResponse_6:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid input data
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check the request body format
+    StoredFile:
+      type: object
+      properties:
+        bucket:
+          type: string
+          example: avatars
+          description: Name of the bucket containing the object
+        key:
+          type: string
+          example: user123.jpg
+          description: Unique key identifying the object within the bucket
+        size:
+          type: integer
+          example: 102400
+          description: Size of the file in bytes
+        mimeType:
+          type: string
+          example: image/jpeg
+          description: MIME type of the file
+        uploadedAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00Z'
+          description: ISO timestamp when the file was uploaded
+        url:
+          type: string
+          example: /api/storage/buckets/avatars/objects/user123.jpg
+          description: URL to download the file
+      required:
+      - bucket
+      - key
+      - size
+      - uploadedAt
+      - url
+    CreateDeploymentResponse:
+      type: object
+      required:
+      - id
+      - uploadUrl
+      - uploadFields
+      properties:
+        id:
+          type: string
+          format: uuid
+        uploadUrl:
+          type: string
+          format: uri
+        uploadFields:
+          type: object
+          additionalProperties:
+            type: string
+    Migration:
+      type: object
+      required:
+      - version
+      - name
+      - statements
+      - createdAt
+      properties:
+        version:
+          type: string
+          pattern: ^\d{1,64}$
+        name:
+          type: string
+        statements:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+    DeploymentManifestFileEntry:
+      type: object
+      required:
+      - path
+      - sha
+      - size
+      properties:
+        path:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          description: Relative source path using forward slashes.
+          example: src/App.tsx
+        sha:
+          type: string
+          pattern: ^[a-fA-F0-9]{40}$
+          description: SHA-1 hex digest of the file content.
+        size:
+          type: integer
+          minimum: 0
+          description: File size in bytes.
+    CreateDirectDeploymentRequest:
+      type: object
+      required:
+      - files
+      properties:
+        files:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          description: Source file manifest. The default backend limit is 5000 files.
+          items:
+            $ref: '#/components/schemas/DeploymentManifestFileEntry'
+    ErrorResponse_2:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling.
+        message:
+          type: string
+          description: Human-readable error message.
+        statusCode:
+          type: integer
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error.
+  responses:
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse_2'
+    DeploymentList:
+      description: Deployment runs
+      headers:
+        Content-Range:
+          schema:
+            type: string
+          description: Range of deployment records returned, for example `0-49/125`.
+        Preference-Applied:
+          schema:
+            type: string
+          description: Count preference applied by the backend.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/Deployment'
+  parameters:
+    DeploymentId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Deployment run ID.
+    Offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of deployments to skip.
+    AIProvider:
+      name: provider
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - openrouter
+      description: AI provider identifier
+    EnvVarId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Provider environment variable ID.
+    FileId:
+      name: fileId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Direct upload file ID returned by `POST /api/deployments/direct`.
+    Domain:
+      name: domain
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
+      description: User-owned custom domain.
+      example: app.example.com
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 50
+      description: Maximum number of deployments to return.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

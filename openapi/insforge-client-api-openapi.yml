@@ -1,0 +1,3265 @@
+openapi: 3.0.3
+info:
+  title: Insforge AI Admin Client API
+  version: 1.0.0
+  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+tags:
+- name: Client
+paths:
+  /api/ai/chat/completion:
+    post:
+      summary: Generate chat completion (deprecated)
+      deprecated: true
+      description: Deprecated compatibility proxy. New integrations should call https://openrouter.ai/api/v1/chat/completions directly with the provisioned OpenRouter key.
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Chat completion response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatCompletionResponse'
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-sent events stream for streaming responses
+        '400':
+          description: Invalid request - missing model or messages
+        '401':
+          description: Unauthorized
+        '500':
+          description: Failed to get response
+  /api/ai/image/generation:
+    post:
+      summary: Generate images (deprecated)
+      deprecated: true
+      description: Deprecated compatibility proxy. New integrations should use OpenRouter image-capable models directly with the provisioned OpenRouter key.
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageGenerationOptions'
+      responses:
+        '200':
+          description: Images generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  model:
+                    type: string
+                    description: Model used for generation
+                  images:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OpenRouterImageMessage'
+                  text:
+                    type: string
+                    description: Text content from multimodal models
+                  count:
+                    type: integer
+                    description: Number of images generated
+                  metadata:
+                    type: object
+                    properties:
+                      model:
+                        type: string
+                      revisedPrompt:
+                        type: string
+                      usage:
+                        $ref: '#/components/schemas/TokenUsage'
+                  nextActions:
+                    type: string
+                    example: Images have been generated successfully. Use the returned URLs or base64 data to access them.
+        '400':
+          description: Invalid request - missing model or prompt
+        '401':
+          description: Unauthorized
+        '500':
+          description: Failed to generate image
+  /api/ai/embeddings:
+    post:
+      summary: Generate embeddings (deprecated)
+      deprecated: true
+      description: Deprecated compatibility proxy. New integrations should call https://openrouter.ai/api/v1/embeddings directly with the provisioned OpenRouter key.
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmbeddingsRequest'
+      responses:
+        '200':
+          description: Embeddings generated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmbeddingsResponse'
+        '400':
+          description: Invalid request - missing model or input
+        '401':
+          description: Unauthorized
+        '500':
+          description: Failed to generate embeddings
+  /api/auth/public-config:
+    get:
+      summary: Get public authentication configuration
+      description: Get all public authentication configuration including OAuth providers and email auth settings (public endpoint)
+      tags:
+      - Client
+      responses:
+        '200':
+          description: Public authentication configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  oAuthProviders:
+                    type: array
+                    items:
+                      type: string
+                      enum:
+                      - google
+                      - github
+                      - discord
+                      - linkedin
+                      - facebook
+                      - instagram
+                      - tiktok
+                      - apple
+                      - x
+                      - spotify
+                      - microsoft
+                  customOAuthProviders:
+                    type: array
+                    items:
+                      type: string
+                  requireEmailVerification:
+                    type: boolean
+                  passwordMinLength:
+                    type: integer
+                    minimum: 4
+                    maximum: 128
+                  requireNumber:
+                    type: boolean
+                  requireLowercase:
+                    type: boolean
+                  requireUppercase:
+                    type: boolean
+                  requireSpecialChar:
+                    type: boolean
+                  verifyEmailMethod:
+                    type: string
+                    enum:
+                    - code
+                    - link
+                    description: Method for email verification (code = 6-digit OTP, link = magic link)
+                  resetPasswordMethod:
+                    type: string
+                    enum:
+                    - code
+                    - link
+                    description: Method for password reset (code = 6-digit OTP + exchange flow, link = magic link)
+                  disableSignup:
+                    type: boolean
+                    description: When true, new user sign-ups are disabled. Existing users can still sign in.
+  /api/auth/profiles/current:
+    patch:
+      summary: Update current user's profile
+      description: Update the profile of the currently authenticated user
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - profile
+              properties:
+                profile:
+                  type: object
+                  additionalProperties: true
+                  description: Profile data (name, avatar_url, and any custom fields)
+                  properties:
+                    name:
+                      type: string
+                    avatar_url:
+                      type: string
+                      format: uri
+      responses:
+        '200':
+          description: Profile updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          description: Invalid request
+        '401':
+          description: Unauthorized - authentication required
+  /api/auth/profiles/{userId}:
+    get:
+      summary: Get user profile by ID
+      description: Get public profile information for a user by their ID (public endpoint)
+      tags:
+      - Client
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        description: User ID
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProfileResponse'
+        '400':
+          description: Invalid user ID format
+        '404':
+          description: User not found
+  /api/auth/users:
+    post:
+      summary: Register new user
+      description: Creates a new user account
+      tags:
+      - Client
+      parameters:
+      - name: client_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - web
+          - mobile
+          - desktop
+          - server
+          default: web
+        description: 'Client type determines how refresh tokens are returned:
+
+          - web: Refresh token stored in httpOnly cookie, csrfToken returned in response
+
+          - mobile/desktop/server: refreshToken returned directly in response body
+
+          '
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                password:
+                  type: string
+                  description: Password meeting configured requirements (check /api/auth/email/config for current requirements)
+                  example: securepassword123
+                name:
+                  type: string
+                  example: John Doe
+                redirectTo:
+                  type: string
+                  format: uri
+                  description: 'Used for link-based email verification. The email link always opens an InsForge backend endpoint first; after the token is verified, InsForge redirects the browser to this URL. This URL must be included in allowedRedirectUrls. Recommended: use your app''s sign-in page.'
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserResponse'
+                  accessToken:
+                    type: string
+                    nullable: true
+                    description: JWT authentication token (null if email verification required)
+                  csrfToken:
+                    type: string
+                    nullable: true
+                    description: CSRF token for use with refresh endpoint (web clients only, null if email verification required)
+                  refreshToken:
+                    type: string
+                    nullable: true
+                    description: Refresh token for mobile/desktop/server clients (null for web clients or if email verification required)
+                  requireEmailVerification:
+                    type: boolean
+                    description: Whether email verification is required before login
+        '400':
+          description: Invalid request
+        '403':
+          description: Signups disabled — project has disabled new user registration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: AUTH_SIGNUP_DISABLED
+                message: User signups are disabled for this project.
+                statusCode: 403
+        '409':
+          description: User already exists
+  /api/auth/sessions:
+    post:
+      summary: User login
+      description: Authenticates user and returns access token. For web clients, sets httpOnly refresh token cookie. For mobile/desktop/server clients, returns refreshToken in response body.
+      tags:
+      - Client
+      parameters:
+      - name: client_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - web
+          - mobile
+          - desktop
+          - server
+          default: web
+        description: 'Client type determines how refresh tokens are returned:
+
+          - web: Refresh token stored in httpOnly cookie, csrfToken returned in response
+
+          - mobile/desktop/server: refreshToken returned directly in response body
+
+          '
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserResponse'
+                  accessToken:
+                    type: string
+                  csrfToken:
+                    type: string
+                    nullable: true
+                    description: CSRF token for use with refresh endpoint (web clients only)
+                  refreshToken:
+                    type: string
+                    nullable: true
+                    description: Refresh token for mobile/desktop/server clients (null for web clients)
+        '401':
+          description: Invalid credentials
+        '403':
+          description: Email verification required
+  /api/auth/refresh:
+    post:
+      summary: Refresh access token
+      description: 'Refresh access token using refresh token.
+
+        - Web clients: Use httpOnly refresh token cookie with X-CSRF-Token header
+
+        - Mobile/Desktop/Server clients: Send refreshToken in request body
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: client_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - web
+          - mobile
+          - desktop
+          - server
+          default: web
+        description: 'Client type determines how refresh tokens are handled:
+
+          - web: Refresh token from httpOnly cookie, requires X-CSRF-Token header
+
+          - mobile/desktop/server: refreshToken provided in request body, new refreshToken returned in response
+
+          '
+      - name: X-CSRF-Token
+        in: header
+        schema:
+          type: string
+        description: CSRF token received from login/register response (required for web clients only)
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: Refresh token (required for mobile/desktop/server clients only)
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserResponse'
+                  accessToken:
+                    type: string
+                  csrfToken:
+                    type: string
+                    nullable: true
+                    description: New CSRF token for subsequent refresh requests (web clients only)
+                  refreshToken:
+                    type: string
+                    nullable: true
+                    description: New refresh token for mobile/desktop/server clients (must be persisted for next refresh)
+        '401':
+          description: No refresh token provided or user not found
+        '403':
+          description: Invalid CSRF token
+  /api/auth/logout:
+    post:
+      summary: Logout user
+      description: 'Logout the current client session.
+
+
+        Web clients use the httpOnly refresh token cookie. If a valid web refresh cookie is present,
+
+        the request must include the `X-CSRF-Token` header returned from login, registration, or refresh.
+
+        Missing, expired, invalid, or wrong-session-type refresh cookies are cleared idempotently and still
+
+        return success. Mobile, desktop, and server clients do not have server-side logout state and should
+
+        discard their stored refresh token after this request.
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: client_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - web
+          - mobile
+          - desktop
+          - server
+          default: web
+        description: Client type. Web clients clear the httpOnly refresh cookie; other clients should discard their local refresh token.
+      - name: X-CSRF-Token
+        in: header
+        schema:
+          type: string
+        description: CSRF token required for web clients when a valid refresh cookie is present
+      responses:
+        '200':
+          description: Logged out successfully. Also returned when the refresh cookie is missing, expired, invalid, or the wrong session type.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '403':
+          description: Invalid or missing CSRF token for a valid web refresh cookie
+  /api/auth/sessions/current:
+    get:
+      summary: Get current session
+      description: 'Returns the currently authenticated user''s basic info from the access token.
+
+        Project admin tokens return a projectAdmin session object instead of an auth.users row.
+
+
+        This endpoint does not refresh expired access tokens by itself.
+
+        For browser apps using the TypeScript SDK, call `auth.getCurrentUser()`
+
+        during startup. The SDK will use the httpOnly refresh cookie automatically
+
+        when it can refresh the session. Server, mobile, and other non-browser
+
+        clients should call `/api/auth/refresh` explicitly.
+
+        '
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      responses:
+        '200':
+          description: Current session info
+          content:
+            application/json:
+              schema:
+                oneOf:
+                - type: object
+                  required:
+                  - user
+                  additionalProperties: false
+                  properties:
+                    user:
+                      $ref: '#/components/schemas/UserResponse'
+                - type: object
+                  required:
+                  - projectAdmin
+                  additionalProperties: false
+                  properties:
+                    projectAdmin:
+                      $ref: '#/components/schemas/ProjectAdminResponse'
+        '401':
+          description: Unauthorized
+  /api/auth/email/send-verification:
+    post:
+      summary: Send email verification (code or link based on config)
+      description: Send email verification using the method configured in auth settings (verifyEmailMethod). When method is 'code', sends a 6-digit numeric code. When method is 'link', sends a browser verification link that goes through an InsForge backend endpoint first. Prevents user enumeration by returning success even if email doesn't exist.
+      tags:
+      - Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                redirectTo:
+                  type: string
+                  format: uri
+                  description: 'Used for link-based email verification. The email link always opens an InsForge backend endpoint first; after the token is verified, InsForge redirects the browser to this URL. This URL must be included in allowedRedirectUrls. Recommended: use your app''s sign-in page.'
+      responses:
+        '202':
+          description: Verification email sent (if email exists). Message varies based on configured method.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: If your email is registered, we have sent you a verification code/link. Please check your inbox.
+        '400':
+          description: Invalid request
+  /api/auth/email/verify-link:
+    get:
+      summary: Verify email from browser link click
+      description: 'Browser-oriented link verification flow.
+
+
+        This endpoint is intended for users clicking verification links in email.
+
+        It validates the token on the backend and redirects the browser to the
+
+        stored, validated `redirectTo` URL with the verification result.
+
+
+        Redirect query params:
+
+        - Success: `insforge_status=success&insforge_type=verify_email`
+
+        - Error: `insforge_status=error&insforge_type=verify_email&insforge_error=...`
+
+        - `insforge_status`: `success` or `error`
+
+        - `insforge_type`: always `verify_email`
+
+        - `insforge_error`: present only on error, human-readable message
+
+
+        Recommended handling: use your sign-in page as `redirectTo`. When the
+
+        redirect arrives with `insforge_status=success`, show a confirmation message
+
+        and ask the user to sign in with their email and password.
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+        description: 64-character email verification token from the email link
+      responses:
+        '302':
+          description: Browser redirected to the stored redirect URL
+        '400':
+          description: Invalid verification token or redirect target
+  /api/auth/email/verify:
+    post:
+      summary: Verify email with code
+      description: 'Verify email address with a 6-digit code.
+
+
+        Successfully verified users will receive a session token.
+
+
+        Browser email clicks should use `GET /api/auth/email/verify-link`.
+
+        `POST /api/auth/email/verify` is the JSON API for 6-digit code submission.
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: client_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - web
+          - mobile
+          - desktop
+          - server
+          default: web
+        description: 'Client type determines how refresh tokens are returned:
+
+          - web: Refresh token stored in httpOnly cookie, csrfToken returned in response
+
+          - mobile/desktop/server: refreshToken returned directly in response body
+
+          '
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - otp
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User email address
+                  example: user@example.com
+                otp:
+                  type: string
+                  pattern: ^\d{6}$
+                  description: 6-digit verification code
+                  example: '123456'
+      responses:
+        '200':
+          description: Email verified successfully, session created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserResponse'
+                  accessToken:
+                    type: string
+                    description: JWT authentication token
+                  csrfToken:
+                    type: string
+                    nullable: true
+                    description: CSRF token for use with refresh endpoint (web clients only)
+                  refreshToken:
+                    type: string
+                    nullable: true
+                    description: Refresh token for mobile/desktop/server clients (null for web clients)
+        '400':
+          description: Invalid verification code or token
+        '401':
+          description: Verification code/token expired or invalid
+  /api/auth/email/send-reset-password:
+    post:
+      summary: Send password reset (code or link based on config)
+      description: Send password reset email using the method configured in auth settings (resetPasswordMethod). When method is 'code', sends a 6-digit numeric code for two-step flow. When method is 'link', sends a browser reset link that goes through an InsForge backend endpoint first. Prevents user enumeration by returning success even if email doesn't exist.
+      tags:
+      - Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                redirectTo:
+                  type: string
+                  format: uri
+                  description: 'Used for link-based password reset. The email link always opens an InsForge backend endpoint first; InsForge then redirects the browser to this URL with the reset token in the query string. This URL must be included in allowedRedirectUrls. Recommended: use your app''s dedicated reset-password page.'
+      responses:
+        '202':
+          description: Password reset email sent (if email exists). Message varies based on configured method.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: If your email is registered, we have sent you a password reset code/link. Please check your inbox.
+        '400':
+          description: Invalid request
+  /api/auth/email/exchange-reset-password-token:
+    post:
+      summary: Exchange reset password code for reset token
+      description: 'Step 1 of two-step password reset flow (only used when resetPasswordMethod is ''code''):
+
+        1. Verify the 6-digit code sent to user''s email
+
+        2. Return a reset token that can be used to actually reset the password
+
+
+        This endpoint is not used when resetPasswordMethod is ''link'', because the browser reset-link flow uses the emailed link token directly.
+
+        '
+      tags:
+      - Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - email
+              - code
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: user@example.com
+                code:
+                  type: string
+                  pattern: ^\d{6}$
+                  description: 6-digit numeric code from email
+                  example: '123456'
+      responses:
+        '200':
+          description: Code verified successfully, reset token returned
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Reset token to be used in reset-password endpoint
+                  expiresAt:
+                    type: string
+                    format: date-time
+                    description: Token expiration timestamp
+        '400':
+          description: Invalid request
+        '401':
+          description: Invalid or expired code
+  /api/auth/email/reset-password-link:
+    get:
+      summary: Open password reset flow from browser link click
+      description: 'Browser-oriented password reset link flow.
+
+
+        This endpoint is intended for users clicking password reset links in email.
+
+        It validates the token on the backend and redirects the browser to the
+
+        stored, validated `redirectTo` URL with the reset token in the query string.
+
+
+        Redirect query params:
+
+        - Ready: `token=...&insforge_status=ready&insforge_type=reset_password`
+
+        - Error: `insforge_status=error&insforge_type=reset_password&insforge_error=...`
+
+        - `token`: present only when `insforge_status=ready`
+
+        - `insforge_status`: `ready` or `error`
+
+        - `insforge_type`: always `reset_password`
+
+        - `insforge_error`: present only on error, human-readable message
+
+
+        Your app should render the reset-password form only when `insforge_status=ready`
+
+        and `token` is present.
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: token
+        in: query
+        required: true
+        schema:
+          type: string
+        description: 64-character password reset token from the email link
+      responses:
+        '302':
+          description: Browser redirected to the stored redirect URL
+        '400':
+          description: Invalid reset token or redirect target
+  /api/auth/email/reset-password:
+    post:
+      summary: Reset password with token
+      description: 'Reset user password with a token. The token can be:
+
+        - Magic link token (64-character hex token from send-reset-password when method is ''link'')
+
+        - Reset token (from exchange-reset-password-token after code verification when method is ''code'')
+
+
+        Both token types use RESET_PASSWORD purpose and are verified the same way.
+
+
+        Flow summary:
+
+        - Code method: send-reset-password → exchange-reset-password-token → reset-password (with resetToken)
+
+        - Link method: send-reset-password → GET /api/auth/email/reset-password-link → reset-password
+
+        '
+      tags:
+      - Client
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - newPassword
+              - otp
+              properties:
+                newPassword:
+                  type: string
+                  description: New password meeting configured requirements
+                  example: newSecurePassword123
+                otp:
+                  type: string
+                  description: Reset token (either from magic link or from exchange-reset-password-token endpoint)
+                  example: a1b2c3d4...
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Password reset successfully
+        '400':
+          description: Invalid request or password requirements not met
+        '401':
+          description: Verification code/token expired or invalid
+  /api/auth/oauth/{provider}:
+    get:
+      summary: Initiate OAuth flow (PKCE)
+      description: 'Generate OAuth authorization URL for any supported provider using PKCE flow.
+
+
+        For mobile/desktop/server clients using PKCE:
+
+        1. Generate code_verifier (random string, 43-128 chars)
+
+        2. Generate code_challenge = Base64URL(SHA256(code_verifier))
+
+        3. Call this endpoint with code_challenge
+
+        4. After OAuth callback, use /api/auth/oauth/exchange with code_verifier
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - google
+          - github
+          - discord
+          - linkedin
+          - facebook
+          - instagram
+          - tiktok
+          - apple
+          - x
+          - spotify
+          - microsoft
+      - name: redirect_uri
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uri
+        description: URL to redirect after authentication (receives insforge_code parameter)
+      - name: code_challenge
+        in: query
+        required: false
+        schema:
+          type: string
+        description: 'PKCE code challenge for mobile/desktop/server clients.
+
+          Generate using: Base64URL(SHA256(code_verifier))
+
+          Required for secure token exchange in native apps or trusted server-side clients.
+
+          '
+      responses:
+        '200':
+          description: OAuth authorization URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authUrl:
+                    type: string
+                    format: uri
+                    description: URL to redirect user for OAuth provider login
+        '400':
+          description: Invalid request or provider not supported
+        '500':
+          description: OAuth not configured
+  /api/auth/oauth/exchange:
+    post:
+      summary: Exchange OAuth code for tokens (PKCE)
+      description: 'Exchange the insforge_code (received from OAuth callback) for access and refresh tokens.
+
+
+        This endpoint is used for PKCE flow in mobile/desktop/server clients:
+
+        1. After OAuth callback, your redirect_uri receives `insforge_code` parameter
+
+        2. Call this endpoint with the code and your original code_verifier
+
+        3. Receive access token and refresh token in response
+
+
+        The code_verifier must match the code_challenge sent during OAuth initiation.
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: client_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - web
+          - mobile
+          - desktop
+          - server
+          default: web
+        description: 'Client type determines how refresh tokens are returned:
+
+          - web: Refresh token stored in httpOnly cookie, csrfToken returned in response
+
+          - mobile/desktop/server: refreshToken returned directly in response body
+
+          '
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - code
+              - code_verifier
+              properties:
+                code:
+                  type: string
+                  description: The insforge_code received from OAuth callback redirect
+                  example: abc123...
+                code_verifier:
+                  type: string
+                  description: 'The original code_verifier used to generate code_challenge.
+
+                    Must be 43-128 characters, using [A-Za-z0-9-._~]
+
+                    '
+                  example: dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk
+      responses:
+        '200':
+          description: Tokens exchanged successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserResponse'
+                  accessToken:
+                    type: string
+                    description: JWT access token for API authentication
+                  refreshToken:
+                    type: string
+                    description: Refresh token for obtaining new access tokens
+        '400':
+          description: Invalid request - missing code or code_verifier
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Invalid or expired code, or code_verifier mismatch
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/auth/oauth/shared/callback/{state}:
+    get:
+      summary: Shared OAuth callback handler
+      description: Handles OAuth callbacks from InsForge Cloud shared OAuth
+      tags:
+      - Client
+      parameters:
+      - name: state
+        in: path
+        required: true
+        schema:
+          type: string
+        description: JWT state parameter
+      - name: success
+        in: query
+        schema:
+          type: string
+        description: Success flag
+      - name: error
+        in: query
+        schema:
+          type: string
+        description: Error message
+      - name: payload
+        in: query
+        schema:
+          type: string
+        description: Base64 encoded user payload
+      responses:
+        '302':
+          description: Redirect to application with access token or error
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+  /api/auth/oauth/{provider}/callback:
+    get:
+      summary: Provider-specific OAuth callback (GET)
+      description: 'OAuth callback endpoint for provider-specific flows (most providers use GET).
+
+
+        Response varies based on the original OAuth initiation:
+
+        - With code_challenge (PKCE): Redirects with `insforge_code` for exchange endpoint
+
+        - Without code_challenge (web): Redirects with `access_token` and sets httpOnly cookie
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - google
+          - github
+          - discord
+          - linkedin
+          - facebook
+          - instagram
+          - tiktok
+          - apple
+          - x
+          - spotify
+          - microsoft
+      - name: code
+        in: query
+        schema:
+          type: string
+        description: Authorization code from OAuth provider
+      - name: state
+        in: query
+        required: true
+        schema:
+          type: string
+        description: JWT state with redirect URI and optional code_challenge
+      - name: token
+        in: query
+        schema:
+          type: string
+        description: Direct ID token (for some providers)
+      responses:
+        '302':
+          description: 'Redirect to application.
+
+            - PKCE flow: redirect_uri?insforge_code={code}&user_id={id}&email={email}&name={name}
+
+            - Web flow: redirect_uri?access_token={token}&user_id={id}&email={email}&name={name}&csrf_token={csrf}
+
+            '
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+                description: Redirect URL with authentication parameters
+    post:
+      summary: Provider-specific OAuth callback (POST)
+      description: 'OAuth callback endpoint for providers that use POST (e.g., Apple with form_post response mode).
+
+
+        Response varies based on the original OAuth initiation:
+
+        - With code_challenge (PKCE): Redirects with `insforge_code` for exchange endpoint
+
+        - Without code_challenge (web): Redirects with `access_token` and sets httpOnly cookie
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: provider
+        in: path
+        required: true
+        schema:
+          type: string
+          enum:
+          - google
+          - github
+          - discord
+          - linkedin
+          - facebook
+          - instagram
+          - tiktok
+          - apple
+          - x
+          - spotify
+          - microsoft
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              required:
+              - state
+              properties:
+                code:
+                  type: string
+                  description: Authorization code from OAuth provider
+                state:
+                  type: string
+                  description: JWT state with redirect URI and optional code_challenge
+                id_token:
+                  type: string
+                  description: ID token (for Apple Sign In)
+      responses:
+        '302':
+          description: 'Redirect to application.
+
+            - PKCE flow: redirect_uri?insforge_code={code}&user_id={id}&email={email}&name={name}
+
+            - Web flow: redirect_uri?access_token={token}&user_id={id}&email={email}&name={name}&csrf_token={csrf}
+
+            '
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+                description: Redirect URL with authentication parameters
+  /api/auth/oauth/custom/{key}:
+    get:
+      summary: Initiate custom OAuth flow (PKCE)
+      description: Generate OAuth authorization URL for a configured custom OAuth provider using PKCE flow
+      tags:
+      - Client
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: redirect_uri
+        in: query
+        required: true
+        schema:
+          type: string
+          format: uri
+        description: URL to redirect after authentication (receives insforge_code parameter)
+      - name: code_challenge
+        in: query
+        required: false
+        schema:
+          type: string
+        description: PKCE code challenge for mobile/desktop/server clients
+      responses:
+        '200':
+          description: OAuth authorization URL
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authUrl:
+                    type: string
+                    format: uri
+        '400':
+          description: Invalid request
+        '404':
+          description: Custom OAuth provider not found
+  /api/auth/oauth/custom/{key}/callback:
+    get:
+      summary: Custom OAuth callback (GET)
+      description: OAuth callback endpoint for custom OAuth providers
+      tags:
+      - Client
+      parameters:
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: code
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Authorization code from the custom OAuth provider
+      - name: state
+        in: query
+        required: true
+        schema:
+          type: string
+        description: Signed OAuth state payload
+      responses:
+        '302':
+          description: Redirect to application after custom OAuth completion
+          headers:
+            Location:
+              schema:
+                type: string
+                format: uri
+                description: Redirect URL with authentication parameters
+  /api/auth/id-token:
+    post:
+      summary: Sign in with ID token (Google One Tap, native SDKs)
+      description: 'Authenticate a user using an ID token obtained from a native SDK (e.g., Google One Tap).
+
+        Currently only the `google` provider is supported.
+
+        '
+      tags:
+      - Client
+      parameters:
+      - name: client_type
+        in: query
+        schema:
+          type: string
+          enum:
+          - web
+          - mobile
+          - desktop
+          - server
+          default: web
+        description: 'Client type determines how refresh tokens are returned:
+
+          - web: Refresh token stored in httpOnly cookie, csrfToken returned in response
+
+          - mobile/desktop/server: refreshToken returned directly in response body
+
+          '
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - provider
+              - token
+              properties:
+                provider:
+                  type: string
+                  enum:
+                  - google
+                  description: Identity provider that issued the token
+                token:
+                  type: string
+                  description: Raw ID token from the provider SDK
+      responses:
+        '200':
+          description: Sign-in successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/UserResponse'
+                  accessToken:
+                    type: string
+                  csrfToken:
+                    type: string
+                    nullable: true
+                    description: CSRF token for use with refresh endpoint (web clients only)
+                  refreshToken:
+                    type: string
+                    nullable: true
+                    description: Refresh token for mobile/desktop/server clients (null for web clients)
+        '400':
+          description: Invalid request - unsupported provider or missing token
+        '401':
+          description: Invalid or expired ID token
+  /api/email/send-raw:
+    post:
+      summary: Send raw HTML email
+      description: Send a custom HTML email to one or more recipients. Requires user authentication.
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendRawEmailRequest'
+      responses:
+        '200':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SendEmailResponse'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '401':
+          description: Unauthorized - requires authentication
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '403':
+          description: Forbidden - authentication required
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+        '500':
+          description: Email provider error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_2'
+  /functions/{slug}:
+    get:
+      summary: Execute function (GET)
+      description: Execute a function using GET method. Proxied to Deno runtime.
+      tags:
+      - Client
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        description: Function slug identifier
+        example: hello-world
+      responses:
+        '200':
+          description: Function executed successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                message: Hello, World!
+        '404':
+          description: Function not found or not active
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              example:
+                error: Function not found or not active
+        '502':
+          description: Failed to proxy to Deno runtime
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              example:
+                error: Failed to connect to Deno runtime
+    post:
+      summary: Execute function (POST)
+      description: Execute a function using POST method with JSON body. Proxied to Deno runtime.
+      tags:
+      - Client
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        description: Function slug identifier
+        example: hello-world
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+            example:
+              name: John
+              age: 30
+      responses:
+        '200':
+          description: Function executed successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties: true
+              example:
+                message: Hello, John!
+        '404':
+          description: Function not found or not active
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              example:
+                error: Function not found or not active
+        '502':
+          description: Failed to proxy to Deno runtime
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+              example:
+                error: Failed to connect to Deno runtime
+    put:
+      summary: Execute function (PUT)
+      description: Execute a function using PUT method. Proxied to Deno runtime.
+      tags:
+      - Client
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        description: Function slug identifier
+        example: hello-world
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Function executed successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties: true
+        '502':
+          description: Failed to proxy to Deno runtime
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+    patch:
+      summary: Execute function (PATCH)
+      description: Execute a function using PATCH method. Proxied to Deno runtime.
+      tags:
+      - Client
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        description: Function slug identifier
+        example: hello-world
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Function executed successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties: true
+        '502':
+          description: Failed to proxy to Deno runtime
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+    delete:
+      summary: Execute function (DELETE)
+      description: Execute a function using DELETE method. Proxied to Deno runtime.
+      tags:
+      - Client
+      parameters:
+      - name: slug
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        description: Function slug identifier
+        example: hello-world
+      responses:
+        '200':
+          description: Function executed successfully
+          content:
+            '*/*':
+              schema:
+                type: object
+                additionalProperties: true
+        '502':
+          description: Failed to proxy to Deno runtime
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_3'
+  /api/health:
+    get:
+      summary: Health check
+      description: Check if the API is running and healthy
+      tags:
+      - Client
+      responses:
+        '200':
+          description: API is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  service:
+                    type: string
+                    example: Insforge Backend
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: '2025-01-21T03:45:22.194Z'
+  /api/database/records/{tableName}:
+    get:
+      summary: Query Records
+      description: Query records from a table with filtering, sorting, and pagination
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the table to query
+        example: posts
+      - name: limit
+        in: query
+        schema:
+          type: integer
+          default: 100
+          minimum: 1
+          maximum: 1000
+        description: Maximum number of records to return
+      - name: offset
+        in: query
+        schema:
+          type: integer
+          default: 0
+          minimum: 0
+        description: Number of records to skip for pagination
+      - name: order
+        in: query
+        schema:
+          type: string
+        description: Sort order (e.g., "createdAt.desc", "name.asc")
+        example: createdAt.desc
+      - name: select
+        in: query
+        schema:
+          type: string
+        description: Comma-separated list of columns to return
+        example: id,title,content
+      - name: field
+        in: query
+        schema:
+          type: string
+        description: Filter by field value (e.g., "?status=eq.active", "?age=gt.18")
+        example: status=eq.active
+      responses:
+        '200':
+          description: List of records
+          headers:
+            X-Total-Count:
+              schema:
+                type: integer
+              description: Total number of records matching the query
+            Content-Range:
+              schema:
+                type: string
+              description: Range of records returned (e.g., "0-99/1234")
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+              example:
+              - id: 248373e1-0aea-45ce-8844-5ef259203749
+                title: Getting Started with InsForge
+                content: This is a guide to help you get started...
+                createdAt: '2025-07-18T05:37:24.338Z'
+                updatedAt: '2025-07-18T05:37:24.338Z'
+              - id: 348373e1-0aea-45ce-8844-5ef259203750
+                title: Advanced Database Queries
+                content: Learn how to write complex queries...
+                createdAt: '2025-07-19T08:15:10.123Z'
+                updatedAt: '2025-07-19T08:15:10.123Z'
+        '404':
+          description: Table not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_4'
+              example:
+                error: TABLE_NOT_FOUND
+                message: Table 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Check table name and try again
+        '400':
+          description: Invalid query parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_4'
+              example:
+                error: INVALID_QUERY
+                message: Invalid filter syntax
+                statusCode: 400
+                nextActions: Check PostgREST filter documentation
+    post:
+      summary: Create Records
+      description: Create one or more records. Request body MUST be an array.
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the table
+        example: posts
+      - name: Prefer
+        in: header
+        schema:
+          type: string
+          enum:
+          - return=representation
+        description: Include to return created records in response (otherwise returns empty array)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                additionalProperties: true
+              minItems: 1
+            example:
+            - title: My First Post
+              content: Hello world! This is my first post.
+              published: true
+      responses:
+        '201':
+          description: Records created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+              examples:
+                without_prefer:
+                  summary: Response without Prefer header
+                  value: []
+                with_prefer:
+                  summary: 'Response with Prefer: return=representation'
+                  value:
+                  - id: 248373e1-0aea-45ce-8844-5ef259203749
+                    title: My First Post
+                    content: Hello world! This is my first post.
+                    published: true
+                    createdAt: '2025-07-18T05:37:24.338Z'
+                    updatedAt: '2025-07-18T05:37:24.338Z'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_4'
+              example:
+                error: VALIDATION_ERROR
+                message: 'Invalid field type: expected boolean for ''published'''
+                statusCode: 400
+                nextActions: Ensure field types match the table schema
+        '404':
+          description: Table not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_4'
+              example:
+                error: TABLE_NOT_FOUND
+                message: Table 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Create the table first
+    patch:
+      summary: Update Records
+      description: Update records matching query filters
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the table
+        example: posts
+      - name: id
+        in: query
+        schema:
+          type: string
+        description: Filter records by ID (e.g., "?id=eq.123e4567-e89b-12d3-a456-426614174000")
+        example: eq.123e4567-e89b-12d3-a456-426614174000
+      - name: Prefer
+        in: header
+        schema:
+          type: string
+          enum:
+          - return=representation
+        description: Include to return updated records in response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+            example:
+              title: Updated Post Title
+              content: This content has been updated.
+      responses:
+        '200':
+          description: Records updated
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+              examples:
+                without_prefer:
+                  summary: Response without Prefer header
+                  value: []
+                with_prefer:
+                  summary: 'Response with Prefer: return=representation'
+                  value:
+                  - id: 123e4567-e89b-12d3-a456-426614174000
+                    title: Updated Post Title
+                    content: This content has been updated.
+                    createdAt: '2025-01-01T00:00:00Z'
+                    updatedAt: '2025-01-21T11:00:00Z'
+        '404':
+          description: No records found to update
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+              example: []
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_4'
+              example:
+                error: VALIDATION_ERROR
+                message: Invalid field type
+                statusCode: 400
+                nextActions: Check field types match table schema
+    delete:
+      summary: Delete Records
+      description: Delete records matching query filters
+      tags:
+      - Client
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: tableName
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the table
+        example: posts
+      - name: id
+        in: query
+        schema:
+          type: string
+        description: Filter records by ID (e.g., "?id=eq.123e4567-e89b-12d3-a456-426614174000")
+        example: eq.123e4567-e89b-12d3-a456-426614174000
+      - name: Prefer
+        in: header
+        schema:
+          type: string
+          enum:
+          - return=representation
+        description: Include to return deleted records in response
+      responses:
+        '204':
+          description: Records deleted (without Prefer header)
+        '200':
+          description: Records deleted (with Prefer header)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  additionalProperties: true
+              examples:
+                records_deleted:
+                  summary: Records were deleted
+                  value:
+                  - id: 123e4567-e89b-12d3-a456-426614174000
+                    title: Deleted Post
+                    createdAt: '2025-01-01T00:00:00Z'
+                    updatedAt: '2025-01-21T11:00:00Z'
+                no_records:
+                  summary: No records found to delete
+                  value: []
+  /api/storage/buckets/{bucketName}/objects:
+    post:
+      summary: Upload Object with Auto-Generated Key
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to upload
+              required:
+              - file
+      responses:
+        '201':
+          description: Object uploaded successfully with auto-generated key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredFile'
+              example:
+                bucket: avatars
+                key: image-1737546841234-a3f2b1.jpg
+                size: 102400
+                mimeType: image/jpeg
+                uploadedAt: '2024-01-21T10:30:00Z'
+                url: /api/storage/buckets/avatars/objects/image-1737546841234-a3f2b1.jpg
+        '400':
+          description: Invalid bucket name or file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: INVALID_FILE
+                message: No file provided in the request
+                statusCode: 400
+                nextActions: Include a file in the multipart form data
+        '404':
+          description: Bucket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: BUCKET_NOT_FOUND
+                message: Bucket 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Create the bucket first
+    delete:
+      summary: Delete Multiple Objects
+      description: Deletes up to 1000 objects from a bucket for the authenticated caller. Object row deletion is authorized through storage RLS, and the response reports per-key outcomes for rows deleted from the database, keys not visible or missing, and provider-level failures.
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - keys
+              properties:
+                keys:
+                  type: array
+                  minItems: 1
+                  maxItems: 1000
+                  items:
+                    type: string
+                    minLength: 1
+            example:
+              keys:
+              - users/user123.jpg
+              - users/user456.png
+      responses:
+        '200':
+          description: Batch delete result
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - results
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                      - key
+                      - status
+                      properties:
+                        key:
+                          type: string
+                        status:
+                          type: string
+                          enum:
+                          - deleted
+                          - notFound
+                          - failed
+                        message:
+                          type: string
+                          description: Present when status is failed.
+              example:
+                results:
+                - key: users/user123.jpg
+                  status: deleted
+                - key: users/missing.png
+                  status: notFound
+                - key: users/locked.png
+                  status: failed
+                  message: Failed to delete object
+        '400':
+          description: Invalid bucket name or object keys
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+        '403':
+          description: Permission denied
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+  /api/storage/buckets/{bucketName}/upload-strategy:
+    post:
+      summary: Get Upload Strategy (Direct or Presigned URL)
+      description: Returns upload strategy based on storage backend (S3 returns presigned URLs, local returns direct upload endpoints)
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - filename
+              properties:
+                filename:
+                  type: string
+                  description: Original filename for generating unique key
+                  example: profile-photo.jpg
+                contentType:
+                  type: string
+                  description: MIME type of the file
+                  example: image/jpeg
+                size:
+                  type: integer
+                  description: File size in bytes
+                  example: 102400
+      responses:
+        '200':
+          description: Upload strategy details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadStrategy'
+              examples:
+                s3:
+                  summary: S3 Backend Response
+                  value:
+                    method: presigned
+                    uploadUrl: https://s3-bucket.amazonaws.com/
+                    fields:
+                      bucket: my-s3-bucket
+                      key: app-key/avatars/profile-photo-1234567890-abc123.jpg
+                      X-Amz-Algorithm: AWS4-HMAC-SHA256
+                      X-Amz-Credential: AKIA.../20250905/us-east-2/s3/aws4_request
+                      X-Amz-Date: 20250905T000000Z
+                      Policy: eyJ...
+                      X-Amz-Signature: abc123...
+                    key: profile-photo-1234567890-abc123.jpg
+                    confirmRequired: true
+                    confirmUrl: /api/storage/buckets/avatars/objects/profile-photo-1234567890-abc123.jpg/confirm-upload
+                    expiresAt: '2025-09-05T01:00:00Z'
+                local:
+                  summary: Local Storage Response
+                  value:
+                    method: direct
+                    uploadUrl: /api/storage/buckets/avatars/objects/profile-photo-1234567890-abc123.jpg
+                    key: profile-photo-1234567890-abc123.jpg
+                    confirmRequired: false
+        '404':
+          description: Bucket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+  /api/storage/buckets/{bucketName}/objects/{objectKey}:
+    put:
+      summary: Upload Object
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      - name: objectKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: user123.jpg
+        description: Object key (can include forward slashes for pseudo-folders)
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File to upload
+              required:
+              - file
+      responses:
+        '201':
+          description: Object uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredFile'
+              example:
+                bucket: avatars
+                key: user123.jpg
+                size: 102400
+                mimeType: image/jpeg
+                uploadedAt: '2024-01-21T10:30:00Z'
+                url: /api/storage/buckets/avatars/objects/user123.jpg
+        '400':
+          description: Invalid bucket name, key, or file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: INVALID_FILE
+                message: No file provided in the request
+                statusCode: 400
+                nextActions: Include a file in the multipart form data
+        '404':
+          description: Bucket not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: BUCKET_NOT_FOUND
+                message: Bucket 'nonexistent' does not exist
+                statusCode: 404
+                nextActions: Create the bucket first
+    get:
+      summary: Download Object
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        example: user123.jpg
+      responses:
+        '200':
+          description: File content
+          content:
+            '*/*':
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              description: MIME type of the file
+            Content-Length:
+              schema:
+                type: integer
+              description: Size of the file in bytes
+        '404':
+          description: Object not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: OBJECT_NOT_FOUND
+                message: Object 'user123.jpg' not found in bucket 'avatars'
+                statusCode: 404
+                nextActions: Check the bucket and key combination
+    delete:
+      summary: Delete Object
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        example: user123.jpg
+      responses:
+        '200':
+          description: Object deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Object deleted successfully
+        '404':
+          description: Object not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: OBJECT_NOT_FOUND
+                message: Object 'user123.jpg' not found in bucket 'avatars'
+                statusCode: 404
+                nextActions: Check the bucket and key combination
+  /api/storage/buckets/{bucketName}/objects/{objectKey}/confirm-upload:
+    post:
+      summary: Confirm Presigned Upload
+      description: Confirms that a file was successfully uploaded to S3 using presigned URL
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      - name: objectKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: profile-photo-1234567890-abc123.jpg
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+              - size
+              properties:
+                size:
+                  type: integer
+                  description: File size in bytes
+                  example: 102400
+                contentType:
+                  type: string
+                  description: MIME type of the file
+                  example: image/jpeg
+                etag:
+                  type: string
+                  description: S3 ETag of the uploaded object (optional)
+                  example: 9bb58f26192e4ba00f01e2e7b136bbd8
+      responses:
+        '201':
+          description: Upload confirmed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StoredFile'
+        '404':
+          description: Upload not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: UPLOAD_NOT_FOUND
+                message: Upload not found for key 'profile-photo.jpg' in bucket 'avatars'
+                statusCode: 404
+        '409':
+          description: Already confirmed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+              example:
+                error: ALREADY_CONFIRMED
+                message: File 'profile-photo.jpg' already confirmed in bucket 'avatars'
+                statusCode: 409
+  /api/storage/buckets/{bucketName}/download-strategy/objects/{objectKey}:
+    get:
+      summary: Get Download Strategy (Direct or Presigned URL)
+      description: 'Returns download strategy based on storage backend and bucket visibility.
+
+        - S3 with public bucket: Direct URLs (no presigning, better performance)
+
+        - S3 with private bucket: Presigned URLs with expiration
+
+        - Local storage: Always direct endpoints
+
+
+        Expiry (when presigned) is auto-calculated server-side from bucket
+
+        visibility; no request body is accepted.
+
+
+        Object keys may contain `/` (pseudo-folders); the path is matched
+
+        with a wildcard, so callers should NOT percent-encode `/` inside
+
+        `objectKey`.
+
+        '
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      - name: objectKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: profile-photo.jpg
+      responses:
+        '200':
+          description: Download strategy details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DownloadStrategy'
+              examples:
+                s3-public:
+                  summary: S3 Public Bucket Response
+                  value:
+                    method: direct
+                    url: https://s3-bucket.s3.us-east-2.amazonaws.com/app-key/public-assets/logo.png
+                s3-private:
+                  summary: S3 Private Bucket Response
+                  value:
+                    method: presigned
+                    url: https://s3-bucket.s3.us-east-2.amazonaws.com/app-key/avatars/profile.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=...
+                    expiresAt: '2025-09-05T01:00:00Z'
+                local:
+                  summary: Local Storage Response
+                  value:
+                    method: direct
+                    url: /api/storage/buckets/avatars/objects/profile-photo.jpg
+        '404':
+          description: Object not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+  /api/storage/buckets/{bucketName}/objects/{objectKey}/download-strategy:
+    post:
+      deprecated: true
+      summary: Get Download Strategy (Deprecated — use GET on the canonical path)
+      description: 'Deprecated alias of
+
+        `GET /api/storage/buckets/{bucketName}/download-strategy/objects/{objectKey}`.
+
+        Retained at the original path/method for backward compatibility with
+
+        SDK releases that already shipped against this POST endpoint. Any
+
+        request body is ignored.
+
+        '
+      tags:
+      - Client
+      security:
+      - apiKey: []
+      parameters:
+      - name: bucketName
+        in: path
+        required: true
+        schema:
+          type: string
+          pattern: ^[a-zA-Z0-9_-]+$
+        example: avatars
+      - name: objectKey
+        in: path
+        required: true
+        schema:
+          type: string
+        example: profile-photo.jpg
+      responses:
+        '200':
+          description: Download strategy details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DownloadStrategy'
+        '404':
+          description: Object not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse_5'
+components:
+  schemas:
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        profile:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: User profile data (name, avatar_url, and custom fields)
+          properties:
+            name:
+              type: string
+            avatar_url:
+              type: string
+              format: uri
+        metadata:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: System metadata (device ID, login IP, etc.)
+        emailVerified:
+          type: boolean
+        providers:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ChatRequest:
+      type: object
+      required:
+      - model
+      - messages
+      properties:
+        model:
+          type: string
+          description: OpenRouter model identifier
+          example: openai/gpt-4
+        messages:
+          type: array
+          description: Array of messages for conversation (supports text, images, audio, and files/PDFs)
+          items:
+            $ref: '#/components/schemas/ChatMessage'
+        stream:
+          type: boolean
+          default: false
+          description: Enable streaming response via Server-Sent Events
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+          description: Controls randomness in generation
+        maxTokens:
+          type: integer
+          description: Maximum number of tokens to generate
+        topP:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Nucleus sampling parameter
+        webSearch:
+          $ref: '#/components/schemas/WebSearchPlugin'
+        fileParser:
+          $ref: '#/components/schemas/FileParserPlugin'
+        thinking:
+          type: boolean
+          description: Enable extended reasoning capabilities (appends :thinking to model ID if not already present). Not every model supports this, only works with Anthropic models with the :thinking suffix.
+        tools:
+          type: array
+          description: Tool definitions for function calling
+          items:
+            $ref: '#/components/schemas/Tool'
+        toolChoice:
+          description: 'Controls tool usage: auto, none, required, or a specific function'
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            - none
+            - required
+          - type: object
+            required:
+            - type
+            - function
+            properties:
+              type:
+                type: string
+                enum:
+                - function
+              function:
+                type: object
+                required:
+                - name
+                properties:
+                  name:
+                    type: string
+        parallelToolCalls:
+          type: boolean
+          description: Allow the model to call multiple tools in parallel
+    FunctionDefinition:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the function to call
+        description:
+          type: string
+          description: A description of what the function does
+        parameters:
+          type: object
+          description: JSON Schema describing the function parameters
+    EmbeddingObject:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - embedding
+          description: Object type, always "embedding"
+        embedding:
+          type: array
+          items:
+            type: number
+          description: The embedding vector (array of floats)
+        index:
+          type: integer
+          description: Index of this embedding in the input array
+    ImageGenerationOptions:
+      type: object
+      required:
+      - model
+      - prompt
+      properties:
+        model:
+          type: string
+          description: OpenRouter model identifier for image generation
+          example: openai/dall-e-3
+        prompt:
+          type: string
+          description: Text prompt describing the desired image
+          example: A serene landscape with mountains and a lake at sunset
+    WebSearchPlugin:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Enable web search integration
+        engine:
+          type: string
+          enum:
+          - native
+          - exa
+          description: 'Search engine selection:
+
+            - native: Use provider''s built-in web search (OpenAI, Anthropic, Perplexity, xAI)
+
+            - exa: Use Exa''s search API
+
+            - undefined: Auto-select (native if available, otherwise Exa)
+
+            '
+        maxResults:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 5
+          description: Maximum number of search results to include
+        searchPrompt:
+          type: string
+          description: Custom prompt for attaching search results to the message
+    EmbeddingsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Object type, always "list"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmbeddingObject'
+        metadata:
+          type: object
+          properties:
+            model:
+              type: string
+              description: The model used for embedding
+              example: text-embedding-ada-002
+            usage:
+              $ref: '#/components/schemas/TokenUsage'
+    ProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User ID
+        profile:
+          type: object
+          nullable: true
+          additionalProperties: true
+          description: User profile data (can contain custom fields)
+          properties:
+            name:
+              type: string
+            avatar_url:
+              type: string
+              format: uri
+    ChatCompletionResponse:
+      type: object
+      properties:
+        text:
+          type: string
+          description: AI model response content
+        tool_calls:
+          type: array
+          description: Tool calls requested by the model (present when the model invokes tools)
+          items:
+            $ref: '#/components/schemas/ToolCall'
+        annotations:
+          type: array
+          description: URL citations from web search results (present when webSearch is enabled)
+          items:
+            $ref: '#/components/schemas/UrlCitationAnnotation'
+        metadata:
+          type: object
+          properties:
+            model:
+              type: string
+            usage:
+              $ref: '#/components/schemas/TokenUsage'
+    Tool:
+      type: object
+      required:
+      - type
+      - function
+      properties:
+        type:
+          type: string
+          enum:
+          - function
+        function:
+          $ref: '#/components/schemas/FunctionDefinition'
+    SendRawEmailRequest:
+      type: object
+      required:
+      - to
+      - subject
+      - html
+      properties:
+        to:
+          oneOf:
+          - type: string
+            format: email
+            description: Single recipient email address
+            example: user@example.com
+          - type: array
+            items:
+              type: string
+              format: email
+            minItems: 1
+            maxItems: 50
+            description: Multiple recipient email addresses (max 50)
+            example:
+            - user1@example.com
+            - user2@example.com
+          description: Recipient email address(es) - maximum 50 recipients
+        subject:
+          type: string
+          minLength: 1
+          maxLength: 500
+          description: Email subject line
+          example: Welcome to our platform
+        html:
+          type: string
+          minLength: 1
+          description: HTML content of the email body
+          example: <h1>Welcome!</h1><p>Thank you for joining us.</p>
+        cc:
+          oneOf:
+          - type: string
+            format: email
+            description: Single CC recipient email address
+          - type: array
+            items:
+              type: string
+              format: email
+            minItems: 1
+            maxItems: 50
+            description: Multiple CC recipient email addresses (max 50)
+          description: Carbon copy recipient(s) - maximum 50 recipients
+        bcc:
+          oneOf:
+          - type: string
+            format: email
+            description: Single BCC recipient email address
+          - type: array
+            items:
+              type: string
+              format: email
+            minItems: 1
+            maxItems: 50
+            description: Multiple BCC recipient email addresses (max 50)
+          description: Blind carbon copy recipient(s) - maximum 50 recipients
+        from:
+          type: string
+          maxLength: 100
+          description: Custom sender name (uses default if not provided)
+          example: My App
+        replyTo:
+          type: string
+          format: email
+          description: Reply-to email address
+          example: support@example.com
+    SendEmailResponse:
+      type: object
+      description: Empty object on success - extend with optional fields later if needed
+    DownloadStrategy:
+      type: object
+      required:
+      - method
+      - url
+      properties:
+        method:
+          type: string
+          enum:
+          - presigned
+          - direct
+          description: 'Download method:
+
+            - `direct`: Direct URL access (S3 public buckets or local storage)
+
+            - `presigned`: Secure URL with signature and expiration (S3 private buckets)
+
+            '
+          example: direct
+        url:
+          type: string
+          description: URL to download the file from
+          example: https://s3-bucket.s3.us-east-2.amazonaws.com/app-key/public-assets/logo.png
+        expiresAt:
+          type: string
+          format: date-time
+          description: Expiration time for presigned URLs (only present when method is 'presigned')
+          example: '2025-09-05T01:00:00Z'
+        headers:
+          type: object
+          description: Optional headers to include in the download request
+          additionalProperties: true
+    TokenUsage:
+      type: object
+      properties:
+        promptTokens:
+          type: integer
+        completionTokens:
+          type: integer
+        totalTokens:
+          type: integer
+    ToolCall:
+      type: object
+      required:
+      - id
+      - type
+      - function
+      properties:
+        id:
+          type: string
+          description: Unique identifier for this tool call
+        type:
+          type: string
+          enum:
+          - function
+        function:
+          type: object
+          required:
+          - name
+          - arguments
+          properties:
+            name:
+              type: string
+              description: The name of the function called
+            arguments:
+              type: string
+              description: JSON string of the function arguments
+    ChatMessage:
+      type: object
+      required:
+      - role
+      properties:
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          - system
+          - tool
+          description: Role of the message sender
+        content:
+          type: string
+          nullable: true
+          description: Message content (nullable for assistant messages with tool_calls)
+        tool_calls:
+          type: array
+          description: Tool calls made by the assistant (assistant messages only)
+          items:
+            $ref: '#/components/schemas/ToolCall'
+        tool_call_id:
+          type: string
+          description: ID of the tool call being responded to (tool messages only)
+    UrlCitationAnnotation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - url_citation
+        urlCitation:
+          type: object
+          properties:
+            url:
+              type: string
+              description: URL of the cited source
+            title:
+              type: string
+              description: Title of the cited page
+            content:
+              type: string
+              description: Relevant content snippet from the source
+            startIndex:
+              type: integer
+              description: Start character index in response text where citation applies
+            endIndex:
+              type: integer
+              description: End character index in response text where citation applies
+    UploadStrategy:
+      type: object
+      required:
+      - method
+      - uploadUrl
+      - key
+      - confirmRequired
+      properties:
+        method:
+          type: string
+          enum:
+          - presigned
+          - direct
+          description: Upload method - presigned for S3, direct for local storage
+          example: presigned
+        uploadUrl:
+          type: string
+          description: URL to upload the file to
+          example: https://s3-bucket.amazonaws.com/
+        fields:
+          type: object
+          description: Form fields for presigned POST (S3 only)
+          additionalProperties: true
+          example:
+            bucket: my-s3-bucket
+            key: app-key/avatars/profile.jpg
+            X-Amz-Algorithm: AWS4-HMAC-SHA256
+        key:
+          type: string
+          description: Generated unique key for the file
+          example: profile-photo-1234567890-abc123.jpg
+        confirmRequired:
+          type: boolean
+          description: Whether upload confirmation is required
+          example: true
+        confirmUrl:
+          type: string
+          description: URL to confirm the upload (if confirmRequired is true)
+          example: /api/storage/buckets/avatars/objects/profile.jpg/confirm-upload
+        expiresAt:
+          type: string
+          format: date-time
+          description: Expiration time for presigned URL (S3 only)
+          example: '2025-09-05T01:00:00Z'
+    ProjectAdminResponse:
+      type: object
+      required:
+      - subject
+      - username
+      properties:
+        subject:
+          type: string
+          example: local:admin
+        username:
+          type: string
+          example: admin
+    ErrorResponse_3:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: object
+          - type: object
+          description: Additional error details
+        message:
+          type: string
+          description: Detailed error message
+        pattern:
+          type: string
+          description: Pattern that caused validation failure (for dangerous code detection)
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Email is already in use
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Please use a different email address
+    ErrorResponse_4:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid input data
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check the request body format
+    EmbeddingsRequest:
+      type: object
+      required:
+      - model
+      - input
+      properties:
+        model:
+          type: string
+          description: Embedding model identifier
+          example: google/gemini-embedding-001
+        input:
+          oneOf:
+          - type: string
+            description: Single text input to embed
+          - type: array
+            items:
+              type: string
+            description: Array of text inputs to embed
+          example: Hello world
+        encoding_format:
+          type: string
+          enum:
+          - float
+          - base64
+          default: float
+          description: The format to return the embeddings in. Can be either float or base64.
+        dimensions:
+          type: integer
+          minimum: 0
+          description: The number of dimensions the resulting output embeddings should have. Only supported in certain models.
+    ErrorResponse_5:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
+    StoredFile:
+      type: object
+      properties:
+        bucket:
+          type: string
+          example: avatars
+          description: Name of the bucket containing the object
+        key:
+          type: string
+          example: user123.jpg
+          description: Unique key identifying the object within the bucket
+        size:
+          type: integer
+          example: 102400
+          description: Size of the file in bytes
+        mimeType:
+          type: string
+          example: image/jpeg
+          description: MIME type of the file
+        uploadedAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00Z'
+          description: ISO timestamp when the file was uploaded
+        url:
+          type: string
+          example: /api/storage/buckets/avatars/objects/user123.jpg
+          description: URL to download the file
+      required:
+      - bucket
+      - key
+      - size
+      - uploadedAt
+      - url
+    OpenRouterImageMessage:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - image_url
+        image_url:
+          type: object
+          properties:
+            url:
+              type: string
+              description: Can be a direct URL or data:image base64 URL
+    FileParserPlugin:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Enable file parsing for PDFs in messages
+        pdf:
+          type: object
+          properties:
+            engine:
+              type: string
+              enum:
+              - pdf-text
+              - mistral-ocr
+              - native
+              description: 'PDF processing engine:
+
+                - pdf-text: Best for well-structured PDFs with clear text content (Free)
+
+                - mistral-ocr: Best for scanned documents or PDFs with images ($2 per 1,000 pages)
+
+                - native: Only for models with native file support (charged as input tokens)
+
+                If not specified, defaults to native if available, otherwise mistral-ocr
+
+                '
+    ErrorResponse_2:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Subject is required
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Please provide a valid subject line
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

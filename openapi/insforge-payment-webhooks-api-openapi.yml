@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  title: Insforge AI Admin Payment Webhooks API
+  version: 1.0.0
+  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+tags:
+- name: Payment Webhooks
+  description: Provider webhook ingestion routes
+paths:
+  /api/webhooks/stripe/{environment}:
+    post:
+      summary: Receive Stripe Webhook
+      description: Receive Stripe events for one environment. The request body must be the raw Stripe JSON body and must include the Stripe signature header.
+      tags:
+      - Payment Webhooks
+      security:
+      - stripeSignature: []
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Webhook received
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StripeWebhookResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/webhooks/razorpay/{environment}:
+    post:
+      summary: Receive Razorpay Webhook
+      description: Receive Razorpay events for one environment. The request body must be the raw Razorpay JSON body and must include the Razorpay signature header.
+      tags:
+      - Payment Webhooks
+      security:
+      - razorpaySignature: []
+      parameters:
+      - $ref: '#/components/parameters/EnvironmentPath'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Webhook received
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RazorpayWebhookResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+components:
+  schemas:
+    PaymentEnvironment:
+      type: string
+      enum:
+      - test
+      - live
+    RazorpayWebhookResponse:
+      type: object
+      required:
+      - received
+      - handled
+      properties:
+        received:
+          type: boolean
+        handled:
+          type: boolean
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          example: INVALID_INPUT
+        message:
+          type: string
+          example: 'environment: Invalid enum value'
+        statusCode:
+          type: integer
+          example: 400
+        nextActions:
+          type: string
+          nullable: true
+    StripeWebhookResponse:
+      type: object
+      required:
+      - received
+      - handled
+      properties:
+        received:
+          type: boolean
+        handled:
+          type: boolean
+        event:
+          $ref: '#/components/schemas/StripeWebhookEvent'
+    StripeWebhookProcessingStatus:
+      type: string
+      enum:
+      - pending
+      - processed
+      - failed
+      - ignored
+    StripeWebhookEvent:
+      type: object
+      required:
+      - environment
+      - eventId
+      - eventType
+      - livemode
+      - accountId
+      - objectType
+      - objectId
+      - processingStatus
+      - attemptCount
+      - lastError
+      - receivedAt
+      - processedAt
+      - createdAt
+      - updatedAt
+      properties:
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        eventId:
+          type: string
+          example: evt_123
+        eventType:
+          type: string
+          example: checkout.session.completed
+        livemode:
+          type: boolean
+        accountId:
+          type: string
+          nullable: true
+          example: acct_123
+        objectType:
+          type: string
+          nullable: true
+          example: checkout.session
+        objectId:
+          type: string
+          nullable: true
+          example: cs_test_123
+        processingStatus:
+          $ref: '#/components/schemas/StripeWebhookProcessingStatus'
+        attemptCount:
+          type: integer
+        lastError:
+          type: string
+          nullable: true
+        receivedAt:
+          type: string
+          format: date-time
+        processedAt:
+          type: string
+          format: date-time
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    StripeEnvironment:
+      $ref: '#/components/schemas/PaymentEnvironment'
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  parameters:
+    EnvironmentPath:
+      name: environment
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/PaymentEnvironment'
+      description: Payment provider environment.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

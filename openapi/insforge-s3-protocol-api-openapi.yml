@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: Insforge AI Admin S3 Protocol API
+  version: 1.0.0
+  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+tags:
+- name: S3 Protocol
+paths:
+  /storage/v1/s3/{path}:
+    parameters:
+    - name: path
+      in: path
+      required: true
+      description: 'Standard path-style S3 path, e.g. `my-bucket/object-key`,
+
+        `my-bucket` (bucket-level ops), or empty for ListBuckets.
+
+        '
+      schema:
+        type: string
+    description: "**AWS S3-compatible protocol gateway.** Speak the S3 protocol directly\nfrom any SigV4 client (AWS SDKs, `aws` CLI, `rclone`, Terraform, etc.)\nagainst this endpoint. Only path-style URLs are supported; SDKs must\nbe configured with `forcePathStyle: true` and the signing region\n`us-east-2` (or the value of `AWS_REGION` on this backend).\n\nSupported operations: ListBuckets, CreateBucket, DeleteBucket,\nHeadBucket, ListObjectsV2, PutObject (streaming + UNSIGNED +\npre-hashed), GetObject (incl. Range), HeadObject, DeleteObject,\nDeleteObjects (batch), CopyObject, CreateMultipartUpload,\nUploadPart, CompleteMultipartUpload, AbortMultipartUpload,\nListParts, plus `GetBucketLocation` / `GetBucketVersioning` stubs.\n\nBuckets and objects are shared with the REST API — an object uploaded\nvia S3 protocol appears immediately in `GET /api/storage/buckets/{bucket}/objects`\nand vice versa.\n\nExample (AWS SDK v3):\n\n```\nnew S3Client({\n  endpoint: 'https://<host>/storage/v1/s3',\n  region: 'us-east-2',\n  forcePathStyle: true,\n  credentials: { accessKeyId, secretAccessKey },\n});\n```\n\nErrors use S3-style XML (`<Error><Code>...</Code>...</Error>`).\n"
+    get:
+      summary: S3 protocol (GET)
+      description: Dispatched to ListBuckets / ListObjectsV2 / GetObject / HeadObject / ListParts / GetBucketLocation / GetBucketVersioning based on path shape and query.
+      tags:
+      - S3 Protocol
+      security:
+      - s3SigV4: []
+      responses:
+        '200':
+          description: Success
+        '206':
+          description: Partial content (Range GetObject)
+        '403':
+          description: SignatureDoesNotMatch / InvalidAccessKeyId / RequestTimeTooSkewed
+        '404':
+          description: NoSuchBucket / NoSuchKey
+        '501':
+          description: NotImplemented (backend is not S3-compatible, or op unsupported)
+    put:
+      summary: S3 protocol (PUT)
+      description: Dispatched to PutObject / UploadPart / CopyObject / CreateBucket based on path shape, query, and headers.
+      tags:
+      - S3 Protocol
+      security:
+      - s3SigV4: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: EntityTooLarge / InvalidArgument / InvalidBucketName / MalformedXML
+        '403':
+          description: SignatureDoesNotMatch / AuthorizationHeaderMalformed
+        '409':
+          description: BucketAlreadyOwnedByYou
+    post:
+      summary: S3 protocol (POST)
+      description: Dispatched to CreateMultipartUpload / CompleteMultipartUpload / DeleteObjects based on query.
+      tags:
+      - S3 Protocol
+      security:
+      - s3SigV4: []
+      responses:
+        '200':
+          description: Success
+    delete:
+      summary: S3 protocol (DELETE)
+      description: Dispatched to DeleteObject / DeleteBucket / AbortMultipartUpload based on path and query.
+      tags:
+      - S3 Protocol
+      security:
+      - s3SigV4: []
+      responses:
+        '204':
+          description: Success
+        '409':
+          description: BucketNotEmpty
+    head:
+      summary: S3 protocol (HEAD)
+      description: Dispatched to HeadBucket / HeadObject based on path shape.
+      tags:
+      - S3 Protocol
+      security:
+      - s3SigV4: []
+      responses:
+        '200':
+          description: Success
+        '404':
+          description: NoSuchBucket / NoSuchKey
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

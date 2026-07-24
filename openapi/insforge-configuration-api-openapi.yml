@@ -1,0 +1,124 @@
+openapi: 3.0.3
+info:
+  title: Insforge AI Admin Configuration API
+  version: 1.0.0
+  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+tags:
+- name: Configuration
+  description: Manage realtime retention settings.
+paths:
+  /api/realtime/config:
+    get:
+      summary: Get Realtime Config
+      description: Retrieve realtime message retention configuration
+      tags:
+      - Configuration
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: Realtime configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RealtimeConfig'
+              example:
+                retentionDays: null
+    patch:
+      summary: Update Realtime Config
+      description: Update realtime message retention configuration
+      tags:
+      - Configuration
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateRealtimeConfigRequest'
+            examples:
+              retainFor90Days:
+                value:
+                  retentionDays: 90
+              keepForever:
+                value:
+                  retentionDays: null
+      responses:
+        '200':
+          description: Realtime configuration updated
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - message
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Retention config updated successfully
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INVALID_INPUT
+                message: 'retentionDays: Number must be greater than 0'
+                statusCode: 400
+components:
+  schemas:
+    RealtimeConfig:
+      type: object
+      required:
+      - retentionDays
+      properties:
+        retentionDays:
+          type: integer
+          nullable: true
+          minimum: 1
+          description: Number of days messages are retained. Null means messages are kept indefinitely.
+          example: null
+    UpdateRealtimeConfigRequest:
+      type: object
+      required:
+      - retentionDays
+      properties:
+        retentionDays:
+          type: integer
+          nullable: true
+          minimum: 1
+          description: Number of days messages are retained. Null means messages are kept indefinitely.
+          example: 90
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

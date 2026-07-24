@@ -1,0 +1,359 @@
+openapi: 3.0.3
+info:
+  title: Insforge AI Admin Channels API
+  version: 1.0.0
+  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+tags:
+- name: Channels
+  description: Configure realtime channel patterns, webhooks, and availability.
+paths:
+  /api/realtime/channels:
+    get:
+      summary: List All Channels
+      description: Retrieve all configured realtime channels
+      tags:
+      - Channels
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      responses:
+        '200':
+          description: List of channels
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Channel'
+              example:
+              - id: 550e8400-e29b-41d4-a716-446655440000
+                pattern: order:%
+                description: Order updates channel
+                webhookUrls:
+                - https://example.com/webhook
+                enabled: true
+                createdAt: '2024-01-15T10:30:00Z'
+                updatedAt: '2024-01-15T10:30:00Z'
+              - id: 550e8400-e29b-41d4-a716-446655440001
+                pattern: chat:%
+                description: Chat room messages
+                webhookUrls: null
+                enabled: true
+                createdAt: '2024-01-16T11:00:00Z'
+                updatedAt: '2024-01-16T11:00:00Z'
+    post:
+      summary: Create Channel
+      description: Create a new realtime channel with a pattern for subscription matching
+      tags:
+      - Channels
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateChannelRequest'
+            example:
+              pattern: order:%
+              description: Order updates channel
+              webhookUrls:
+              - https://example.com/webhook
+              enabled: true
+      responses:
+        '201':
+          description: Channel created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+              example:
+                id: 550e8400-e29b-41d4-a716-446655440000
+                pattern: order:%
+                description: Order updates channel
+                webhookUrls:
+                - https://example.com/webhook
+                enabled: true
+                createdAt: '2024-01-15T10:30:00Z'
+                updatedAt: '2024-01-15T10:30:00Z'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INVALID_INPUT
+                message: 'pattern: Channel pattern is required'
+                statusCode: 400
+  /api/realtime/channels/{id}:
+    get:
+      summary: Get Channel by ID
+      description: Retrieve a specific channel by its UUID
+      tags:
+      - Channels
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        '200':
+          description: Channel details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+              example:
+                id: 550e8400-e29b-41d4-a716-446655440000
+                pattern: order:%
+                description: Order updates channel
+                webhookUrls:
+                - https://example.com/webhook
+                enabled: true
+                createdAt: '2024-01-15T10:30:00Z'
+                updatedAt: '2024-01-15T10:30:00Z'
+        '404':
+          description: Channel not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: NOT_FOUND
+                message: Channel not found
+                statusCode: 404
+    put:
+      summary: Update Channel
+      description: Update an existing channel's configuration
+      tags:
+      - Channels
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateChannelRequest'
+            example:
+              description: Updated order channel description
+              enabled: false
+      responses:
+        '200':
+          description: Channel updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+              example:
+                id: 550e8400-e29b-41d4-a716-446655440000
+                pattern: order:%
+                description: Updated order channel description
+                webhookUrls:
+                - https://example.com/webhook
+                enabled: false
+                createdAt: '2024-01-15T10:30:00Z'
+                updatedAt: '2024-01-17T14:00:00Z'
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: INVALID_INPUT
+                message: 'webhookUrls.0: Invalid url'
+                statusCode: 400
+        '404':
+          description: Channel not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: NOT_FOUND
+                message: Channel not found
+                statusCode: 404
+    delete:
+      summary: Delete Channel
+      description: Delete a channel definition. Existing message history is preserved with null channelId values.
+      tags:
+      - Channels
+      security:
+      - bearerAuth: []
+      - apiKey: []
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: 550e8400-e29b-41d4-a716-446655440000
+      responses:
+        '200':
+          description: Channel deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: Channel deleted
+        '404':
+          description: Channel not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: NOT_FOUND
+                message: Channel not found
+                statusCode: 404
+components:
+  schemas:
+    CreateChannelRequest:
+      type: object
+      required:
+      - pattern
+      properties:
+        pattern:
+          type: string
+          minLength: 1
+          description: Channel pattern for subscription matching. Uses SQL LIKE wildcards, for example "order:%".
+          example: order:%
+        description:
+          type: string
+          description: Human-readable description of the channel
+          example: Order updates channel
+        webhookUrls:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: URLs to receive webhook notifications
+          example:
+          - https://example.com/webhook
+        enabled:
+          type: boolean
+          default: true
+          description: Whether the channel should be active upon creation
+          example: true
+    Channel:
+      type: object
+      required:
+      - id
+      - pattern
+      - enabled
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the channel
+          example: 550e8400-e29b-41d4-a716-446655440000
+        pattern:
+          type: string
+          minLength: 1
+          description: Channel pattern for subscription matching. Uses SQL LIKE wildcards, for example "order:%".
+          example: order:%
+        description:
+          type: string
+          nullable: true
+          description: Human-readable description of the channel
+          example: Order updates channel
+        webhookUrls:
+          type: array
+          nullable: true
+          items:
+            type: string
+            format: uri
+          description: URLs to receive webhook notifications for messages on this channel
+          example:
+          - https://example.com/webhook
+        enabled:
+          type: boolean
+          description: Whether the channel is currently active
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the channel was created
+          example: '2024-01-15T10:30:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the channel was last updated
+          example: '2024-01-15T10:30:00Z'
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
+    UpdateChannelRequest:
+      type: object
+      properties:
+        pattern:
+          type: string
+          minLength: 1
+          description: Updated channel pattern
+          example: order:%
+        description:
+          type: string
+          description: Updated description
+          example: Updated order channel
+        webhookUrls:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Updated webhook URLs
+          example:
+          - https://example.com/webhook
+        enabled:
+          type: boolean
+          description: Updated enabled status
+          example: false
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
