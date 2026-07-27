@@ -1,0 +1,16 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Insforge auth API
+  version: 1.0.0
+extends: openapi/insforge-auth-openapi.yaml
+actions:
+- target: $.info
+  update:
+    x-apievangelist-enriched: '2026-07-19'
+    x-apievangelist-provider: insforge
+    x-apievangelist-service: auth
+    x-agent-native: true
+- target: $.servers
+  update:
+  - url: https://api.insforge.dev
+    description: InsForge cloud production API (added by API Evangelist; upstream spec omits servers[]).

@@ -1,0 +1,30 @@
+generated: '2026-07-19'
+method: searched
+source: https://insforge.dev/changelogs
+scheme: dated
+entries:
+- date: '2026-07-17'
+  title: Connect your coding agent with your user API key
+  highlights: >-
+    The organization projects page adds a floating dock that generates a setup
+    prompt with your user API key for CLI authentication with coding agents like
+    Claude Code and Cursor.
+  breaking: false
+- date: '2026-06-30'
+  title: Referrals are here
+  highlights: Referral program — referrers earn $10 in credits on a referred customer's first payment plus ongoing commission.
+  breaking: false
+- date: '2026-06-29'
+  title: Web scraper integration + Backend Advisor on self-hosted
+  highlights: >-
+    Direct OAuth integration with Apify for external data pulls; Backend Advisor
+    security/performance scanning expanded from cloud to self-hosted with
+    automated remediation prompts.
+  breaking: false
+- date: '2026-06-27'
+  title: Custom Compute usage, composite key fixes, more CLI commands, developer-created schemas
+  highlights: >-
+    Custom Compute usage metrics in the dashboard; composite (multi-column) key
+    fixes; new CLI commands for billing, project transfers, and Apify setup;
+    support for developer-created database schemas in the Data API.
+  breaking: false

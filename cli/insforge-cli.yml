@@ -1,0 +1,40 @@
+generated: '2026-07-19'
+method: searched
+source: https://www.npmjs.com/package/@insforge/cli
+docs: https://docs.insforge.dev/quickstart
+binary: "@insforge/cli"
+invoke: npx @insforge/cli
+note: Never install globally; always run via npx. The CLI is the agent's primary hands on an InsForge backend.
+install:
+- method: npx
+  command: npx @insforge/cli
+authentication:
+- command: npx @insforge/cli login
+  description: Sign in to InsForge (interactive) or with a user API key.
+- command: npx @insforge/cli login --user-api-key uak_xxxxxxxx
+  description: Non-interactive login with a uak_ user API key (e.g. from autonomous ID-JAG registration).
+- command: npx @insforge/cli link
+  description: Link the current directory to an InsForge project.
+- command: npx @insforge/cli current
+  description: Verify the linked project and current identity.
+command_groups:
+- group: metadata
+  description: Discover what a project has configured.
+- group: db
+  description: Database schema, SQL, migrations, RLS policies, vector, import/export.
+- group: storage
+  description: Manage storage buckets and objects.
+- group: functions
+  description: Create and deploy Deno edge functions.
+- group: deploy
+  description: Deploy frontend sites and functions (Vercel-powered).
+- group: secrets
+  description: Manage encrypted project secrets.
+- group: config
+  description: Config-as-code via insforge.toml with plan / apply / export workflow.
+- group: payments
+  description: Configure Stripe and Razorpay payment provider keys and catalog.
+key_flows:
+- Config-as-code (insforge.toml plan/apply/export)
+- Backend branching (isolated project copies for testing schema/config)
+- Diagnostics and advisor (health, advisor findings, error logs, then apply fixes)

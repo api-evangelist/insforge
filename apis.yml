@@ -1,22 +1,240 @@
 aid: insforge
 name: Insforge
-description: Insforge is a company surfaced as a portfolio company of y-combinator and added to the API
-  Evangelist network as a stub for enrichment. This profile is a lead awaiting the enrichment pipeline.
+description: >-
+  InsForge is an open-source (Apache-2.0), agent-native cloud infrastructure
+  platform built so that AI coding agents can provision and operate an entire
+  backend end to end through a CLI and packaged agent skills instead of a human
+  clicking through a dashboard. A single project bundles a Postgres database
+  with schema management and row-level security, authentication (users,
+  sessions, OAuth, JWT), S3-compatible object storage, Deno-based edge functions
+  with cron, a unified AI model gateway, realtime subscriptions and webhooks,
+  long-lived custom compute, frontend hosting via Vercel, transactional email,
+  and payments via Stripe and Razorpay. The REST API is documented as fourteen
+  OpenAPI 3.0 service specifications and is driven by an official TypeScript SDK,
+  CLI, and hosted MCP server. InsForge is a Y Combinator company.
 url: https://raw.githubusercontent.com/api-evangelist/insforge/refs/heads/main/apis.yml
 x-type: company
 x-source: vc-portfolio
 x-backed-by:
 - y-combinator
-x-tier: stub
-x-tier-reason: portfolio-lead
+accessModel:
+  pricing: unknown
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Self-serve signup
+  confidence: medium
+  source:
+  - authentication
+  generated: '2026-07-22'
+  method: derived
 specificationVersion: '0.20'
 created: '2026-07-17'
-modified: '2026-07-17'
+modified: '2026-07-19'
+image: https://insforge.dev/logo.png
 tags:
 - Company
-apis: []
+- Backend as a Service
+- Agent Native
+- Cloud Infrastructure
+- Database
+- Authentication
+- Storage
+- Serverless
+- Edge Functions
+- AI Gateway
+- Payments
+- Realtime
+- Open Source
+- Y Combinator
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
+apis:
+- aid: insforge:insforge-admin-api
+  name: Insforge Admin API
+  description: The Admin API from Insforge — 54 operation(s) for admin.
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Admin
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-admin-api-openapi.yml
+- aid: insforge:insforge-channels-api
+  name: Insforge Channels API
+  description: Configure realtime channel patterns, webhooks, and availability.
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Channels
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-channels-api-openapi.yml
+- aid: insforge:insforge-client-api
+  name: Insforge Client API
+  description: The Client API from Insforge — 35 operation(s) for client.
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Client
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-client-api-openapi.yml
+- aid: insforge:insforge-configuration-api
+  name: Insforge Configuration API
+  description: Manage realtime retention settings.
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Configuration
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-configuration-api-openapi.yml
+- aid: insforge:insforge-messages-api
+  name: Insforge Messages API
+  description: Inspect realtime message history and delivery stats.
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Messages
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-messages-api-openapi.yml
+- aid: insforge:insforge-payment-webhooks-api
+  name: Insforge Payment Webhooks API
+  description: Provider webhook ingestion routes
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Payment Webhooks
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-payment-webhooks-api-openapi.yml
+- aid: insforge:insforge-permissions-api
+  name: Insforge Permissions API
+  description: Manage helper endpoints for realtime RLS examples.
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Permissions
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-permissions-api-openapi.yml
+- aid: insforge:insforge-razorpay-payments-api
+  name: Insforge Razorpay Payments API
+  description: >-
+    Razorpay Orders, Subscriptions, catalog, manual webhook setup, sync, customer, and transaction routes
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Razorpay Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-razorpay-payments-api-openapi.yml
+- aid: insforge:insforge-s3-access-keys-api
+  name: Insforge S3 Access Keys API
+  description: The S3 Access Keys API from Insforge — 3 operation(s) for s3 access keys.
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - S3 Access Keys
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-s3-access-keys-api-openapi.yml
+- aid: insforge:insforge-s3-protocol-api
+  name: Insforge S3 Protocol API
+  description: The S3 Protocol API from Insforge — 1 operation(s) for s3 protocol.
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - S3 Protocol
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-s3-protocol-api-openapi.yml
+- aid: insforge:insforge-stripe-payments-api
+  name: Insforge Stripe Payments API
+  description: >-
+    Stripe Checkout, Billing Portal, catalog, sync, customer, subscription, and transaction routes
+  humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
+  baseURL: https://api.insforge.dev
+  tags:
+  - Stripe Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/insforge-stripe-payments-api-openapi.yml
+common:
+- type: Website
+  url: https://insforge.dev
+- type: DeveloperPortal
+  url: https://docs.insforge.dev
+- type: Documentation
+  url: https://docs.insforge.dev
+- type: APIReference
+  url: https://docs.insforge.dev/api-reference/admin/admin-login
+- type: GettingStarted
+  url: https://docs.insforge.dev/quickstart
+- type: GitHubOrganization
+  url: https://github.com/InsForge
+- type: Blog
+  url: https://insforge.dev/blog
+- type: Pricing
+  url: https://insforge.dev/pricing
+- type: SignUp
+  url: https://insforge.dev/dashboard
+- type: TermsOfService
+  url: https://insforge.dev/terms
+- type: PrivacyPolicy
+  url: https://insforge.dev/privacy
+- type: Support
+  url: https://discord.gg/DvBtaEc9Jz
+- type: ChangeLog
+  url: https://insforge.dev/changelogs
+- type: ChangeLog
+  url: changelog/insforge-changelog.yml
+- type: MCPServer
+  url: mcp/insforge-mcp.yml
+- type: LLMsTxt
+  url: llms/insforge-llms.txt
+- type: Packages
+  url: packages/insforge-packages.yml
+- type: SDKs
+  url: packages/insforge-packages.yml
+- type: CLI
+  url: cli/insforge-cli.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: WellKnown
+  url: well-known/insforge-well-known.yml
+- type: SecurityTxt
+  url: well-known/insforge-security.txt
+- type: OAuthScopes
+  url: scopes/insforge-scopes.yml
+- type: Authentication
+  url: authentication/insforge-authentication.yml
+- type: Conventions
+  url: conventions/insforge-conventions.yml
+- type: Idempotency
+  url: conventions/insforge-conventions.yml
+- type: ErrorCatalog
+  url: errors/insforge-problem-types.yml
+- type: Conformance
+  url: conformance/insforge-conformance.yml
+- type: Lifecycle
+  url: lifecycle/insforge-lifecycle.yml
+- type: DataModel
+  url: data-model/insforge-data-model.yml
+- type: DomainSecurity
+  url: security/insforge-domain-security.yml
+- type: VulnerabilityDisclosure
+  url: security/insforge-vulnerability-disclosure.yml
+- type: Security
+  url: well-known/insforge-security.txt
+x-enrichment:
+  date: '2026-07-19'
+  status: backfilled
+  pass: local-v1
+  note: backfilled from .gitignore signal + verified work evidence

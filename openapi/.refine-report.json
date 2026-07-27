@@ -1,0 +1,34 @@
+{
+  "provider": "insforge",
+  "sources": [
+    "insforge-admin-api-openapi.yml",
+    "insforge-channels-api-openapi.yml",
+    "insforge-client-api-openapi.yml",
+    "insforge-configuration-api-openapi.yml",
+    "insforge-messages-api-openapi.yml",
+    "insforge-payment-webhooks-api-openapi.yml",
+    "insforge-permissions-api-openapi.yml",
+    "insforge-razorpay-payments-api-openapi.yml",
+    "insforge-s3-access-keys-api-openapi.yml",
+    "insforge-s3-protocol-api-openapi.yml",
+    "insforge-stripe-payments-api-openapi.yml"
+  ],
+  "outputs": [
+    "insforge-admin-api-openapi.yml",
+    "insforge-channels-api-openapi.yml",
+    "insforge-client-api-openapi.yml",
+    "insforge-configuration-api-openapi.yml",
+    "insforge-messages-api-openapi.yml",
+    "insforge-payment-webhooks-api-openapi.yml",
+    "insforge-permissions-api-openapi.yml",
+    "insforge-razorpay-payments-api-openapi.yml",
+    "insforge-s3-access-keys-api-openapi.yml",
+    "insforge-s3-protocol-api-openapi.yml",
+    "insforge-stripe-payments-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

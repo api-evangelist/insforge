@@ -1,0 +1,30 @@
+generated: '2026-07-19'
+method: searched
+source: https://github.com/InsForge/insforge-skills
+note: >-
+  InsForge publishes official Agent Skills (Apache-2.0) that drive the InsForge
+  CLI and SDK from inside a coding agent. Installed automatically by the CLI
+  after login+link, and browsable at https://skills.sh/insforge. The canonical
+  agent bootstrap document is saved verbatim as insforge-agent-guide.md.
+skills:
+- file: insforge-agent-guide.md
+  name: InsForge agent guide (agents.md / skill.md / auth.md)
+  source: https://insforge.dev/skill.md
+  api: openapi/insforge-auth-openapi.yaml
+  description: Canonical bootstrap doc — how an agent authenticates (CLI login or autonomous ID-JAG registration) and drives an InsForge backend.
+- name: insforge
+  source: https://github.com/InsForge/insforge-skills/tree/main/skills/insforge
+  api: openapi/insforge-records-openapi.yaml
+  description: App integration skill for writing app code with @insforge/sdk — database CRUD, auth, storage uploads and RLS, functions, OpenRouter AI, realtime, email, and Stripe/Razorpay payments.
+- name: insforge-cli
+  source: https://github.com/InsForge/insforge-skills/tree/main/skills/insforge-cli
+  api: openapi/insforge-tables-openapi.yaml
+  description: Backend/cloud infrastructure skill via the InsForge CLI — projects, SQL, migrations, RLS, functions, storage, deployments, compute, secrets, config, schedules, logs, diagnostics, AI setup, and payments.
+- name: insforge-debug
+  source: https://github.com/InsForge/insforge-skills/tree/main/skills/insforge-debug
+  api: openapi/insforge-logs-openapi.yaml
+  description: Diagnostic skill for InsForge projects — reactive failures (SDK errors, 4xx/5xx, gateway timeouts, RLS denials, realtime/deploy issues) and proactive audits (security/RLS, performance, health, pre-launch).
+- name: insforge-integrations
+  source: https://github.com/InsForge/insforge-skills/tree/main/skills/insforge-integrations
+  api: openapi/insforge-auth-openapi.yaml
+  description: Integration skill for wiring external auth providers (Clerk, Auth0, WorkOS, Kinde, Stytch, Better Auth) into InsForge JWT-based RLS, and adding the OKX x402 onchain payment facilitator.

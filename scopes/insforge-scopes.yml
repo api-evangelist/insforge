@@ -1,0 +1,58 @@
+generated: '2026-07-19'
+method: searched
+source: https://api.insforge.dev/.well-known/oauth-authorization-server
+docs: https://api.insforge.dev/.well-known/oauth-authorization-server
+note: >-
+  OAuth 2.0 scopes are published by the InsForge authorization server metadata
+  (RFC 8414), not by the per-service OpenAPI specs (which declare bearer/api-key
+  auth). The authorization server also advertises an agent_auth block supporting
+  WorkOS ID-JAG identity_assertion for autonomous agent registration.
+schemes:
+- name: OAuth2
+  source: https://api.insforge.dev/.well-known/oauth-authorization-server
+  issuer: https://api.insforge.dev
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://api.insforge.dev/api/oauth/v1/authorize
+    tokenUrl: https://api.insforge.dev/api/oauth/v1/token
+  - flow: deviceCode
+    deviceAuthorizationUrl: https://api.insforge.dev/api/oauth/v1/device_authorization
+    tokenUrl: https://api.insforge.dev/api/oauth/v1/token
+  registrationEndpoint: https://api.insforge.dev/api/oauth/v1/clients/register
+  revocationEndpoint: https://api.insforge.dev/api/oauth/v1/revoke
+  introspectionEndpoint: https://api.insforge.dev/api/oauth/v1/introspect
+  codeChallengeMethods: [S256, plain]
+scopes:
+- scope: user:read
+  description: Read the authenticated user's profile.
+  flows: [authorizationCode, deviceCode]
+- scope: organizations:read
+  description: Read organizations the user belongs to.
+  flows: [authorizationCode, deviceCode]
+- scope: organizations:write
+  description: Create and update organizations.
+  flows: [authorizationCode, deviceCode]
+- scope: organizations:delete
+  description: Delete organizations.
+  flows: [authorizationCode, deviceCode]
+- scope: projects:read
+  description: Read projects within an organization.
+  flows: [authorizationCode, deviceCode]
+- scope: projects:write
+  description: Create and update projects.
+  flows: [authorizationCode, deviceCode]
+- scope: projects:delete
+  description: Delete projects.
+  flows: [authorizationCode, deviceCode]
+- scope: projects.database:read
+  description: Read a project's database schema and records.
+  flows: [authorizationCode, deviceCode]
+- scope: projects.database:write
+  description: Write to a project's database schema and records.
+  flows: [authorizationCode, deviceCode]
+- scope: projects.storage:read
+  description: Read a project's storage buckets and objects.
+  flows: [authorizationCode, deviceCode]
+- scope: projects.storage:write
+  description: Write to a project's storage buckets and objects.
+  flows: [authorizationCode, deviceCode]

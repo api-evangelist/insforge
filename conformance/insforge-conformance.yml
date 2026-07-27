@@ -1,0 +1,46 @@
+generated: '2026-07-19'
+method: derived
+source:
+- openapi/*.yaml
+- well-known/insforge-oauth-authorization-server.json
+- https://insforge.dev/pricing
+standards:
+- id: oauth2
+  conforms: true
+  evidence: RFC 8414 authorization-server metadata with authorization_code, refresh_token, and device_code grants; PKCE (S256) supported.
+- id: oauth2-device-flow
+  conforms: true
+  evidence: device_authorization_endpoint advertised (RFC 8628).
+- id: oauth2-token-introspection
+  conforms: true
+  evidence: introspection_endpoint advertised (RFC 7662).
+- id: oauth2-token-revocation
+  conforms: true
+  evidence: revocation_endpoint advertised (RFC 7009).
+- id: oauth2-dynamic-client-registration
+  conforms: true
+  evidence: registration_endpoint advertised (RFC 7591).
+- id: oauth2-protected-resource-metadata
+  conforms: true
+  evidence: /.well-known/oauth-protected-resource published (RFC 9728).
+- id: rfc9116-security-txt
+  conforms: true
+  evidence: /.well-known/security.txt published with Contact and Expires.
+- id: s3-api-compatibility
+  conforms: true
+  evidence: Storage API exposes S3 protocol operations with AWS SigV4 (aws4-hmac-sha256) access keys.
+- id: jwt
+  conforms: true
+  evidence: bearer tokens use JWT bearerFormat; JWT-based row-level security.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: Errors use a custom envelope (error/message/statusCode/nextActions), not application/problem+json.
+- id: asyncapi
+  conforms: false
+  evidence: No AsyncAPI document published; realtime is documented as webhooks/subscriptions.
+compliance_program:
+  soc2: available (Enterprise paid add-on; not a current published certification)
+  hipaa: available (Enterprise paid add-on; not a current published certification)
+  note: >-
+    InsForge advertises SOC 2 and HIPAA as Enterprise paid add-ons rather than a
+    current, published certification, so no Compliance pointer is emitted.

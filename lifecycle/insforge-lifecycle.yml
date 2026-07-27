@@ -1,0 +1,27 @@
+generated: '2026-07-19'
+method: searched
+source:
+- https://insforge.dev/changelogs
+- https://api.insforge.dev/.well-known/oauth-authorization-server
+- openapi/*.yaml
+versioning:
+  scheme: uri-path
+  current: v1
+  note: >-
+    OAuth endpoints are versioned under /api/oauth/v1/*. Service/data endpoints
+    are under /api/<service>/* without an explicit version segment. The npm SDK,
+    CLI, and MCP packages carry independent semver versions.
+changelog:
+  url: https://insforge.dev/changelogs
+  artifact: changelog/insforge-changelog.yml
+deprecation:
+  policy_documented: false
+  sunset_header: false
+  note: No formal deprecation policy or RFC 8594 Sunset/Deprecation header support found in docs or specs.
+status_page:
+  found: false
+  note: No dedicated status page (status.insforge.dev / insforge.dev/status) was reachable at probe time.
+sla:
+  documented: false
+  note: Enterprise plan offers dedicated technical support; no public uptime SLA published.
+deprecated_operations: []

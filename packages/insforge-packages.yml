@@ -1,0 +1,32 @@
+generated: '2026-07-19'
+method: searched
+source: https://www.npmjs.com/org/insforge
+packages:
+- language: javascript
+  registry: npm
+  name: "@insforge/sdk"
+  version: 1.4.5
+  url: https://www.npmjs.com/package/@insforge/sdk
+  repository: https://github.com/InsForge/insforge-sdk-js
+  install: npm install @insforge/sdk
+  description: Official JavaScript/TypeScript client for the InsForge backend-as-a-service platform.
+  license: Apache-2.0
+  official: true
+- language: javascript
+  registry: npm
+  name: "@insforge/cli"
+  version: 0.2.0
+  url: https://www.npmjs.com/package/@insforge/cli
+  install: npx @insforge/cli
+  description: InsForge CLI - command line tool to create and manage InsForge backends and cloud infrastructure.
+  license: Apache-2.0
+  official: true
+- language: javascript
+  registry: npm
+  name: "@insforge/mcp"
+  version: 1.2.11
+  url: https://www.npmjs.com/package/@insforge/mcp
+  install: npx @insforge/mcp
+  description: MCP (Model Context Protocol) server for the InsForge backend-as-a-service platform.
+  license: Apache-2.0
+  official: true

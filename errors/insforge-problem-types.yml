@@ -1,0 +1,53 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/*.yaml (4xx/5xx responses) + components.schemas.ErrorResponse
+format: custom-envelope
+envelope:
+  media_type: application/json
+  fields: [error, message, statusCode, nextActions]
+  note: >-
+    InsForge does not use RFC 9457 problem+json. Errors return a custom envelope
+    with a machine-readable "error" code, a human "message", the "statusCode",
+    and an agent-native "nextActions" remediation hint.
+  example:
+    error: VALIDATION_ERROR
+    message: Email is already in use
+    statusCode: 400
+    nextActions: Please use a different email address
+problems:
+- status: 400
+  title: Bad Request
+  meaning: Validation error, missing/unsupported provider API key, or malformed input.
+- status: 401
+  title: Unauthorized
+  meaning: Missing, expired, or invalid bearer token or API key.
+- status: 403
+  title: Forbidden
+  meaning: Authenticated but not permitted (e.g. admin-only endpoint, or RLS denial).
+- status: 404
+  title: Not Found
+  meaning: Resource (user, table, bucket, object, function) does not exist.
+- status: 409
+  title: Conflict
+  meaning: Resource already exists (e.g. user already exists, duplicate key).
+- status: 415
+  title: Unsupported Media Type
+  meaning: File content must be uploaded as application/octet-stream.
+- status: 422
+  title: Unprocessable Entity
+  meaning: Well-formed request that fails semantic validation.
+- status: 429
+  title: Too Many Requests
+  meaning: Rate limit exceeded.
+- status: 500
+  title: Internal Server Error
+  meaning: Unexpected server error (e.g. failed to list models).
+- status: 501
+  title: Not Implemented
+  meaning: Backend is not S3-compatible, or the requested operation is unsupported.
+- status: 502
+  title: Bad Gateway
+  meaning: Failed to proxy to the Deno runtime (edge functions).
+- status: 503
+  title: Service Unavailable
+  meaning: Deployment provider or legacy S3 staging is not configured.

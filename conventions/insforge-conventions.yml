@@ -1,0 +1,64 @@
+generated: '2026-07-19'
+method: searched
+source:
+- https://docs.insforge.dev
+- openapi/insforge-auth-openapi.yaml
+- openapi/insforge-payments-openapi.yaml
+- well-known/insforge-oauth-authorization-server.json
+summary: >-
+  Cross-cutting request/response semantics for the InsForge REST API, derived
+  from the 14 OpenAPI service specs and the InsForge docs. The API is agent-native:
+  errors carry a machine-readable code plus a nextActions remediation hint.
+base_url: https://api.insforge.dev
+authentication:
+  styles:
+  - name: bearer
+    scheme: http bearer (JWT)
+    note: End-user and admin access tokens; issued by the Authentication API.
+  - name: api_key
+    location: header
+    parameter: x-api-key
+    note: Project/user API keys (uak_ prefix for user API keys minted via CLI login or ID-JAG).
+  - name: oauth2
+    note: >-
+      Authorization-code (+ PKCE) and device-code flows advertised via RFC 8414
+      authorization-server metadata; scopes gate organizations/projects/database/storage.
+    docs: https://api.insforge.dev/.well-known/oauth-authorization-server
+  - name: s3_sigv4
+    note: AWS SigV4 with S3 access keys minted by POST /api/storage/s3/access-keys (service scope s3).
+  - name: webhook_signatures
+    note: stripe-signature and x-razorpay-signature headers verify inbound payment webhooks.
+idempotency:
+  supported: true
+  mechanism: request-body field
+  field: idempotencyKey
+  scope: payments (checkout, product, and price creation)
+  note: >-
+    The Payments API accepts an idempotencyKey on create operations so a retried
+    checkout/product/price request does not duplicate the resource. Session and
+    cookie clearing on the Authentication API is also documented as idempotent.
+pagination:
+  style: limit-offset
+  params: [limit, offset, order]
+  note: List endpoints accept limit and offset; order controls sort direction.
+error_envelope:
+  format: custom
+  media_type: application/json
+  shape:
+    error: string        # machine-readable error code, e.g. VALIDATION_ERROR
+    message: string       # human-readable message
+    statusCode: integer   # HTTP status code
+    nextActions: string   # suggested remediation (agent-native)
+  oauth_errors: '{ "error": "<code>", "error_description": "<details>" }'
+  cross_link: errors/insforge-problem-types.yml
+versioning:
+  scheme: uri-path
+  note: OAuth endpoints are versioned under /api/oauth/v1/*; data/service endpoints under /api/<service>/*.
+rate_limiting:
+  documented: false
+  note: A 429 Too Many Requests response is defined on several operations; explicit RateLimit/Retry-After headers are not declared in the specs.
+cross_links:
+  authentication: authentication/insforge-authentication.yml
+  scopes: scopes/insforge-scopes.yml
+  errors: errors/insforge-problem-types.yml
+  lifecycle: lifecycle/insforge-lifecycle.yml

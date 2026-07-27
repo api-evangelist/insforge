@@ -1,0 +1,45 @@
+# InsForge
+
+> InsForge is the agent-native cloud infrastructure platform. Model gateway, compute, deployment, database, auth, and more, with every service built for AI coding agents to operate end to end through CLI and skills.
+
+InsForge is an open-source (Apache-2.0) cloud infrastructure platform for agentic coding. A coding agent gets a Postgres database, authentication, storage, edge functions, compute, hosting, and an AI model gateway, driven through the InsForge CLI and agent skills. An agent authenticates with `npx @insforge/cli login` and links a project to start building.
+
+## Start here
+
+- [Agent setup workflow (skill.md)](https://insforge.dev/skill.md): The canonical, copy-paste workflow for adding an InsForge backend to a project. Fetch this first; it supersedes guesses about the CLI, signup, or API.
+- [Documentation](https://docs.insforge.dev): Full product documentation.
+- [CLI on npm (@insforge/cli)](https://www.npmjs.com/package/@insforge/cli): Run `npx @insforge/cli` to create and manage backends. Never install globally.
+- [Agent skills (InsForge/insforge-skills)](https://github.com/InsForge/insforge-skills): Official InsForge agent skills that drive the CLI from inside a coding agent.
+
+## Core concepts
+
+- [Authentication](https://docs.insforge.dev/core-concepts/authentication/overview.md): Users, sessions, OAuth, and JWT-based row-level security.
+- [Database](https://docs.insforge.dev/core-concepts/database/overview.md): Postgres with schema management, RLS policies, and raw SQL.
+- [Storage](https://docs.insforge.dev/core-concepts/storage/overview.md): S3-compatible object storage with bucket-level access policies.
+- [Edge Functions](https://docs.insforge.dev/core-concepts/functions/overview.md): Deno-based serverless TypeScript, with scheduled (cron) execution.
+- [Model Gateway](https://docs.insforge.dev/core-concepts/ai/overview.md): One InsForge-managed key to call any LLM, with per-project quotas.
+- [Realtime](https://docs.insforge.dev/core-concepts/realtime/overview.md): Database-change subscriptions, broadcasts, presence, and webhook fan-out.
+- [Custom Compute](https://docs.insforge.dev/core-concepts/compute/overview.md): Long-lived containers running next to your project.
+- [Sites](https://docs.insforge.dev/core-concepts/deployments/overview.md): Deploy frontend apps from your project, powered by Vercel.
+- [Messaging](https://docs.insforge.dev/core-concepts/messaging/overview.md): Transactional messaging via custom SMTP (email now, SMS and push on the roadmap).
+- [Payments](https://docs.insforge.dev/core-concepts/payments/overview.md): Payments and subscriptions, powered by Stripe.
+- [Analytics](https://docs.insforge.dev/core-concepts/analytics/overview.md): Product analytics, powered by PostHog.
+
+## Comparisons
+
+- [InsForge vs Supabase](https://insforge.dev/alternatives/insforge-vs-supabase): How the agent-native backend compares to Supabase.
+- [InsForge vs Firebase](https://insforge.dev/alternatives/insforge-vs-firebase): How InsForge compares to Firebase.
+- [InsForge vs hosted Postgres](https://insforge.dev/alternatives/insforge-vs-hosted-postgres): A full backend versus a bare hosted Postgres.
+
+## Product and company
+
+- [Pricing](https://insforge.dev/pricing): Plans and free tier.
+- [Changelog](https://insforge.dev/changelogs): Product updates.
+- [Blog](https://insforge.dev/blog): Engineering and product writing.
+- [Customer stories](https://insforge.dev/customers): How teams build on InsForge.
+- [GitHub (InsForge/InsForge)](https://github.com/InsForge/InsForge): The open-source monorepo.
+
+## Optional
+
+- [JavaScript SDK (@insforge/sdk)](https://www.npmjs.com/package/@insforge/sdk): The `@insforge/sdk` client for application code.
+- [Discord community](https://discord.gg/DvBtaEc9Jz): Questions and support.

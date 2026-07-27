@@ -1,0 +1,86 @@
+generated: '2026-07-19'
+method: derived
+source: openapi/*.yaml (components.schemas)
+note: >-
+  Entity graph derived from the InsForge OpenAPI service specs. InsForge is a
+  multi-tenant backend platform; the top-level tenancy chain is
+  organization -> project, and every service resource belongs to a project.
+entities:
+- name: Organization
+  domain: platform
+  note: Top-level tenant that owns projects (from OAuth scopes organizations:*).
+- name: Project
+  domain: platform
+  belongs_to: Organization
+  note: A single backend (database, auth, storage, functions, AI, payments) owned by an organization.
+- name: AuthRecord
+  domain: auth
+  source: openapi/insforge-auth-openapi.yaml
+  note: A user's authentication record (separated from profile).
+- name: ProfileRecord
+  domain: auth
+  source: openapi/insforge-auth-openapi.yaml
+  relationships:
+  - type: belongs_to
+    target: AuthRecord
+    via: user id
+- name: OAuthConfig
+  domain: auth
+  source: openapi/insforge-auth-openapi.yaml
+- name: StoredFile
+  domain: storage
+  source: openapi/insforge-storage-openapi.yaml
+  note: An object stored in a bucket.
+- name: S3AccessKey
+  domain: storage
+  source: openapi/insforge-storage-openapi.yaml
+  note: SigV4 access key minted for S3-protocol access to storage.
+- name: Channel
+  domain: realtime
+  source: openapi/insforge-realtime-openapi.yaml
+  relationships:
+  - type: has_many
+    target: Message
+    via: channel
+- name: Message
+  domain: realtime
+  source: openapi/insforge-realtime-openapi.yaml
+  relationships:
+  - type: belongs_to
+    target: Channel
+    via: channel
+- name: RlsPolicy
+  domain: realtime
+  source: openapi/insforge-realtime-openapi.yaml
+- name: PaymentProvider
+  domain: payments
+  source: openapi/insforge-payments-openapi.yaml
+  note: Stripe or Razorpay connection for a project.
+- name: PaymentCustomer
+  domain: payments
+  source: openapi/insforge-payments-openapi.yaml
+  relationships:
+  - type: belongs_to
+    target: PaymentProvider
+    via: provider
+- name: StripeProduct
+  domain: payments
+  source: openapi/insforge-payments-openapi.yaml
+  relationships:
+  - type: has_many
+    target: StripePrice
+    via: product
+- name: StripePrice
+  domain: payments
+  source: openapi/insforge-payments-openapi.yaml
+  relationships:
+  - type: belongs_to
+    target: StripeProduct
+    via: product
+- name: Migration
+  domain: tables
+  source: openapi/insforge-tables-openapi.yaml
+  note: A database schema migration executed against a project's Postgres database.
+- name: ForeignKeyConstraint
+  domain: tables
+  source: openapi/insforge-tables-openapi.yaml
