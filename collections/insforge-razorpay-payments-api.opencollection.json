@@ -1,0 +1,610 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Insforge AI Admin Razorpay Payments API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Razorpay Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Razorpay Payments Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/razorpay/status",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return Razorpay connection and sync status for each environment."
+        },
+        {
+          "info": {
+            "name": "Get Razorpay Key Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/razorpay/config",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return masked Razorpay key configuration for test and live environments."
+        },
+        {
+          "info": {
+            "name": "Sync Razorpay Payments State",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/sync",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Sync items, plans, customers, subscriptions, invoices, and payments for every configured Razorpay environment. Razorpay remains the source of truth."
+        },
+        {
+          "info": {
+            "name": "Configure Razorpay Keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/config",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Validate and store Razorpay API keys for one environment. A webhook secret is generated automatically when one does not already exist."
+        },
+        {
+          "info": {
+            "name": "Remove Razorpay Keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/config",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Remove the configured Razorpay keys for one environment."
+        },
+        {
+          "info": {
+            "name": "Sync Razorpay Payments State For One Environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/sync",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Sync items, plans, customers, subscriptions, invoices, and payments for one Razorpay environment. Razorpay remains the source of truth."
+        },
+        {
+          "info": {
+            "name": "Get Razorpay Webhook Setup Values",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/webhook",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return the Razorpay webhook URL and signing secret that must be copied into the Razorpay Dashboard for manual webhook setup."
+        },
+        {
+          "info": {
+            "name": "Rotate Razorpay Webhook Secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/webhook/rotate-secret",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Generate a new Razorpay webhook signing secret. Update the webhook secret in the Razorpay Dashboard after calling this endpoint."
+        },
+        {
+          "info": {
+            "name": "Create Razorpay Order",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/orders",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a local Razorpay Order record with the caller's user context, create a Razorpay Order, and return Checkout options for the client-side Razorpay Checkout script."
+        },
+        {
+          "info": {
+            "name": "Verify Razorpay Order Payment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/orders/verify",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verify the Razorpay Checkout signature for an order payment before recording the verified payment ID locally."
+        },
+        {
+          "info": {
+            "name": "List Razorpay Payment Catalog",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/catalog",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return mirrored Razorpay items and plans for one environment."
+        },
+        {
+          "info": {
+            "name": "Create Razorpay Item",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/catalog/items",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Razorpay Item, then mirror it locally after Razorpay succeeds."
+        },
+        {
+          "info": {
+            "name": "Update Razorpay Item",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/catalog/items/:itemId",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "itemId",
+                "value": "item_123",
+                "type": "path",
+                "description": "Razorpay item ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update mutable Razorpay Item fields, then mirror the item locally after Razorpay succeeds."
+        },
+        {
+          "info": {
+            "name": "Create Razorpay Plan",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/catalog/plans",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Razorpay Plan with its amount-bearing item definition, then mirror it locally after Razorpay succeeds."
+        },
+        {
+          "info": {
+            "name": "List Razorpay Subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/subscriptions",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "subjectType",
+                "value": "team",
+                "type": "query",
+                "description": "Billing subject type. Must be provided together with subjectId."
+              },
+              {
+                "name": "subjectId",
+                "value": "team_123",
+                "type": "query",
+                "description": "Billing subject ID. Must be provided together with subjectType."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum rows to return."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Admin/debug read for mirrored Razorpay subscriptions. Use app-owned tables with RLS for end-user payment state."
+        },
+        {
+          "info": {
+            "name": "Create Razorpay Subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/subscriptions",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Razorpay Subscription and mirror it locally, then return Checkout options for authorization. The backend first evaluates the caller's INSERT policy on payments.razorpay_subscriptions so apps can restrict which subjects can start subscriptions."
+        },
+        {
+          "info": {
+            "name": "Verify Razorpay Subscription Authorization",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/subscriptions/verify",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Verify the Razorpay Checkout signature for the subscription authorization payment before recording the authorization payment ID locally."
+        },
+        {
+          "info": {
+            "name": "Cancel Razorpay Subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/subscriptions/:subscriptionId/cancel",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "subscriptionId",
+                "value": "sub_123",
+                "type": "path",
+                "description": "Razorpay subscription ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Cancel a Razorpay subscription after evaluating the caller's UPDATE policy on payments.razorpay_subscriptions."
+        },
+        {
+          "info": {
+            "name": "Pause Razorpay Subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/subscriptions/:subscriptionId/pause",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "subscriptionId",
+                "value": "sub_123",
+                "type": "path",
+                "description": "Razorpay subscription ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Pause a Razorpay subscription immediately after evaluating the caller's UPDATE policy on payments.razorpay_subscriptions."
+        },
+        {
+          "info": {
+            "name": "Resume Razorpay Subscription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/subscriptions/:subscriptionId/resume",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "subscriptionId",
+                "value": "sub_123",
+                "type": "path",
+                "description": "Razorpay subscription ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Resume a paused Razorpay subscription immediately after evaluating the caller's UPDATE policy on payments.razorpay_subscriptions."
+        },
+        {
+          "info": {
+            "name": "List Razorpay Customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/customers",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum rows to return."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Admin/debug read for mirrored Razorpay customers. This is a display mirror only and should not replace app-owned billing tables."
+        },
+        {
+          "info": {
+            "name": "List Razorpay Transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/razorpay/:environment/transactions",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "subjectType",
+                "value": "team",
+                "type": "query",
+                "description": "Billing subject type. Must be provided together with subjectId."
+              },
+              {
+                "name": "subjectId",
+                "value": "team_123",
+                "type": "query",
+                "description": "Billing subject ID. Must be provided together with subjectType."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum rows to return."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Admin/debug read for InsForge's Razorpay transaction projection. Use app-owned fulfillment tables with RLS for end-user order, credit, or entitlement state."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

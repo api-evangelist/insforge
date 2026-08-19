@@ -1,0 +1,113 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Insforge AI Admin S3 Protocol API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "S3 Protocol",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "S3 protocol (GET)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/storage/v1/s3/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+              }
+            ]
+          },
+          "docs": "Dispatched to ListBuckets / ListObjectsV2 / GetObject / HeadObject / ListParts / GetBucketLocation / GetBucketVersioning based on path shape and query."
+        },
+        {
+          "info": {
+            "name": "S3 protocol (POST)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/storage/v1/s3/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+              }
+            ]
+          },
+          "docs": "Dispatched to CreateMultipartUpload / CompleteMultipartUpload / DeleteObjects based on query."
+        },
+        {
+          "info": {
+            "name": "S3 protocol (PUT)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/storage/v1/s3/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+              }
+            ]
+          },
+          "docs": "Dispatched to PutObject / UploadPart / CopyObject / CreateBucket based on path shape, query, and headers."
+        },
+        {
+          "info": {
+            "name": "S3 protocol (DELETE)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/storage/v1/s3/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+              }
+            ]
+          },
+          "docs": "Dispatched to DeleteObject / DeleteBucket / AbortMultipartUpload based on path and query."
+        },
+        {
+          "info": {
+            "name": "S3 protocol (HEAD)",
+            "type": "http"
+          },
+          "http": {
+            "method": "HEAD",
+            "url": "{{baseUrl}}/storage/v1/s3/:path",
+            "params": [
+              {
+                "name": "path",
+                "value": "",
+                "type": "path",
+                "description": "Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+              }
+            ]
+          },
+          "docs": "Dispatched to HeadBucket / HeadObject based on path shape."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,122 @@
+{
+  "item": [
+    {
+      "id": "fcc4be89-9d2c-4fb6-a71a-27e7aa8d8410",
+      "name": "Permissions",
+      "description": {
+        "content": "Manage helper endpoints for realtime RLS examples.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "4f247a63-87b0-4765-9270-2f73ac8773ba",
+          "name": "Get Realtime Permissions",
+          "request": {
+            "name": "Get Realtime Permissions",
+            "description": {
+              "content": "Retrieve RLS policies for subscribe (channels) and publish (messages) operations",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "realtime",
+                "permissions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "858be025-fa9f-4c8c-9ab2-4d56198c2c2f",
+              "name": "Realtime RLS permissions",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "realtime",
+                    "permissions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"subscribe\": {\n    \"policies\": [\n      {\n        \"policyName\": \"allow_authenticated_subscribe\",\n        \"tableName\": \"channels\",\n        \"command\": \"SELECT\",\n        \"roles\": [\n          \"authenticated\"\n        ],\n        \"using\": \"enabled = true\",\n        \"withCheck\": null\n      }\n    ]\n  },\n  \"publish\": {\n    \"policies\": [\n      {\n        \"policyName\": \"allow_authenticated_publish\",\n        \"tableName\": \"messages\",\n        \"command\": \"INSERT\",\n        \"roles\": [\n          \"authenticated\"\n        ],\n        \"using\": null,\n        \"withCheck\": \"true\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "fea0d036-a876-4551-b566-6f63d3e65a2c",
+    "name": "Insforge AI Admin Permissions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes",
+      "type": "text/plain"
+    }
+  }
+}

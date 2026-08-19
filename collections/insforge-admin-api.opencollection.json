@@ -1,0 +1,1630 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Insforge AI Admin API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Admin",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get all available AI models",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ai/models",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the normalized OpenRouter model catalog fetched from OpenRouter with output_modalities=all."
+        },
+        {
+          "info": {
+            "name": "Get Model Gateway overview",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ai/overview",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns key-level OpenRouter usage and activity time series when the key has activity access."
+        },
+        {
+          "info": {
+            "name": "Get active provider API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/ai/:provider/api-key",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path",
+                "description": "AI provider identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the active provider API key details for admin copy workflows. Currently only `openrouter` is supported."
+        },
+        {
+          "info": {
+            "name": "Rotate provider API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/ai/:provider/api-key/rotate",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path",
+                "description": "AI provider identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Rotate the active provider API key for cloud-managed Model Gateway credentials. Currently only `openrouter` is supported."
+        },
+        {
+          "info": {
+            "name": "Get authentication configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/config",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get current authentication settings including all configuration options (admin only)"
+        },
+        {
+          "info": {
+            "name": "Update authentication configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/auth/config",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update authentication settings (admin only)"
+        },
+        {
+          "info": {
+            "name": "List all users (admin only)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/users",
+            "params": [
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return"
+              },
+              {
+                "name": "search",
+                "value": "",
+                "type": "query",
+                "description": "Search by email or name"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns paginated list of users"
+        },
+        {
+          "info": {
+            "name": "Delete users (admin only)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/auth/users",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete multiple users by their IDs"
+        },
+        {
+          "info": {
+            "name": "Get specific user",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/users/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get user details by ID (admin only)"
+        },
+        {
+          "info": {
+            "name": "Admin login",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/admin/sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Authenticates admin user for dashboard access"
+        },
+        {
+          "info": {
+            "name": "Exchange cloud provider authorization code for admin session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/admin/sessions/exchange",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verifies an authorization code/JWT from from Insforge Cloud platform and issues an internal admin session token with project_admin role"
+        },
+        {
+          "info": {
+            "name": "Refresh admin dashboard access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/admin/refresh",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Uses the dashboard-only httpOnly `insforge_admin_refresh_token` cookie with an `X-CSRF-Token` header."
+        },
+        {
+          "info": {
+            "name": "Logout admin dashboard session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/admin/logout",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": ""
+              }
+            ]
+          },
+          "docs": "Clears the dashboard-only `insforge_admin_refresh_token` cookie.\n\nIf a valid admin refresh cookie is present, the request must include the `X-CSRF-Token`\nheader returned from admin login, admin session exchange, or admin refresh. Missing, expired,\ninvalid, or wrong-session-type admin refresh cookies are cleared idempotently and still return\nsuccess.\n"
+        },
+        {
+          "info": {
+            "name": "Get anon key (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/tokens/anon",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deprecated - use GET /api/metadata/anon-key instead. Returns the project's opaque anon key (`anon_...`) under the legacy `accessToken` field for backward compatibility. The anon key is a non-secret client identifier that maps requests to the `anon` role; it replaces the former non-expiring anonymous JWT and can be rotated via POST /api/secrets/anon-key/rotate (admin only)."
+        },
+        {
+          "info": {
+            "name": "List all OAuth configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/configs",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all configured OAuth providers (admin only)"
+        },
+        {
+          "info": {
+            "name": "Create OAuth configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/oauth/configs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new OAuth provider configuration (admin only)"
+        },
+        {
+          "info": {
+            "name": "Get OAuth configuration for specific provider",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/:provider/config",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get OAuth configuration including client secret (admin only)"
+        },
+        {
+          "info": {
+            "name": "Update OAuth configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/auth/oauth/:provider/config",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update OAuth provider configuration (admin only)"
+        },
+        {
+          "info": {
+            "name": "Delete OAuth configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/auth/oauth/:provider/config",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete OAuth provider configuration (admin only)"
+        },
+        {
+          "info": {
+            "name": "List all custom OAuth configurations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/custom/configs",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all configured custom OAuth providers (admin only)"
+        },
+        {
+          "info": {
+            "name": "Create custom OAuth configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/oauth/custom/configs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new custom OAuth provider configuration (admin only)"
+        },
+        {
+          "info": {
+            "name": "Get custom OAuth configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/custom/:key/config",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a custom OAuth configuration including client secret (admin only)"
+        },
+        {
+          "info": {
+            "name": "Update custom OAuth configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/auth/oauth/custom/:key/config",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update a custom OAuth provider configuration (admin only)"
+        },
+        {
+          "info": {
+            "name": "Delete custom OAuth configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/auth/oauth/custom/:key/config",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a custom OAuth provider configuration (admin only)"
+        },
+        {
+          "info": {
+            "name": "Get current admin session",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/admin/sessions/current",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the currently authenticated admin's basic info from the access token."
+        },
+        {
+          "info": {
+            "name": "Get SMTP configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/smtp-config",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get current SMTP email configuration (admin only)"
+        },
+        {
+          "info": {
+            "name": "Update SMTP configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/auth/smtp-config",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or update SMTP email configuration (admin only).\nWhen `enabled` is true, the fields `host`, `username`, `senderEmail`, and `senderName` are required by the backend validation.\nWhen `enabled` is false, these fields may be empty.\n"
+        },
+        {
+          "info": {
+            "name": "Get all email templates",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/email-templates",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns all configurable email templates (admin only)"
+        },
+        {
+          "info": {
+            "name": "Update email template",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/auth/email-templates/:type",
+            "params": [
+              {
+                "name": "type",
+                "value": "",
+                "type": "path",
+                "description": "Template type to update"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update a specific email template by type (admin only)"
+        },
+        {
+          "info": {
+            "name": "List deployments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/deployments",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of deployments to return."
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of deployments to skip."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns deployment runs ordered by creation time descending. Pagination metadata is returned in `Content-Range` headers."
+        },
+        {
+          "info": {
+            "name": "Create legacy deployment session (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a `WAITING` deployment run and returns presigned form data for the legacy source-zip upload flow. New tooling should use `/api/deployments/direct`."
+        },
+        {
+          "info": {
+            "name": "Create direct-upload deployment session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments/direct",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Registers a source file manifest and returns file IDs for direct file uploads."
+        },
+        {
+          "info": {
+            "name": "Get deployment metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/deployments/metadata",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the latest ready deployment ID, the default deployment URL, and any custom domain URL known to the provider."
+        },
+        {
+          "info": {
+            "name": "Update InsForge-hosted slug",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/deployments/slug",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates the Cloud project slug used for the `.insforge.site` domain. Pass `null` to clear the slug."
+        },
+        {
+          "info": {
+            "name": "List deployment environment variables",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/deployments/env-vars",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lists provider environment variable keys and metadata. Values are not included."
+        },
+        {
+          "info": {
+            "name": "Create or update deployment environment variables",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments/env-vars",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Upserts encrypted Vercel environment variables for production, preview, and development targets."
+        },
+        {
+          "info": {
+            "name": "Get deployment environment variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/deployments/env-vars/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Provider environment variable ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns one provider environment variable, including its decrypted value."
+        },
+        {
+          "info": {
+            "name": "Delete deployment environment variable",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/deployments/env-vars/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Provider environment variable ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes a provider environment variable by Vercel environment variable ID."
+        },
+        {
+          "info": {
+            "name": "List custom domains",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/deployments/domains",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lists user-owned custom domains configured on the provider project."
+        },
+        {
+          "info": {
+            "name": "Add custom domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments/domains",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Registers a user-owned custom domain on the provider project and returns DNS setup instructions."
+        },
+        {
+          "info": {
+            "name": "Verify custom domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments/domains/:domain/verify",
+            "params": [
+              {
+                "name": "domain",
+                "value": "app.example.com",
+                "type": "path",
+                "description": "User-owned custom domain."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Re-checks DNS configuration for a custom domain and returns the latest provider verification state."
+        },
+        {
+          "info": {
+            "name": "Remove custom domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/deployments/domains/:domain",
+            "params": [
+              {
+                "name": "domain",
+                "value": "app.example.com",
+                "type": "path",
+                "description": "User-owned custom domain."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Removes a user-owned custom domain from the provider project."
+        },
+        {
+          "info": {
+            "name": "Get deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/deployments/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Deployment run ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a deployment run by database ID."
+        },
+        {
+          "info": {
+            "name": "Upload direct deployment file content",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/deployments/:id/files/:fileId/content",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Deployment run ID."
+              },
+              {
+                "name": "fileId",
+                "value": "",
+                "type": "path",
+                "description": "Direct upload file ID returned by `POST /api/deployments/direct`."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Streams one registered file through InsForge to the provider. The request body must match the manifest size and SHA-1 digest."
+        },
+        {
+          "info": {
+            "name": "Start deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments/:id/start",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Deployment run ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Starts the provider deployment after source files are available."
+        },
+        {
+          "info": {
+            "name": "Sync deployment status",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments/:id/sync",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Deployment run ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Reads the latest provider state and stores it on the deployment run."
+        },
+        {
+          "info": {
+            "name": "Cancel deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/deployments/:id/cancel",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "Deployment run ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Cancels a provider deployment when available and marks the run as `CANCELED`."
+        },
+        {
+          "info": {
+            "name": "List all functions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/functions",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get all functions with their metadata"
+        },
+        {
+          "info": {
+            "name": "Create new function",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/functions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new function with code that runs in Deno runtime"
+        },
+        {
+          "info": {
+            "name": "Get function details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/functions/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "hello-world",
+                "type": "path",
+                "description": "Function slug identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a specific function including its code"
+        },
+        {
+          "info": {
+            "name": "Update function",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/functions/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "hello-world",
+                "type": "path",
+                "description": "Function slug identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update an existing function's code or metadata"
+        },
+        {
+          "info": {
+            "name": "Delete function",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/functions/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "hello-world",
+                "type": "path",
+                "description": "Function slug identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Permanently delete a function"
+        },
+        {
+          "info": {
+            "name": "List activity logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/logs",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "action",
+                "value": "",
+                "type": "query",
+                "description": "Filter by action type"
+              },
+              {
+                "name": "table",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List activity logs"
+        },
+        {
+          "info": {
+            "name": "Clear logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/logs",
+            "params": [
+              {
+                "name": "before",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Clear logs"
+        },
+        {
+          "info": {
+            "name": "Get logs statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/logs/stats",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get logs statistics"
+        },
+        {
+          "info": {
+            "name": "Get app metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/metadata",
+            "params": [
+              {
+                "name": "format",
+                "value": "",
+                "type": "query",
+                "description": "Response format. `json` returns structured JSON (default). `markdown` returns a human-readable Markdown document suitable for AI coding tools and developer onboarding."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns aggregated application metadata (auth, database, storage, functions, realtime, deployments). Use the `format` query parameter to choose between JSON and Markdown output."
+        },
+        {
+          "info": {
+            "name": "Get database metadata",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/metadata/database",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get database statistics and table information for dashboard"
+        },
+        {
+          "info": {
+            "name": "Get API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/metadata/api-key",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Admin-only endpoint to retrieve the API key"
+        },
+        {
+          "info": {
+            "name": "Get anon key",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/metadata/anon-key",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Admin-only endpoint to retrieve the project's opaque anon key (`anon_...`). The anon key is a non-secret client identifier that maps requests to the `anon` role - safe to embed in frontend bundles; row level security is the security boundary. Rotatable via POST /api/secrets/anon-key/rotate."
+        },
+        {
+          "info": {
+            "name": "List all secrets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/secrets",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns metadata for all secrets (without values)"
+        },
+        {
+          "info": {
+            "name": "Create a new secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/secrets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new encrypted secret with a unique key"
+        },
+        {
+          "info": {
+            "name": "Get secret value",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/secrets/:key",
+            "params": [
+              {
+                "name": "key",
+                "value": "STRIPE_API_KEY",
+                "type": "path",
+                "description": "Secret key identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the decrypted value of a specific secret by its key"
+        },
+        {
+          "info": {
+            "name": "Update secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/secrets/:key",
+            "params": [
+              {
+                "name": "key",
+                "value": "STRIPE_API_KEY",
+                "type": "path",
+                "description": "Secret key identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update an existing secret's value or metadata"
+        },
+        {
+          "info": {
+            "name": "Delete secret",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/secrets/:key",
+            "params": [
+              {
+                "name": "key",
+                "value": "STRIPE_API_KEY",
+                "type": "path",
+                "description": "Secret key identifier"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Mark a secret as inactive (soft delete). Cannot delete reserved secrets."
+        },
+        {
+          "info": {
+            "name": "Rotate API key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/secrets/api-key/rotate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Rotate the project's admin API key. A new key is generated and returned; the old key stays valid for the grace period (default 24 hours, max 168 / 7 days) so in-flight requests finish gracefully. Admin only."
+        },
+        {
+          "info": {
+            "name": "Rotate anon key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/secrets/anon-key/rotate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Rotate the project's opaque anon key (`anon_...`). A new key is generated and returned; the old key stays valid for the grace period (default 168 hours / 7 days, max 720) so already-deployed frontends and mobile binaries keep working while the new key ships. Admin only."
+        },
+        {
+          "info": {
+            "name": "Get storage configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/storage/config"
+          },
+          "docs": "Returns the current storage configuration including file size limits (admin only)"
+        },
+        {
+          "info": {
+            "name": "Update storage configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/storage/config",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update storage settings such as maximum file size (admin only)"
+        },
+        {
+          "info": {
+            "name": "List All Buckets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/storage/buckets"
+          },
+          "docs": "List All Buckets"
+        },
+        {
+          "info": {
+            "name": "Create New Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/storage/buckets",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create New Bucket"
+        },
+        {
+          "info": {
+            "name": "Update Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update Bucket"
+        },
+        {
+          "info": {
+            "name": "Delete Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete an entire bucket and all its objects"
+        },
+        {
+          "info": {
+            "name": "List Objects in Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/objects",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "users/",
+                "type": "query",
+                "description": "Filter objects by key prefix"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "search",
+                "value": "profile",
+                "type": "query",
+                "description": "Search objects by key (partial match)"
+              }
+            ]
+          },
+          "docs": "List Objects in Bucket"
+        },
+        {
+          "info": {
+            "name": "List Tables",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/database/tables",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List Tables"
+        },
+        {
+          "info": {
+            "name": "Create Table",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/database/tables",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create Table"
+        },
+        {
+          "info": {
+            "name": "Get Table Schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/database/tables/:tableName/schema",
+            "params": [
+              {
+                "name": "tableName",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get Table Schema"
+        },
+        {
+          "info": {
+            "name": "Update Table Schema",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/database/tables/:tableName/schema",
+            "params": [
+              {
+                "name": "tableName",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update Table Schema"
+        },
+        {
+          "info": {
+            "name": "Delete Table",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/database/tables/:tableName",
+            "params": [
+              {
+                "name": "tableName",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete Table"
+        },
+        {
+          "info": {
+            "name": "List Database Migrations",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/database/migrations",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List Database Migrations"
+        },
+        {
+          "info": {
+            "name": "Create and Execute Database Migration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/database/migrations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create and Execute Database Migration"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

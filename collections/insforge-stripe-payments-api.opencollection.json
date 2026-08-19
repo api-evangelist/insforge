@@ -1,0 +1,635 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Insforge AI Admin Stripe Payments API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Stripe Payments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Stripe Checkout Session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/checkout-sessions",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a local checkout attempt with the caller's user context and then create a Stripe Checkout Session. Subscription mode requires a billing subject."
+        },
+        {
+          "info": {
+            "name": "Create Stripe Customer Portal Session",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/customer-portal-sessions",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Stripe Billing Portal Session for an authenticated user's mapped billing subject."
+        },
+        {
+          "info": {
+            "name": "Get Stripe Payments Status",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/status",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return Stripe connection, sync, and managed webhook status for each environment."
+        },
+        {
+          "info": {
+            "name": "Get Stripe Key Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/config",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return masked Stripe key configuration for test and live environments."
+        },
+        {
+          "info": {
+            "name": "Configure Stripe Secret Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/config",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Validate and store a Stripe secret key. New Stripe accounts attempt managed webhook setup and then run a unified sync."
+        },
+        {
+          "info": {
+            "name": "Remove Stripe Secret Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/config",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Remove the configured Stripe secret key for one environment and best-effort remove managed webhook endpoints."
+        },
+        {
+          "info": {
+            "name": "Sync Stripe Payments State",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/stripe/sync",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Sync products, prices, customers, and subscriptions for every configured Stripe environment. Stripe remains the source of truth."
+        },
+        {
+          "info": {
+            "name": "Sync Stripe Payments State For One Environment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/sync",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Sync products, prices, customers, and subscriptions for one Stripe environment. Stripe remains the source of truth."
+        },
+        {
+          "info": {
+            "name": "Configure Managed Stripe Webhook",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/webhook",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create or recreate the InsForge-managed Stripe webhook endpoint for one environment."
+        },
+        {
+          "info": {
+            "name": "List Stripe Catalog",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Return mirrored Stripe products and prices for one environment."
+        },
+        {
+          "info": {
+            "name": "List Stripe Products",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/products",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List mirrored Stripe products for one environment."
+        },
+        {
+          "info": {
+            "name": "Create Stripe Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/products",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Stripe product in the requested environment, then mirror it locally after Stripe succeeds."
+        },
+        {
+          "info": {
+            "name": "Get Stripe Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/products/:productId",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "productId",
+                "value": "prod_123",
+                "type": "path",
+                "description": "Stripe product ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get one mirrored Stripe product and its associated prices."
+        },
+        {
+          "info": {
+            "name": "Update Stripe Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/products/:productId",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "productId",
+                "value": "prod_123",
+                "type": "path",
+                "description": "Stripe product ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update a Stripe product, then mirror it locally after Stripe succeeds."
+        },
+        {
+          "info": {
+            "name": "Delete Stripe Product",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/products/:productId",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "productId",
+                "value": "prod_123",
+                "type": "path",
+                "description": "Stripe product ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a Stripe product from one environment, then remove it from the local mirror."
+        },
+        {
+          "info": {
+            "name": "List Stripe Prices",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/prices",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "productId",
+                "value": "prod_123",
+                "type": "query",
+                "description": "Filter prices by Stripe product ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List mirrored Stripe prices for one environment, optionally filtered by product."
+        },
+        {
+          "info": {
+            "name": "Create Stripe Price",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/prices",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a Stripe price in the requested environment, then mirror it locally after Stripe succeeds."
+        },
+        {
+          "info": {
+            "name": "Get Stripe Price",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/prices/:priceId",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "priceId",
+                "value": "price_123",
+                "type": "path",
+                "description": "Stripe price ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get one mirrored Stripe price."
+        },
+        {
+          "info": {
+            "name": "Update Stripe Price",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/prices/:priceId",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "priceId",
+                "value": "price_123",
+                "type": "path",
+                "description": "Stripe price ID."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update mutable Stripe price fields, then mirror the price locally after Stripe succeeds."
+        },
+        {
+          "info": {
+            "name": "Archive Stripe Price",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/catalog/prices/:priceId",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "priceId",
+                "value": "price_123",
+                "type": "path",
+                "description": "Stripe price ID."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Archive a Stripe price in one environment, then mirror the archived state locally."
+        },
+        {
+          "info": {
+            "name": "List Stripe Subscriptions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/subscriptions",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "subjectType",
+                "value": "team",
+                "type": "query",
+                "description": "Billing subject type. Must be provided together with subjectId."
+              },
+              {
+                "name": "subjectId",
+                "value": "team_123",
+                "type": "query",
+                "description": "Billing subject ID. Must be provided together with subjectType."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum rows to return."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Admin/debug read for mirrored Stripe subscriptions. Use app-owned tables with RLS for end-user payment state."
+        },
+        {
+          "info": {
+            "name": "List Stripe Customers",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/customers",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum rows to return."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Admin/debug read for mirrored Stripe customers. This is a display mirror only and should not replace app-owned billing tables."
+        },
+        {
+          "info": {
+            "name": "List Stripe Transactions",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/payments/stripe/:environment/transactions",
+            "params": [
+              {
+                "name": "environment",
+                "value": "",
+                "type": "path",
+                "description": "Payment provider environment."
+              },
+              {
+                "name": "subjectType",
+                "value": "team",
+                "type": "query",
+                "description": "Billing subject type. Must be provided together with subjectId."
+              },
+              {
+                "name": "subjectId",
+                "value": "team_123",
+                "type": "query",
+                "description": "Billing subject ID. Must be provided together with subjectType."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum rows to return."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Admin/debug read for InsForge's Stripe transaction projection. Use app-owned fulfillment tables with RLS for end-user order, credit, or entitlement state."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

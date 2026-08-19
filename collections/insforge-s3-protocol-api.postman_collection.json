@@ -1,0 +1,787 @@
+{
+  "item": [
+    {
+      "id": "887eb535-c258-46ca-9137-accbe3afd11e",
+      "name": "S3 Protocol",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ee16079d-51ef-425d-8fa3-3b36d40bf15c",
+          "name": "S3 protocol (GET)",
+          "request": {
+            "name": "S3 protocol (GET)",
+            "description": {
+              "content": "Dispatched to ListBuckets / ListObjectsV2 / GetObject / HeadObject / ListParts / GetBucketLocation / GetBucketVersioning based on path shape and query.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "storage",
+                "v1",
+                "s3",
+                ":path"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "path",
+                  "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                }
+              ]
+            },
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "dd026814-fd33-40c3-afa4-21f3cb31c1d4",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "1c8145fd-22f4-489f-a47b-f51676b0b468",
+              "name": "Partial content (Range GetObject)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Partial Content",
+              "code": 206,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "3558d333-93c5-4d29-8c2b-d76bca6bc99b",
+              "name": "SignatureDoesNotMatch / InvalidAccessKeyId / RequestTimeTooSkewed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "31a55617-ceeb-4580-bf79-9ddce6d1d7f7",
+              "name": "NoSuchBucket / NoSuchKey",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "6acab70e-de35-4014-bf2d-9c9edf438d4c",
+              "name": "NotImplemented (backend is not S3-compatible, or op unsupported)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Not Implemented",
+              "code": 501,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "81cf45d0-ab5e-4025-8e64-7f787d32647d",
+          "name": "S3 protocol (PUT)",
+          "request": {
+            "name": "S3 protocol (PUT)",
+            "description": {
+              "content": "Dispatched to PutObject / UploadPart / CopyObject / CreateBucket based on path shape, query, and headers.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "storage",
+                "v1",
+                "s3",
+                ":path"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "path",
+                  "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                }
+              ]
+            },
+            "method": "PUT"
+          },
+          "response": [
+            {
+              "id": "1fc93ec7-150c-4325-b3c9-6aa0003d6c27",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ee0ead7d-d2be-4212-95da-21ae601858b5",
+              "name": "EntityTooLarge / InvalidArgument / InvalidBucketName / MalformedXML",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "4bcf0972-486e-4567-ac0b-ffaccd7b0b6b",
+              "name": "SignatureDoesNotMatch / AuthorizationHeaderMalformed",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Forbidden",
+              "code": 403,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "a74992e3-8342-497f-b893-9e0731bdd3af",
+              "name": "BucketAlreadyOwnedByYou",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "PUT",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "60ad691f-48ca-450b-9edb-a97e7d999d18",
+          "name": "S3 protocol (POST)",
+          "request": {
+            "name": "S3 protocol (POST)",
+            "description": {
+              "content": "Dispatched to CreateMultipartUpload / CompleteMultipartUpload / DeleteObjects based on query.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "storage",
+                "v1",
+                "s3",
+                ":path"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "path",
+                  "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                }
+              ]
+            },
+            "method": "POST"
+          },
+          "response": [
+            {
+              "id": "8a1610d0-e275-43fb-9f6e-8eb58256ee51",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0e6a0122-5faa-4e98-801e-51317fd2147f",
+          "name": "S3 protocol (DELETE)",
+          "request": {
+            "name": "S3 protocol (DELETE)",
+            "description": {
+              "content": "Dispatched to DeleteObject / DeleteBucket / AbortMultipartUpload based on path and query.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "storage",
+                "v1",
+                "s3",
+                ":path"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "path",
+                  "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                }
+              ]
+            },
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "f0c6ee7b-e64e-493a-85e9-77ee0e3ae25c",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "acdabfa5-7ecd-4896-8867-fee30b2e1f75",
+              "name": "BucketNotEmpty",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Conflict",
+              "code": 409,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "49326dc4-8689-4690-a0b7-fc8a4e832739",
+          "name": "S3 protocol (HEAD)",
+          "request": {
+            "name": "S3 protocol (HEAD)",
+            "description": {
+              "content": "Dispatched to HeadBucket / HeadObject based on path shape.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "storage",
+                "v1",
+                "s3",
+                ":path"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "path",
+                  "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                }
+              ]
+            },
+            "method": "HEAD"
+          },
+          "response": [
+            {
+              "id": "bf449a14-c69a-4db2-bd61-6686739888c7",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "HEAD",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "c6ee054d-2e70-4086-be29-cdde96f53a91",
+              "name": "NoSuchBucket / NoSuchKey",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "storage",
+                    "v1",
+                    "s3",
+                    ":path"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "path",
+                      "description": "(Required) Standard path-style S3 path, e.g. `my-bucket/object-key`,\n`my-bucket` (bucket-level ops), or empty for ListBuckets.\n"
+                    }
+                  ]
+                },
+                "method": "HEAD",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "a5ac5e74-82dc-4d30-a8d9-85c080541518",
+    "name": "Insforge AI Admin S3 Protocol API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes",
+      "type": "text/plain"
+    }
+  }
+}

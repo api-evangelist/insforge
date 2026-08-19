@@ -5,18 +5,19 @@ source: https://www.npmjs.com/package/@insforge/mcp
 docs: https://docs.insforge.dev/mcp-setup
 server:
   name: insforge
-  package: "@insforge/mcp"
+  package: '@insforge/mcp'
   version: 1.2.11
   transport: stdio
   install: npx @insforge/mcp
-  description: >-
-    Official Model Context Protocol server for InsForge, exposing InsForge
-    backend operations (database, auth, storage, functions, AI gateway, realtime,
-    payments, deployments) as MCP tools for MCP-compatible coding agents. Offered
-    in self-hosted and cloud options; the CLI can install the MCP server into an
-    AI coding assistant (including a one-click VS Code extension flow).
-notes: >-
-  InsForge is agent-native by design: alongside the MCP server it ships packaged
-  Agent Skills (see skills/) and a CLI harness. The authorization server also
-  advertises an agent_auth block for autonomous agent registration via WorkOS
-  ID-JAG identity assertions.
+  description: Official Model Context Protocol server for InsForge, exposing InsForge backend operations
+    (database, auth, storage, functions, AI gateway, realtime, payments, deployments) as MCP tools for
+    MCP-compatible coding agents. Offered in self-hosted and cloud options; the CLI can install the MCP
+    server into an AI coding assistant (including a one-click VS Code extension flow).
+notes: 'InsForge is agent-native by design: alongside the MCP server it ships packaged Agent Skills (see
+  skills/) and a CLI harness. The authorization server also advertises an agent_auth block for autonomous
+  agent registration via WorkOS ID-JAG identity assertions.'
+deployment:
+  mode: local-stdio
+  verified: searched
+  checked: '2026-08-12'
+  source: catalog MCP census

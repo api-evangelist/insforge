@@ -1,0 +1,758 @@
+{
+  "item": [
+    {
+      "id": "fc6a2024-9bd7-4943-8622-a6bbdca3de13",
+      "name": "S3 Access Keys",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "c87cd201-93fb-4da3-8fac-d50ded5602aa",
+          "name": "Get S3 Gateway Config",
+          "request": {
+            "name": "Get S3 Gateway Config",
+            "description": {
+              "content": "Return the externally-reachable endpoint URL and the SigV4 signing\nregion for the S3 protocol gateway. The endpoint is assembled from\nthe server's `VITE_API_BASE_URL` env var plus `/storage/v1/s3`, and\nthe region is `AWS_REGION` (default `us-east-2`).\n\nIntended for Dashboard display so the UI doesn't make any\nbackend-topology assumptions client-side.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "storage",
+                "s3",
+                "config"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "906082c8-fb96-46d7-a0ea-d5ab4bcc40b5",
+              "name": "Gateway config",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "config"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"endpoint\": \"https://proj.insforge.app/storage/v1/s3\",\n    \"region\": \"us-east-2\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "3e5593d4-ef8d-49ed-a1bb-639e6ac4e354",
+              "name": "Missing or invalid API key / admin token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "config"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "df5f3b6d-4207-435c-8916-9a9fb00756f0",
+          "name": "List S3 Access Keys",
+          "request": {
+            "name": "List S3 Access Keys",
+            "description": {
+              "content": "Return every S3 access key configured for this project. Plaintext\nsecrets are **never** returned here — the secret is only shown once\nin the response of `POST /api/storage/s3/access-keys`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "storage",
+                "s3",
+                "access-keys"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "72f07dcd-3bc2-4781-8770-65f2f8a688a5",
+              "name": "List of access keys (without secrets)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": [\n    {\n      \"id\": \"11111111-1111-1111-1111-111111111111\",\n      \"accessKeyId\": \"INSFABC123DEF456GH78\",\n      \"description\": \"backup-script\",\n      \"createdAt\": \"2026-04-22T00:00:00Z\",\n      \"lastUsedAt\": null\n    },\n    {\n      \"id\": \"11111111-1111-1111-1111-111111111111\",\n      \"accessKeyId\": \"INSFABC123DEF456GH78\",\n      \"description\": \"backup-script\",\n      \"createdAt\": \"2026-04-22T00:00:00Z\",\n      \"lastUsedAt\": null\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "afee2321-064b-4f0b-bfba-49b8f7f35c22",
+              "name": "Missing or invalid API key / admin token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2861f637-516b-4149-9664-f1aab6f8eb26",
+              "name": "Rate limit exceeded (20 requests / 15 min / IP)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9abe8ee7-9f21-41ce-b68a-23821539ea23",
+          "name": "Create S3 Access Key",
+          "request": {
+            "name": "Create S3 Access Key",
+            "description": {
+              "content": "Mint a new S3 credential pair usable against the `/storage/v1/s3`\nprotocol gateway. The plaintext `secretAccessKey` in the response\nis returned **exactly once** — it is encrypted at rest and can\nnever be retrieved again. If you lose it, revoke and re-create.\n\nLimits:\n- 50 keys per project (hard cap, enforced transactionally).\n- Rate-limited to 20 management requests per 15 min per IP.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "storage",
+                "s3",
+                "access-keys"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "11f410c4-86f0-4d2b-8c3d-a9290119c5f5",
+              "name": "Access key created",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"backup-script\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"data\": {\n    \"id\": \"11111111-1111-1111-1111-111111111111\",\n    \"accessKeyId\": \"INSFABC123DEF456GH78\",\n    \"secretAccessKey\": \"x7K2-a_pL9qRs4N8vYzWcE1fH5gJ3mUtBoD6ViXk\",\n    \"description\": \"backup-script\",\n    \"createdAt\": \"2026-04-22T00:00:00Z\",\n    \"lastUsedAt\": null\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "87a0fc1a-f7ca-41d3-a4af-ca808543bedd",
+              "name": "Validation error or 50-key cap reached",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"backup-script\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "2afa1422-097e-4424-8b51-6a2b91900de4",
+              "name": "Missing or invalid API key / admin token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"backup-script\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "0f7ca523-ec25-4b0b-ae69-4817e121ac09",
+              "name": "Rate limit exceeded (20 requests / 15 min / IP)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"description\": \"backup-script\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1fa8c5b2-7657-4495-b130-6afec228fd45",
+          "name": "Revoke S3 Access Key",
+          "request": {
+            "name": "Revoke S3 Access Key",
+            "description": {
+              "content": "Revoke an S3 access key by its id. The in-memory LRU cache is\ninvalidated synchronously so subsequent S3 protocol requests with\nthis credential return `403 InvalidAccessKeyId`.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "api",
+                "storage",
+                "s3",
+                "access-keys",
+                ":id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<uuid>",
+                  "key": "id",
+                  "description": "(Required) UUID of the access key to revoke (from the create/list response)"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "4be9e75d-7747-46ed-9154-cc7674e408c6",
+              "name": "Access key revoked",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) UUID of the access key to revoke (from the create/list response)"
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8aba2191-4d5f-4ae0-8b20-6172e9afc6ea",
+              "name": "Missing or invalid API key / admin token",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) UUID of the access key to revoke (from the create/list response)"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "214e9a6c-55c1-4469-a71e-103d52397d21",
+              "name": "Access key not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) UUID of the access key to revoke (from the create/list response)"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "fcbdbf99-0791-4d47-9f9f-b7e8c6611426",
+              "name": "Rate limit exceeded (20 requests / 15 min / IP)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "api",
+                    "storage",
+                    "s3",
+                    "access-keys",
+                    ":id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<uuid>",
+                      "key": "id",
+                      "description": "(Required) UUID of the access key to revoke (from the create/list response)"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"error\": \"VALIDATION_ERROR\",\n  \"message\": \"Invalid request\",\n  \"statusCode\": 400,\n  \"nextActions\": \"Check your request parameters\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "/",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "d79afca5-c6d6-4bc0-ac5d-432b62531825",
+    "name": "Insforge AI Admin S3 Access Keys API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes",
+      "type": "text/plain"
+    }
+  }
+}

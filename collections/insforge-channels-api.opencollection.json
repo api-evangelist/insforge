@@ -1,0 +1,122 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Insforge AI Admin Channels API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Channels",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List All Channels",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/realtime/channels",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve all configured realtime channels"
+        },
+        {
+          "info": {
+            "name": "Create Channel",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/realtime/channels",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create a new realtime channel with a pattern for subscription matching"
+        },
+        {
+          "info": {
+            "name": "Get Channel by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/realtime/channels/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "550e8400-e29b-41d4-a716-446655440000",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve a specific channel by its UUID"
+        },
+        {
+          "info": {
+            "name": "Update Channel",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/realtime/channels/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "550e8400-e29b-41d4-a716-446655440000",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update an existing channel's configuration"
+        },
+        {
+          "info": {
+            "name": "Delete Channel",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/realtime/channels/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "550e8400-e29b-41d4-a716-446655440000",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete a channel definition. Existing message history is preserved with null channelId values."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

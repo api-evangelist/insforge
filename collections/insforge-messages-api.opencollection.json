@@ -1,0 +1,103 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Insforge AI Admin Messages API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Messages",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/realtime/messages",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "550e8400-e29b-41d4-a716-446655440000",
+                "type": "query",
+                "description": "Filter messages by channel ID"
+              },
+              {
+                "name": "eventName",
+                "value": "order.created",
+                "type": "query",
+                "description": "Filter messages by event name"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of messages to return"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of messages to skip"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve message history with optional filters"
+        },
+        {
+          "info": {
+            "name": "Clear Messages",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/realtime/messages",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Permanently delete all stored realtime messages"
+        },
+        {
+          "info": {
+            "name": "Get Message Statistics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/realtime/messages/stats",
+            "params": [
+              {
+                "name": "channelId",
+                "value": "550e8400-e29b-41d4-a716-446655440000",
+                "type": "query",
+                "description": "Filter stats by channel ID"
+              },
+              {
+                "name": "since",
+                "value": "2024-01-01T00:00:00Z",
+                "type": "query",
+                "description": "Filter stats since this timestamp"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve aggregated statistics about messages"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

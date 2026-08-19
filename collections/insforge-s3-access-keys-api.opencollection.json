@@ -1,0 +1,74 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Insforge AI Admin S3 Access Keys API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "S3 Access Keys",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get S3 Gateway Config",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/storage/s3/config"
+          },
+          "docs": "Return the externally-reachable endpoint URL and the SigV4 signing\nregion for the S3 protocol gateway. The endpoint is assembled from\nthe server's `VITE_API_BASE_URL` env var plus `/storage/v1/s3`, and\nthe region is `AWS_REGION` (default `us-east-2`).\n\nIntended for Dashboard display so the UI doesn't make any\nbackend-topology assumptions client-side.\n"
+        },
+        {
+          "info": {
+            "name": "List S3 Access Keys",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/storage/s3/access-keys"
+          },
+          "docs": "Return every S3 access key configured for this project. Plaintext\nsecrets are **never** returned here — the secret is only shown once\nin the response of `POST /api/storage/s3/access-keys`.\n"
+        },
+        {
+          "info": {
+            "name": "Create S3 Access Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/storage/s3/access-keys",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Mint a new S3 credential pair usable against the `/storage/v1/s3`\nprotocol gateway. The plaintext `secretAccessKey` in the response\nis returned **exactly once** — it is encrypted at rest and can\nnever be retrieved again. If you lose it, revoke and re-create.\n\nLimits:\n- 50 keys per project (hard cap, enforced transactionally).\n- Rate-limited to 20 management requests per 15 min per IP.\n"
+        },
+        {
+          "info": {
+            "name": "Revoke S3 Access Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/storage/s3/access-keys/:id",
+            "params": [
+              {
+                "name": "id",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the access key to revoke (from the create/list response)"
+              }
+            ]
+          },
+          "docs": "Revoke an S3 access key by its id. The in-memory LRU cache is\ninvalidated synchronously so subsequent S3 protocol requests with\nthis credential return `403 InvalidAccessKeyId`.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

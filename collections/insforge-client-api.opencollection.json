@@ -1,0 +1,1126 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Insforge AI Admin Client API",
+    "version": "1.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Client",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Generate chat completion (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/ai/chat/completion",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deprecated compatibility proxy. New integrations should call https://openrouter.ai/api/v1/chat/completions directly with the provisioned OpenRouter key."
+        },
+        {
+          "info": {
+            "name": "Generate images (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/ai/image/generation",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deprecated compatibility proxy. New integrations should use OpenRouter image-capable models directly with the provisioned OpenRouter key."
+        },
+        {
+          "info": {
+            "name": "Generate embeddings (deprecated)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/ai/embeddings",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deprecated compatibility proxy. New integrations should call https://openrouter.ai/api/v1/embeddings directly with the provisioned OpenRouter key."
+        },
+        {
+          "info": {
+            "name": "Get public authentication configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/public-config"
+          },
+          "docs": "Get all public authentication configuration including OAuth providers and email auth settings (public endpoint)"
+        },
+        {
+          "info": {
+            "name": "Update current user's profile",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/auth/profiles/current",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the profile of the currently authenticated user"
+        },
+        {
+          "info": {
+            "name": "Get user profile by ID",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/profiles/:userId",
+            "params": [
+              {
+                "name": "userId",
+                "value": "",
+                "type": "path",
+                "description": "User ID"
+              }
+            ]
+          },
+          "docs": "Get public profile information for a user by their ID (public endpoint)"
+        },
+        {
+          "info": {
+            "name": "Register new user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/users",
+            "params": [
+              {
+                "name": "client_type",
+                "value": "",
+                "type": "query",
+                "description": "Client type determines how refresh tokens are returned:\n- web: Refresh token stored in httpOnly cookie, csrfToken returned in response\n- mobile/desktop/server: refreshToken returned directly in response body\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new user account"
+        },
+        {
+          "info": {
+            "name": "User login",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/sessions",
+            "params": [
+              {
+                "name": "client_type",
+                "value": "",
+                "type": "query",
+                "description": "Client type determines how refresh tokens are returned:\n- web: Refresh token stored in httpOnly cookie, csrfToken returned in response\n- mobile/desktop/server: refreshToken returned directly in response body\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Authenticates user and returns access token. For web clients, sets httpOnly refresh token cookie. For mobile/desktop/server clients, returns refreshToken in response body."
+        },
+        {
+          "info": {
+            "name": "Refresh access token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/refresh",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "client_type",
+                "value": "",
+                "type": "query",
+                "description": "Client type determines how refresh tokens are handled:\n- web: Refresh token from httpOnly cookie, requires X-CSRF-Token header\n- mobile/desktop/server: refreshToken provided in request body, new refreshToken returned in response\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Refresh access token using refresh token.\n- Web clients: Use httpOnly refresh token cookie with X-CSRF-Token header\n- Mobile/Desktop/Server clients: Send refreshToken in request body\n"
+        },
+        {
+          "info": {
+            "name": "Logout user",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/logout",
+            "headers": [
+              {
+                "name": "X-CSRF-Token",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "client_type",
+                "value": "",
+                "type": "query",
+                "description": "Client type. Web clients clear the httpOnly refresh cookie; other clients should discard their local refresh token."
+              }
+            ]
+          },
+          "docs": "Logout the current client session.\n\nWeb clients use the httpOnly refresh token cookie. If a valid web refresh cookie is present,\nthe request must include the `X-CSRF-Token` header returned from login, registration, or refresh.\nMissing, expired, invalid, or wrong-session-type refresh cookies are cleared idempotently and still\nreturn success. Mobile, desktop, and server clients do not have server-side logout state and should\ndiscard their stored refresh token after this request.\n"
+        },
+        {
+          "info": {
+            "name": "Get current session",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/sessions/current",
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns the currently authenticated user's basic info from the access token.\nProject admin tokens return a projectAdmin session object instead of an auth.users row.\n\nThis endpoint does not refresh expired access tokens by itself.\nFor browser apps using the TypeScript SDK, call `auth.getCurrentUser()`\nduring startup. The SDK will use the httpOnly refresh cookie automatically\nwhen it can refresh the session. Server, mobile, and other non-browser\nclients should call `/api/auth/refresh` explicitly.\n"
+        },
+        {
+          "info": {
+            "name": "Send email verification (code or link based on config)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/email/send-verification",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Send email verification using the method configured in auth settings (verifyEmailMethod). When method is 'code', sends a 6-digit numeric code. When method is 'link', sends a browser verification link that goes through an InsForge backend endpoint first. Prevents user enumeration by returning success even if email doesn't exist."
+        },
+        {
+          "info": {
+            "name": "Verify email from browser link click",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/email/verify-link",
+            "params": [
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "64-character email verification token from the email link"
+              }
+            ]
+          },
+          "docs": "Browser-oriented link verification flow.\n\nThis endpoint is intended for users clicking verification links in email.\nIt validates the token on the backend and redirects the browser to the\nstored, validated `redirectTo` URL with the verification result.\n\nRedirect query params:\n- Success: `insforge_status=success&insforge_type=verify_email`\n- Error: `insforge_status=error&insforge_type=verify_email&insforge_error=...`\n- `insforge_status`: `success` or `error`\n- `insforge_type`: always `verify_email"
+        },
+        {
+          "info": {
+            "name": "Verify email with code",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/email/verify",
+            "params": [
+              {
+                "name": "client_type",
+                "value": "",
+                "type": "query",
+                "description": "Client type determines how refresh tokens are returned:\n- web: Refresh token stored in httpOnly cookie, csrfToken returned in response\n- mobile/desktop/server: refreshToken returned directly in response body\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Verify email address with a 6-digit code.\n\nSuccessfully verified users will receive a session token.\n\nBrowser email clicks should use `GET /api/auth/email/verify-link`.\n`POST /api/auth/email/verify` is the JSON API for 6-digit code submission.\n"
+        },
+        {
+          "info": {
+            "name": "Send password reset (code or link based on config)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/email/send-reset-password",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Send password reset email using the method configured in auth settings (resetPasswordMethod). When method is 'code', sends a 6-digit numeric code for two-step flow. When method is 'link', sends a browser reset link that goes through an InsForge backend endpoint first. Prevents user enumeration by returning success even if email doesn't exist."
+        },
+        {
+          "info": {
+            "name": "Exchange reset password code for reset token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/email/exchange-reset-password-token",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Step 1 of two-step password reset flow (only used when resetPasswordMethod is 'code'):\n1. Verify the 6-digit code sent to user's email\n2. Return a reset token that can be used to actually reset the password\n\nThis endpoint is not used when resetPasswordMethod is 'link', because the browser reset-link flow uses the emailed link token directly.\n"
+        },
+        {
+          "info": {
+            "name": "Open password reset flow from browser link click",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/email/reset-password-link",
+            "params": [
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "64-character password reset token from the email link"
+              }
+            ]
+          },
+          "docs": "Browser-oriented password reset link flow.\n\nThis endpoint is intended for users clicking password reset links in email.\nIt validates the token on the backend and redirects the browser to the\nstored, validated `redirectTo` URL with the reset token in the query string.\n\nRedirect query params:\n- Ready: `token=...&insforge_status=ready&insforge_type=reset_password`\n- Error: `insforge_status=error&insforge_type=reset_password&insforge_error=...`\n- `token`: present only when `insforge_status=ready`\n- "
+        },
+        {
+          "info": {
+            "name": "Reset password with token",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/email/reset-password",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Reset user password with a token. The token can be:\n- Magic link token (64-character hex token from send-reset-password when method is 'link')\n- Reset token (from exchange-reset-password-token after code verification when method is 'code')\n\nBoth token types use RESET_PASSWORD purpose and are verified the same way.\n\nFlow summary:\n- Code method: send-reset-password → exchange-reset-password-token → reset-password (with resetToken)\n- Link method: send-reset-password → GET /api/auth/email/reset-pass"
+        },
+        {
+          "info": {
+            "name": "Initiate OAuth flow (PKCE)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/:provider",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "redirect_uri",
+                "value": "",
+                "type": "query",
+                "description": "URL to redirect after authentication (receives insforge_code parameter)"
+              },
+              {
+                "name": "code_challenge",
+                "value": "",
+                "type": "query",
+                "description": "PKCE code challenge for mobile/desktop/server clients.\nGenerate using: Base64URL(SHA256(code_verifier))\nRequired for secure token exchange in native apps or trusted server-side clients.\n"
+              }
+            ]
+          },
+          "docs": "Generate OAuth authorization URL for any supported provider using PKCE flow.\n\nFor mobile/desktop/server clients using PKCE:\n1. Generate code_verifier (random string, 43-128 chars)\n2. Generate code_challenge = Base64URL(SHA256(code_verifier))\n3. Call this endpoint with code_challenge\n4. After OAuth callback, use /api/auth/oauth/exchange with code_verifier\n"
+        },
+        {
+          "info": {
+            "name": "Exchange OAuth code for tokens (PKCE)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/oauth/exchange",
+            "params": [
+              {
+                "name": "client_type",
+                "value": "",
+                "type": "query",
+                "description": "Client type determines how refresh tokens are returned:\n- web: Refresh token stored in httpOnly cookie, csrfToken returned in response\n- mobile/desktop/server: refreshToken returned directly in response body\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Exchange the insforge_code (received from OAuth callback) for access and refresh tokens.\n\nThis endpoint is used for PKCE flow in mobile/desktop/server clients:\n1. After OAuth callback, your redirect_uri receives `insforge_code` parameter\n2. Call this endpoint with the code and your original code_verifier\n3. Receive access token and refresh token in response\n\nThe code_verifier must match the code_challenge sent during OAuth initiation.\n"
+        },
+        {
+          "info": {
+            "name": "Shared OAuth callback handler",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/shared/callback/:state",
+            "params": [
+              {
+                "name": "state",
+                "value": "",
+                "type": "path",
+                "description": "JWT state parameter"
+              },
+              {
+                "name": "success",
+                "value": "",
+                "type": "query",
+                "description": "Success flag"
+              },
+              {
+                "name": "error",
+                "value": "",
+                "type": "query",
+                "description": "Error message"
+              },
+              {
+                "name": "payload",
+                "value": "",
+                "type": "query",
+                "description": "Base64 encoded user payload"
+              }
+            ]
+          },
+          "docs": "Handles OAuth callbacks from InsForge Cloud shared OAuth"
+        },
+        {
+          "info": {
+            "name": "Provider-specific OAuth callback (GET)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/:provider/callback",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "code",
+                "value": "",
+                "type": "query",
+                "description": "Authorization code from OAuth provider"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "JWT state with redirect URI and optional code_challenge"
+              },
+              {
+                "name": "token",
+                "value": "",
+                "type": "query",
+                "description": "Direct ID token (for some providers)"
+              }
+            ]
+          },
+          "docs": "OAuth callback endpoint for provider-specific flows (most providers use GET).\n\nResponse varies based on the original OAuth initiation:\n- With code_challenge (PKCE): Redirects with `insforge_code` for exchange endpoint\n- Without code_challenge (web): Redirects with `access_token` and sets httpOnly cookie\n"
+        },
+        {
+          "info": {
+            "name": "Provider-specific OAuth callback (POST)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/oauth/:provider/callback",
+            "params": [
+              {
+                "name": "provider",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "form-urlencoded",
+              "data": [
+                {
+                  "name": "code",
+                  "value": ""
+                },
+                {
+                  "name": "state",
+                  "value": ""
+                },
+                {
+                  "name": "id_token",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "OAuth callback endpoint for providers that use POST (e.g., Apple with form_post response mode).\n\nResponse varies based on the original OAuth initiation:\n- With code_challenge (PKCE): Redirects with `insforge_code` for exchange endpoint\n- Without code_challenge (web): Redirects with `access_token` and sets httpOnly cookie\n"
+        },
+        {
+          "info": {
+            "name": "Initiate custom OAuth flow (PKCE)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/custom/:key",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "redirect_uri",
+                "value": "",
+                "type": "query",
+                "description": "URL to redirect after authentication (receives insforge_code parameter)"
+              },
+              {
+                "name": "code_challenge",
+                "value": "",
+                "type": "query",
+                "description": "PKCE code challenge for mobile/desktop/server clients"
+              }
+            ]
+          },
+          "docs": "Generate OAuth authorization URL for a configured custom OAuth provider using PKCE flow"
+        },
+        {
+          "info": {
+            "name": "Custom OAuth callback (GET)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/auth/oauth/custom/:key/callback",
+            "params": [
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "code",
+                "value": "",
+                "type": "query",
+                "description": "Authorization code from the custom OAuth provider"
+              },
+              {
+                "name": "state",
+                "value": "",
+                "type": "query",
+                "description": "Signed OAuth state payload"
+              }
+            ]
+          },
+          "docs": "OAuth callback endpoint for custom OAuth providers"
+        },
+        {
+          "info": {
+            "name": "Sign in with ID token (Google One Tap, native SDKs)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/auth/id-token",
+            "params": [
+              {
+                "name": "client_type",
+                "value": "",
+                "type": "query",
+                "description": "Client type determines how refresh tokens are returned:\n- web: Refresh token stored in httpOnly cookie, csrfToken returned in response\n- mobile/desktop/server: refreshToken returned directly in response body\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Authenticate a user using an ID token obtained from a native SDK (e.g., Google One Tap).\nCurrently only the `google` provider is supported.\n"
+        },
+        {
+          "info": {
+            "name": "Send raw HTML email",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/email/send-raw",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Send a custom HTML email to one or more recipients. Requires user authentication."
+        },
+        {
+          "info": {
+            "name": "Execute function (GET)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/functions/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "hello-world",
+                "type": "path",
+                "description": "Function slug identifier"
+              }
+            ]
+          },
+          "docs": "Execute a function using GET method. Proxied to Deno runtime."
+        },
+        {
+          "info": {
+            "name": "Execute function (POST)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/functions/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "hello-world",
+                "type": "path",
+                "description": "Function slug identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute a function using POST method with JSON body. Proxied to Deno runtime."
+        },
+        {
+          "info": {
+            "name": "Execute function (PUT)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/functions/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "hello-world",
+                "type": "path",
+                "description": "Function slug identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute a function using PUT method. Proxied to Deno runtime."
+        },
+        {
+          "info": {
+            "name": "Execute function (PATCH)",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/functions/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "hello-world",
+                "type": "path",
+                "description": "Function slug identifier"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Execute a function using PATCH method. Proxied to Deno runtime."
+        },
+        {
+          "info": {
+            "name": "Execute function (DELETE)",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/functions/:slug",
+            "params": [
+              {
+                "name": "slug",
+                "value": "hello-world",
+                "type": "path",
+                "description": "Function slug identifier"
+              }
+            ]
+          },
+          "docs": "Execute a function using DELETE method. Proxied to Deno runtime."
+        },
+        {
+          "info": {
+            "name": "Health check",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/health"
+          },
+          "docs": "Check if the API is running and healthy"
+        },
+        {
+          "info": {
+            "name": "Query Records",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/database/records/:tableName",
+            "params": [
+              {
+                "name": "tableName",
+                "value": "posts",
+                "type": "path",
+                "description": "Name of the table to query"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of records to return"
+              },
+              {
+                "name": "offset",
+                "value": "",
+                "type": "query",
+                "description": "Number of records to skip for pagination"
+              },
+              {
+                "name": "order",
+                "value": "createdAt.desc",
+                "type": "query",
+                "description": "Sort order (e.g., \"createdAt.desc\", \"name.asc\")"
+              },
+              {
+                "name": "select",
+                "value": "id,title,content",
+                "type": "query",
+                "description": "Comma-separated list of columns to return"
+              },
+              {
+                "name": "field",
+                "value": "status=eq.active",
+                "type": "query",
+                "description": "Filter by field value (e.g., \"?status=eq.active\", \"?age=gt.18\")"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Query records from a table with filtering, sorting, and pagination"
+        },
+        {
+          "info": {
+            "name": "Create Records",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/database/records/:tableName",
+            "headers": [
+              {
+                "name": "Prefer",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "tableName",
+                "value": "posts",
+                "type": "path",
+                "description": "Name of the table"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create one or more records. Request body MUST be an array."
+        },
+        {
+          "info": {
+            "name": "Update Records",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/api/database/records/:tableName",
+            "headers": [
+              {
+                "name": "Prefer",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "tableName",
+                "value": "posts",
+                "type": "path",
+                "description": "Name of the table"
+              },
+              {
+                "name": "id",
+                "value": "eq.123e4567-e89b-12d3-a456-426614174000",
+                "type": "query",
+                "description": "Filter records by ID (e.g., \"?id=eq.123e4567-e89b-12d3-a456-426614174000\")"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update records matching query filters"
+        },
+        {
+          "info": {
+            "name": "Delete Records",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/database/records/:tableName",
+            "headers": [
+              {
+                "name": "Prefer",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "tableName",
+                "value": "posts",
+                "type": "path",
+                "description": "Name of the table"
+              },
+              {
+                "name": "id",
+                "value": "eq.123e4567-e89b-12d3-a456-426614174000",
+                "type": "query",
+                "description": "Filter records by ID (e.g., \"?id=eq.123e4567-e89b-12d3-a456-426614174000\")"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete records matching query filters"
+        },
+        {
+          "info": {
+            "name": "Upload Object with Auto-Generated Key",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/objects",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Upload Object with Auto-Generated Key"
+        },
+        {
+          "info": {
+            "name": "Delete Multiple Objects",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/objects",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Deletes up to 1000 objects from a bucket for the authenticated caller. Object row deletion is authorized through storage RLS, and the response reports per-key outcomes for rows deleted from the database, keys not visible or missing, and provider-level failures."
+        },
+        {
+          "info": {
+            "name": "Get Upload Strategy (Direct or Presigned URL)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/upload-strategy",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Returns upload strategy based on storage backend (S3 returns presigned URLs, local returns direct upload endpoints)"
+        },
+        {
+          "info": {
+            "name": "Download Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/objects/:objectKey",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "user123.jpg",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Download Object"
+        },
+        {
+          "info": {
+            "name": "Upload Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/objects/:objectKey",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              },
+              {
+                "name": "objectKey",
+                "value": "user123.jpg",
+                "type": "path",
+                "description": "Object key (can include forward slashes for pseudo-folders)"
+              }
+            ],
+            "body": {
+              "type": "multipart-form",
+              "data": [
+                {
+                  "name": "file",
+                  "type": "text",
+                  "value": ""
+                }
+              ]
+            }
+          },
+          "docs": "Upload Object"
+        },
+        {
+          "info": {
+            "name": "Delete Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/objects/:objectKey",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "user123.jpg",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Delete Object"
+        },
+        {
+          "info": {
+            "name": "Confirm Presigned Upload",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/objects/:objectKey/confirm-upload",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              },
+              {
+                "name": "objectKey",
+                "value": "profile-photo-1234567890-abc123.jpg",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Confirms that a file was successfully uploaded to S3 using presigned URL"
+        },
+        {
+          "info": {
+            "name": "Get Download Strategy (Direct or Presigned URL)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/download-strategy/objects/:objectKey",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              },
+              {
+                "name": "objectKey",
+                "value": "profile-photo.jpg",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns download strategy based on storage backend and bucket visibility.\n- S3 with public bucket: Direct URLs (no presigning, better performance)\n- S3 with private bucket: Presigned URLs with expiration\n- Local storage: Always direct endpoints\n\nExpiry (when presigned) is auto-calculated server-side from bucket\nvisibility; no request body is accepted.\n\nObject keys may contain `/` (pseudo-folders); the path is matched\nwith a wildcard, so callers should NOT percent-encode `/` inside\n`objectKey`.\n"
+        },
+        {
+          "info": {
+            "name": "Get Download Strategy (Deprecated — use GET on the canonical path)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "{{baseUrl}}/api/storage/buckets/:bucketName/objects/:objectKey/download-strategy",
+            "params": [
+              {
+                "name": "bucketName",
+                "value": "avatars",
+                "type": "path"
+              },
+              {
+                "name": "objectKey",
+                "value": "profile-photo.jpg",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Deprecated alias of\n`GET /api/storage/buckets/{bucketName}/download-strategy/objects/{objectKey}`.\nRetained at the original path/method for backward compatibility with\nSDK releases that already shipped against this POST endpoint. Any\nrequest body is ignored.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
