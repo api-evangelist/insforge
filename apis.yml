@@ -35,6 +35,21 @@ modified: '2026-07-19'
 image: https://insforge.dev/logo.png
 tags:
 - Company
+- Backend-as-a-Service
+- agent-native
+- Cloud Infrastructure
+- Database
+- Authentication
+- Storage
+- Serverless
+- Edge Functions
+- AI Gateway
+- Payments
+- Real-Time
+- Open-Source
+- Y Combinator
+tags_raw:
+- Company
 - Backend as a Service
 - Agent Native
 - Cloud Infrastructure
@@ -80,6 +95,8 @@ apis:
   humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
   baseURL: https://api.insforge.dev
   tags:
+  - Clients
+  tags_raw:
   - Client
   properties:
   - type: OpenAPI
@@ -100,6 +117,8 @@ apis:
   humanURL: https://docs.insforge.dev/core-concepts/authentication/overview
   baseURL: https://api.insforge.dev
   tags:
+  - Message
+  tags_raw:
   - Messages
   properties:
   - type: OpenAPI
