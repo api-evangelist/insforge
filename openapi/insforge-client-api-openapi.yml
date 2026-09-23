@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin Client API
-  version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  title: Insforge Client API
+  version: '1.0'
+  description: 'Operations tagged Client across 7 of this provider''s published API definitions: insforge-ai-openapi.yaml, insforge-auth-openapi.yaml, insforge-email-openapi.yaml, insforge-functions-openapi.yaml, insforge-health-openapi.yaml, insforge-records-openapi.yaml, insforge-storage-openapi.yaml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: Client
 paths:
@@ -38,6 +38,8 @@ paths:
           description: Unauthorized
         '500':
           description: Failed to get response
+      operationId: postApiAiChatCompletion
+      x-operation-id-source: derived
   /api/ai/image/generation:
     post:
       summary: Generate images (deprecated)
@@ -92,6 +94,8 @@ paths:
           description: Unauthorized
         '500':
           description: Failed to generate image
+      operationId: postApiAiImageGeneration
+      x-operation-id-source: derived
   /api/ai/embeddings:
     post:
       summary: Generate embeddings (deprecated)
@@ -120,6 +124,8 @@ paths:
           description: Unauthorized
         '500':
           description: Failed to generate embeddings
+      operationId: postApiAiEmbeddings
+      x-operation-id-source: derived
   /api/auth/public-config:
     get:
       summary: Get public authentication configuration
@@ -183,6 +189,8 @@ paths:
                   disableSignup:
                     type: boolean
                     description: When true, new user sign-ups are disabled. Existing users can still sign in.
+      operationId: getApiAuthPublicConfig
+      x-operation-id-source: derived
   /api/auth/profiles/current:
     patch:
       summary: Update current user's profile
@@ -221,6 +229,8 @@ paths:
           description: Invalid request
         '401':
           description: Unauthorized - authentication required
+      operationId: patchApiAuthProfilesCurrent
+      x-operation-id-source: derived
   /api/auth/profiles/{userId}:
     get:
       summary: Get user profile by ID
@@ -246,6 +256,8 @@ paths:
           description: Invalid user ID format
         '404':
           description: User not found
+      operationId: getApiAuthProfilesByUserId
+      x-operation-id-source: derived
   /api/auth/users:
     post:
       summary: Register new user
@@ -306,16 +318,19 @@ paths:
                   user:
                     $ref: '#/components/schemas/UserResponse'
                   accessToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: JWT authentication token (null if email verification required)
                   csrfToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: CSRF token for use with refresh endpoint (web clients only, null if email verification required)
                   refreshToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: Refresh token for mobile/desktop/server clients (null for web clients or if email verification required)
                   requireEmailVerification:
                     type: boolean
@@ -334,6 +349,8 @@ paths:
                 statusCode: 403
         '409':
           description: User already exists
+      operationId: postApiAuthUsers
+      x-operation-id-source: derived
   /api/auth/sessions:
     post:
       summary: User login
@@ -386,17 +403,21 @@ paths:
                   accessToken:
                     type: string
                   csrfToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: CSRF token for use with refresh endpoint (web clients only)
                   refreshToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: Refresh token for mobile/desktop/server clients (null for web clients)
         '401':
           description: Invalid credentials
         '403':
           description: Email verification required
+      operationId: postApiAuthSessions
+      x-operation-id-source: derived
   /api/auth/refresh:
     post:
       summary: Refresh access token
@@ -404,9 +425,7 @@ paths:
 
         - Web clients: Use httpOnly refresh token cookie with X-CSRF-Token header
 
-        - Mobile/Desktop/Server clients: Send refreshToken in request body
-
-        '
+        - Mobile/Desktop/Server clients: Send refreshToken in request body'
       tags:
       - Client
       parameters:
@@ -454,17 +473,21 @@ paths:
                   accessToken:
                     type: string
                   csrfToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: New CSRF token for subsequent refresh requests (web clients only)
                   refreshToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: New refresh token for mobile/desktop/server clients (must be persisted for next refresh)
         '401':
           description: No refresh token provided or user not found
         '403':
           description: Invalid CSRF token
+      operationId: postApiAuthRefresh
+      x-operation-id-source: derived
   /api/auth/logout:
     post:
       summary: Logout user
@@ -479,9 +502,7 @@ paths:
 
         return success. Mobile, desktop, and server clients do not have server-side logout state and should
 
-        discard their stored refresh token after this request.
-
-        '
+        discard their stored refresh token after this request.'
       tags:
       - Client
       parameters:
@@ -515,6 +536,8 @@ paths:
                     type: string
         '403':
           description: Invalid or missing CSRF token for a valid web refresh cookie
+      operationId: postApiAuthLogout
+      x-operation-id-source: derived
   /api/auth/sessions/current:
     get:
       summary: Get current session
@@ -531,9 +554,7 @@ paths:
 
         when it can refresh the session. Server, mobile, and other non-browser
 
-        clients should call `/api/auth/refresh` explicitly.
-
-        '
+        clients should call `/api/auth/refresh` explicitly.'
       tags:
       - Client
       security:
@@ -561,6 +582,8 @@ paths:
                       $ref: '#/components/schemas/ProjectAdminResponse'
         '401':
           description: Unauthorized
+      operationId: getApiAuthSessionsCurrent
+      x-operation-id-source: derived
   /api/auth/email/send-verification:
     post:
       summary: Send email verification (code or link based on config)
@@ -599,6 +622,8 @@ paths:
                     example: If your email is registered, we have sent you a verification code/link. Please check your inbox.
         '400':
           description: Invalid request
+      operationId: postApiAuthEmailSendVerification
+      x-operation-id-source: derived
   /api/auth/email/verify-link:
     get:
       summary: Verify email from browser link click
@@ -629,9 +654,7 @@ paths:
 
         redirect arrives with `insforge_status=success`, show a confirmation message
 
-        and ask the user to sign in with their email and password.
-
-        '
+        and ask the user to sign in with their email and password.'
       tags:
       - Client
       parameters:
@@ -646,6 +669,8 @@ paths:
           description: Browser redirected to the stored redirect URL
         '400':
           description: Invalid verification token or redirect target
+      operationId: getApiAuthEmailVerifyLink
+      x-operation-id-source: derived
   /api/auth/email/verify:
     post:
       summary: Verify email with code
@@ -657,9 +682,7 @@ paths:
 
         Browser email clicks should use `GET /api/auth/email/verify-link`.
 
-        `POST /api/auth/email/verify` is the JSON API for 6-digit code submission.
-
-        '
+        `POST /api/auth/email/verify` is the JSON API for 6-digit code submission.'
       tags:
       - Client
       parameters:
@@ -714,17 +737,21 @@ paths:
                     type: string
                     description: JWT authentication token
                   csrfToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: CSRF token for use with refresh endpoint (web clients only)
                   refreshToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: Refresh token for mobile/desktop/server clients (null for web clients)
         '400':
           description: Invalid verification code or token
         '401':
           description: Verification code/token expired or invalid
+      operationId: postApiAuthEmailVerify
+      x-operation-id-source: derived
   /api/auth/email/send-reset-password:
     post:
       summary: Send password reset (code or link based on config)
@@ -763,6 +790,8 @@ paths:
                     example: If your email is registered, we have sent you a password reset code/link. Please check your inbox.
         '400':
           description: Invalid request
+      operationId: postApiAuthEmailSendResetPassword
+      x-operation-id-source: derived
   /api/auth/email/exchange-reset-password-token:
     post:
       summary: Exchange reset password code for reset token
@@ -773,9 +802,7 @@ paths:
         2. Return a reset token that can be used to actually reset the password
 
 
-        This endpoint is not used when resetPasswordMethod is ''link'', because the browser reset-link flow uses the emailed link token directly.
-
-        '
+        This endpoint is not used when resetPasswordMethod is ''link'', because the browser reset-link flow uses the emailed link token directly.'
       tags:
       - Client
       requestBody:
@@ -816,6 +843,8 @@ paths:
           description: Invalid request
         '401':
           description: Invalid or expired code
+      operationId: postApiAuthEmailExchangeResetPasswordToken
+      x-operation-id-source: derived
   /api/auth/email/reset-password-link:
     get:
       summary: Open password reset flow from browser link click
@@ -846,9 +875,7 @@ paths:
 
         Your app should render the reset-password form only when `insforge_status=ready`
 
-        and `token` is present.
-
-        '
+        and `token` is present.'
       tags:
       - Client
       parameters:
@@ -863,6 +890,8 @@ paths:
           description: Browser redirected to the stored redirect URL
         '400':
           description: Invalid reset token or redirect target
+      operationId: getApiAuthEmailResetPasswordLink
+      x-operation-id-source: derived
   /api/auth/email/reset-password:
     post:
       summary: Reset password with token
@@ -880,9 +909,7 @@ paths:
 
         - Code method: send-reset-password → exchange-reset-password-token → reset-password (with resetToken)
 
-        - Link method: send-reset-password → GET /api/auth/email/reset-password-link → reset-password
-
-        '
+        - Link method: send-reset-password → GET /api/auth/email/reset-password-link → reset-password'
       tags:
       - Client
       requestBody:
@@ -918,6 +945,8 @@ paths:
           description: Invalid request or password requirements not met
         '401':
           description: Verification code/token expired or invalid
+      operationId: postApiAuthEmailResetPassword
+      x-operation-id-source: derived
   /api/auth/oauth/{provider}:
     get:
       summary: Initiate OAuth flow (PKCE)
@@ -932,9 +961,7 @@ paths:
 
         3. Call this endpoint with code_challenge
 
-        4. After OAuth callback, use /api/auth/oauth/exchange with code_verifier
-
-        '
+        4. After OAuth callback, use /api/auth/oauth/exchange with code_verifier'
       tags:
       - Client
       parameters:
@@ -990,6 +1017,8 @@ paths:
           description: Invalid request or provider not supported
         '500':
           description: OAuth not configured
+      operationId: getApiAuthOauthByProvider
+      x-operation-id-source: derived
   /api/auth/oauth/exchange:
     post:
       summary: Exchange OAuth code for tokens (PKCE)
@@ -1005,9 +1034,7 @@ paths:
         3. Receive access token and refresh token in response
 
 
-        The code_verifier must match the code_challenge sent during OAuth initiation.
-
-        '
+        The code_verifier must match the code_challenge sent during OAuth initiation.'
       tags:
       - Client
       parameters:
@@ -1078,6 +1105,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      operationId: postApiAuthOauthExchange
+      x-operation-id-source: derived
   /api/auth/oauth/shared/callback/{state}:
     get:
       summary: Shared OAuth callback handler
@@ -1114,6 +1143,8 @@ paths:
               schema:
                 type: string
                 format: uri
+      operationId: getApiAuthOauthSharedCallbackByState
+      x-operation-id-source: derived
   /api/auth/oauth/{provider}/callback:
     get:
       summary: Provider-specific OAuth callback (GET)
@@ -1124,9 +1155,7 @@ paths:
 
         - With code_challenge (PKCE): Redirects with `insforge_code` for exchange endpoint
 
-        - Without code_challenge (web): Redirects with `access_token` and sets httpOnly cookie
-
-        '
+        - Without code_challenge (web): Redirects with `access_token` and sets httpOnly cookie'
       tags:
       - Client
       parameters:
@@ -1178,6 +1207,8 @@ paths:
                 type: string
                 format: uri
                 description: Redirect URL with authentication parameters
+      operationId: getApiAuthOauthByProviderCallback
+      x-operation-id-source: derived
     post:
       summary: Provider-specific OAuth callback (POST)
       description: 'OAuth callback endpoint for providers that use POST (e.g., Apple with form_post response mode).
@@ -1187,9 +1218,7 @@ paths:
 
         - With code_challenge (PKCE): Redirects with `insforge_code` for exchange endpoint
 
-        - Without code_challenge (web): Redirects with `access_token` and sets httpOnly cookie
-
-        '
+        - Without code_challenge (web): Redirects with `access_token` and sets httpOnly cookie'
       tags:
       - Client
       parameters:
@@ -1243,6 +1272,8 @@ paths:
                 type: string
                 format: uri
                 description: Redirect URL with authentication parameters
+      operationId: postApiAuthOauthByProviderCallback
+      x-operation-id-source: derived
   /api/auth/oauth/custom/{key}:
     get:
       summary: Initiate custom OAuth flow (PKCE)
@@ -1283,6 +1314,8 @@ paths:
           description: Invalid request
         '404':
           description: Custom OAuth provider not found
+      operationId: getApiAuthOauthCustomByKey
+      x-operation-id-source: derived
   /api/auth/oauth/custom/{key}/callback:
     get:
       summary: Custom OAuth callback (GET)
@@ -1316,14 +1349,14 @@ paths:
                 type: string
                 format: uri
                 description: Redirect URL with authentication parameters
+      operationId: getApiAuthOauthCustomByKeyCallback
+      x-operation-id-source: derived
   /api/auth/id-token:
     post:
       summary: Sign in with ID token (Google One Tap, native SDKs)
       description: 'Authenticate a user using an ID token obtained from a native SDK (e.g., Google One Tap).
 
-        Currently only the `google` provider is supported.
-
-        '
+        Currently only the `google` provider is supported.'
       tags:
       - Client
       parameters:
@@ -1375,17 +1408,21 @@ paths:
                   accessToken:
                     type: string
                   csrfToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: CSRF token for use with refresh endpoint (web clients only)
                   refreshToken:
-                    type: string
-                    nullable: true
+                    type:
+                    - string
+                    - 'null'
                     description: Refresh token for mobile/desktop/server clients (null for web clients)
         '400':
           description: Invalid request - unsupported provider or missing token
         '401':
           description: Invalid or expired ID token
+      operationId: postApiAuthIdToken
+      x-operation-id-source: derived
   /api/email/send-raw:
     post:
       summary: Send raw HTML email
@@ -1431,6 +1468,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_2'
+      operationId: postApiEmailSendRaw
+      x-operation-id-source: derived
   /functions/{slug}:
     get:
       summary: Execute function (GET)
@@ -1472,6 +1511,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_3'
               example:
                 error: Failed to connect to Deno runtime
+      operationId: getFunctionsBySlug
+      x-operation-id-source: derived
     post:
       summary: Execute function (POST)
       description: Execute a function using POST method with JSON body. Proxied to Deno runtime.
@@ -1522,6 +1563,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_3'
               example:
                 error: Failed to connect to Deno runtime
+      operationId: postFunctionsBySlug
+      x-operation-id-source: derived
     put:
       summary: Execute function (PUT)
       description: Execute a function using PUT method. Proxied to Deno runtime.
@@ -1557,6 +1600,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_3'
+      operationId: putFunctionsBySlug
+      x-operation-id-source: derived
     patch:
       summary: Execute function (PATCH)
       description: Execute a function using PATCH method. Proxied to Deno runtime.
@@ -1592,6 +1637,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_3'
+      operationId: patchFunctionsBySlug
+      x-operation-id-source: derived
     delete:
       summary: Execute function (DELETE)
       description: Execute a function using DELETE method. Proxied to Deno runtime.
@@ -1620,6 +1667,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_3'
+      operationId: deleteFunctionsBySlug
+      x-operation-id-source: derived
   /api/health:
     get:
       summary: Health check
@@ -1644,6 +1693,8 @@ paths:
                     type: string
                     format: date-time
                     example: '2025-01-21T03:45:22.194Z'
+      operationId: getApiHealth
+      x-operation-id-source: derived
   /api/database/records/{tableName}:
     get:
       summary: Query Records
@@ -1746,6 +1797,8 @@ paths:
                 message: Invalid filter syntax
                 statusCode: 400
                 nextActions: Check PostgREST filter documentation
+      operationId: getApiDatabaseRecordsByTableName
+      x-operation-id-source: derived
     post:
       summary: Create Records
       description: Create one or more records. Request body MUST be an array.
@@ -1828,6 +1881,8 @@ paths:
                 message: Table 'nonexistent' does not exist
                 statusCode: 404
                 nextActions: Create the table first
+      operationId: postApiDatabaseRecordsByTableName
+      x-operation-id-source: derived
     patch:
       summary: Update Records
       description: Update records matching query filters
@@ -1909,6 +1964,8 @@ paths:
                 message: Invalid field type
                 statusCode: 400
                 nextActions: Check field types match table schema
+      operationId: patchApiDatabaseRecordsByTableName
+      x-operation-id-source: derived
     delete:
       summary: Delete Records
       description: Delete records matching query filters
@@ -1961,6 +2018,8 @@ paths:
                 no_records:
                   summary: No records found to delete
                   value: []
+      operationId: deleteApiDatabaseRecordsByTableName
+      x-operation-id-source: derived
   /api/storage/buckets/{bucketName}/objects:
     post:
       summary: Upload Object with Auto-Generated Key
@@ -2025,6 +2084,8 @@ paths:
                 message: Bucket 'nonexistent' does not exist
                 statusCode: 404
                 nextActions: Create the bucket first
+      operationId: postApiStorageBucketsByBucketNameObjects
+      x-operation-id-source: derived
     delete:
       summary: Delete Multiple Objects
       description: Deletes up to 1000 objects from a bucket for the authenticated caller. Object row deletion is authorized through storage RLS, and the response reports per-key outcomes for rows deleted from the database, keys not visible or missing, and provider-level failures.
@@ -2110,6 +2171,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_5'
+      operationId: deleteApiStorageBucketsByBucketNameObjects
+      x-operation-id-source: derived
   /api/storage/buckets/{bucketName}/upload-strategy:
     post:
       summary: Get Upload Strategy (Direct or Presigned URL)
@@ -2185,6 +2248,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_5'
+      operationId: postApiStorageBucketsByBucketNameUploadStrategy
+      x-operation-id-source: derived
   /api/storage/buckets/{bucketName}/objects/{objectKey}:
     put:
       summary: Upload Object
@@ -2256,6 +2321,8 @@ paths:
                 message: Bucket 'nonexistent' does not exist
                 statusCode: 404
                 nextActions: Create the bucket first
+      operationId: putApiStorageBucketsByBucketNameObjectsByObjectKey
+      x-operation-id-source: derived
     get:
       summary: Download Object
       tags:
@@ -2304,6 +2371,8 @@ paths:
                 message: Object 'user123.jpg' not found in bucket 'avatars'
                 statusCode: 404
                 nextActions: Check the bucket and key combination
+      operationId: getApiStorageBucketsByBucketNameObjectsByObjectKey
+      x-operation-id-source: derived
     delete:
       summary: Delete Object
       tags:
@@ -2347,6 +2416,8 @@ paths:
                 message: Object 'user123.jpg' not found in bucket 'avatars'
                 statusCode: 404
                 nextActions: Check the bucket and key combination
+      operationId: deleteApiStorageBucketsByBucketNameObjectsByObjectKey
+      x-operation-id-source: derived
   /api/storage/buckets/{bucketName}/objects/{objectKey}/confirm-upload:
     post:
       summary: Confirm Presigned Upload
@@ -2417,6 +2488,8 @@ paths:
                 error: ALREADY_CONFIRMED
                 message: File 'profile-photo.jpg' already confirmed in bucket 'avatars'
                 statusCode: 409
+      operationId: postApiStorageBucketsByBucketNameObjectsByObjectKeyConfirmUpload
+      x-operation-id-source: derived
   /api/storage/buckets/{bucketName}/download-strategy/objects/{objectKey}:
     get:
       summary: Get Download Strategy (Direct or Presigned URL)
@@ -2438,9 +2511,7 @@ paths:
 
         with a wildcard, so callers should NOT percent-encode `/` inside
 
-        `objectKey`.
-
-        '
+        `objectKey`.'
       tags:
       - Client
       security:
@@ -2489,6 +2560,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_5'
+      operationId: getApiStorageBucketsByBucketNameDownloadStrategyObjectsByObjectKey
+      x-operation-id-source: derived
   /api/storage/buckets/{bucketName}/objects/{objectKey}/download-strategy:
     post:
       deprecated: true
@@ -2501,9 +2574,7 @@ paths:
 
         SDK releases that already shipped against this POST endpoint. Any
 
-        request body is ignored.
-
-        '
+        request body is ignored.'
       tags:
       - Client
       security:
@@ -2535,45 +2606,277 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_5'
+      operationId: postApiStorageBucketsByBucketNameObjectsByObjectKeyDownloadStrategy
+      x-operation-id-source: derived
 components:
   schemas:
-    UserResponse:
+    EmbeddingObject:
       type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - embedding
+          description: Object type, always "embedding"
+        embedding:
+          type: array
+          items:
+            type: number
+          description: The embedding vector (array of floats)
+        index:
+          type: integer
+          description: Index of this embedding in the input array
+    ToolCall:
+      type: object
+      required:
+      - id
+      - type
+      - function
       properties:
         id:
           type: string
-          format: uuid
-        email:
+          description: Unique identifier for this tool call
+        type:
           type: string
-          format: email
-        profile:
+          enum:
+          - function
+        function:
           type: object
-          nullable: true
-          additionalProperties: true
-          description: User profile data (name, avatar_url, and custom fields)
+          required:
+          - name
+          - arguments
           properties:
             name:
               type: string
-            avatar_url:
+              description: The name of the function called
+            arguments:
               type: string
-              format: uri
+              description: JSON string of the function arguments
+    WebSearchPlugin:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Enable web search integration
+        engine:
+          type: string
+          enum:
+          - native
+          - exa
+          description: 'Search engine selection:
+
+            - native: Use provider''s built-in web search (OpenAI, Anthropic, Perplexity, xAI)
+
+            - exa: Use Exa''s search API
+
+            - undefined: Auto-select (native if available, otherwise Exa)
+
+            '
+        maxResults:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 5
+          description: Maximum number of search results to include
+        searchPrompt:
+          type: string
+          description: Custom prompt for attaching search results to the message
+    TokenUsage:
+      type: object
+      properties:
+        promptTokens:
+          type: integer
+        completionTokens:
+          type: integer
+        totalTokens:
+          type: integer
+    ChatMessage:
+      type: object
+      required:
+      - role
+      properties:
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          - system
+          - tool
+          description: Role of the message sender
+        content:
+          type:
+          - string
+          - 'null'
+          description: Message content (nullable for assistant messages with tool_calls)
+        tool_calls:
+          type: array
+          description: Tool calls made by the assistant (assistant messages only)
+          items:
+            $ref: '#/components/schemas/ToolCall'
+        tool_call_id:
+          type: string
+          description: ID of the tool call being responded to (tool messages only)
+    FunctionDefinition:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the function to call
+        description:
+          type: string
+          description: A description of what the function does
+        parameters:
+          type: object
+          description: JSON Schema describing the function parameters
+    UrlCitationAnnotation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - url_citation
+        urlCitation:
+          type: object
+          properties:
+            url:
+              type: string
+              description: URL of the cited source
+            title:
+              type: string
+              description: Title of the cited page
+            content:
+              type: string
+              description: Relevant content snippet from the source
+            startIndex:
+              type: integer
+              description: Start character index in response text where citation applies
+            endIndex:
+              type: integer
+              description: End character index in response text where citation applies
+    EmbeddingsRequest:
+      type: object
+      required:
+      - model
+      - input
+      properties:
+        model:
+          type: string
+          description: Embedding model identifier
+          example: google/gemini-embedding-001
+        input:
+          oneOf:
+          - type: string
+            description: Single text input to embed
+          - type: array
+            items:
+              type: string
+            description: Array of text inputs to embed
+          example: Hello world
+        encoding_format:
+          type: string
+          enum:
+          - float
+          - base64
+          default: float
+          description: The format to return the embeddings in. Can be either float or base64.
+        dimensions:
+          type: integer
+          minimum: 0
+          description: The number of dimensions the resulting output embeddings should have. Only supported in certain models.
+    ChatCompletionResponse:
+      type: object
+      properties:
+        text:
+          type: string
+          description: AI model response content
+        tool_calls:
+          type: array
+          description: Tool calls requested by the model (present when the model invokes tools)
+          items:
+            $ref: '#/components/schemas/ToolCall'
+        annotations:
+          type: array
+          description: URL citations from web search results (present when webSearch is enabled)
+          items:
+            $ref: '#/components/schemas/UrlCitationAnnotation'
         metadata:
           type: object
-          nullable: true
-          additionalProperties: true
-          description: System metadata (device ID, login IP, etc.)
-        emailVerified:
+          properties:
+            model:
+              type: string
+            usage:
+              $ref: '#/components/schemas/TokenUsage'
+    Tool:
+      type: object
+      required:
+      - type
+      - function
+      properties:
+        type:
+          type: string
+          enum:
+          - function
+        function:
+          $ref: '#/components/schemas/FunctionDefinition'
+    FileParserPlugin:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
           type: boolean
-        providers:
-          type: array
-          items:
-            type: string
-        createdAt:
+          description: Enable file parsing for PDFs in messages
+        pdf:
+          type: object
+          properties:
+            engine:
+              type: string
+              enum:
+              - pdf-text
+              - mistral-ocr
+              - native
+              description: 'PDF processing engine:
+
+                - pdf-text: Best for well-structured PDFs with clear text content (Free)
+
+                - mistral-ocr: Best for scanned documents or PDFs with images ($2 per 1,000 pages)
+
+                - native: Only for models with native file support (charged as input tokens)
+
+                If not specified, defaults to native if available, otherwise mistral-ocr
+
+                '
+    OpenRouterImageMessage:
+      type: object
+      properties:
+        type:
           type: string
-          format: date-time
-        updatedAt:
+          enum:
+          - image_url
+        image_url:
+          type: object
+          properties:
+            url:
+              type: string
+              description: Can be a direct URL or data:image base64 URL
+    ImageGenerationOptions:
+      type: object
+      required:
+      - model
+      - prompt
+      properties:
+        model:
           type: string
-          format: date-time
+          description: OpenRouter model identifier for image generation
+          example: openai/dall-e-3
+        prompt:
+          type: string
+          description: Text prompt describing the desired image
+          example: A serene landscape with mountains and a lake at sunset
     ChatRequest:
       type: object
       required:
@@ -2645,81 +2948,6 @@ components:
         parallelToolCalls:
           type: boolean
           description: Allow the model to call multiple tools in parallel
-    FunctionDefinition:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the function to call
-        description:
-          type: string
-          description: A description of what the function does
-        parameters:
-          type: object
-          description: JSON Schema describing the function parameters
-    EmbeddingObject:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - embedding
-          description: Object type, always "embedding"
-        embedding:
-          type: array
-          items:
-            type: number
-          description: The embedding vector (array of floats)
-        index:
-          type: integer
-          description: Index of this embedding in the input array
-    ImageGenerationOptions:
-      type: object
-      required:
-      - model
-      - prompt
-      properties:
-        model:
-          type: string
-          description: OpenRouter model identifier for image generation
-          example: openai/dall-e-3
-        prompt:
-          type: string
-          description: Text prompt describing the desired image
-          example: A serene landscape with mountains and a lake at sunset
-    WebSearchPlugin:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Enable web search integration
-        engine:
-          type: string
-          enum:
-          - native
-          - exa
-          description: 'Search engine selection:
-
-            - native: Use provider''s built-in web search (OpenAI, Anthropic, Perplexity, xAI)
-
-            - exa: Use Exa''s search API
-
-            - undefined: Auto-select (native if available, otherwise Exa)
-
-            '
-        maxResults:
-          type: integer
-          minimum: 1
-          maximum: 10
-          default: 5
-          description: Maximum number of search results to include
-        searchPrompt:
-          type: string
-          description: Custom prompt for attaching search results to the message
     EmbeddingsResponse:
       type: object
       properties:
@@ -2741,6 +2969,18 @@ components:
               example: text-embedding-ada-002
             usage:
               $ref: '#/components/schemas/TokenUsage'
+    ProjectAdminResponse:
+      type: object
+      required:
+      - subject
+      - username
+      properties:
+        subject:
+          type: string
+          example: local:admin
+        username:
+          type: string
+          example: admin
     ProfileResponse:
       type: object
       properties:
@@ -2749,8 +2989,9 @@ components:
           format: uuid
           description: User ID
         profile:
-          type: object
-          nullable: true
+          type:
+          - object
+          - 'null'
           additionalProperties: true
           description: User profile data (can contain custom fields)
           properties:
@@ -2759,41 +3000,68 @@ components:
             avatar_url:
               type: string
               format: uri
-    ChatCompletionResponse:
+    UserResponse:
       type: object
       properties:
-        text:
+        id:
           type: string
-          description: AI model response content
-        tool_calls:
-          type: array
-          description: Tool calls requested by the model (present when the model invokes tools)
-          items:
-            $ref: '#/components/schemas/ToolCall'
-        annotations:
-          type: array
-          description: URL citations from web search results (present when webSearch is enabled)
-          items:
-            $ref: '#/components/schemas/UrlCitationAnnotation'
-        metadata:
-          type: object
+          format: uuid
+        email:
+          type: string
+          format: email
+        profile:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: User profile data (name, avatar_url, and custom fields)
           properties:
-            model:
+            name:
               type: string
-            usage:
-              $ref: '#/components/schemas/TokenUsage'
-    Tool:
+            avatar_url:
+              type: string
+              format: uri
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: System metadata (device ID, login IP, etc.)
+        emailVerified:
+          type: boolean
+        providers:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    ErrorResponse:
       type: object
       required:
-      - type
-      - function
+      - error
+      - message
+      - statusCode
       properties:
-        type:
+        error:
           type: string
-          enum:
-          - function
-        function:
-          $ref: '#/components/schemas/FunctionDefinition'
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Email is already in use
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Please use a different email address
     SendRawEmailRequest:
       type: object
       required:
@@ -2868,6 +3136,72 @@ components:
     SendEmailResponse:
       type: object
       description: Empty object on success - extend with optional fields later if needed
+    ErrorResponse_2:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Subject is required
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Please provide a valid subject line
+    ErrorResponse_3:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: object
+          - type: object
+          description: Additional error details
+        message:
+          type: string
+          description: Detailed error message
+        pattern:
+          type: string
+          description: Pattern that caused validation failure (for dangerous code detection)
+    ErrorResponse_4:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid input data
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check the request body format
     DownloadStrategy:
       type: object
       required:
@@ -2900,91 +3234,6 @@ components:
           type: object
           description: Optional headers to include in the download request
           additionalProperties: true
-    TokenUsage:
-      type: object
-      properties:
-        promptTokens:
-          type: integer
-        completionTokens:
-          type: integer
-        totalTokens:
-          type: integer
-    ToolCall:
-      type: object
-      required:
-      - id
-      - type
-      - function
-      properties:
-        id:
-          type: string
-          description: Unique identifier for this tool call
-        type:
-          type: string
-          enum:
-          - function
-        function:
-          type: object
-          required:
-          - name
-          - arguments
-          properties:
-            name:
-              type: string
-              description: The name of the function called
-            arguments:
-              type: string
-              description: JSON string of the function arguments
-    ChatMessage:
-      type: object
-      required:
-      - role
-      properties:
-        role:
-          type: string
-          enum:
-          - user
-          - assistant
-          - system
-          - tool
-          description: Role of the message sender
-        content:
-          type: string
-          nullable: true
-          description: Message content (nullable for assistant messages with tool_calls)
-        tool_calls:
-          type: array
-          description: Tool calls made by the assistant (assistant messages only)
-          items:
-            $ref: '#/components/schemas/ToolCall'
-        tool_call_id:
-          type: string
-          description: ID of the tool call being responded to (tool messages only)
-    UrlCitationAnnotation:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - url_citation
-        urlCitation:
-          type: object
-          properties:
-            url:
-              type: string
-              description: URL of the cited source
-            title:
-              type: string
-              description: Title of the cited page
-            content:
-              type: string
-              description: Relevant content snippet from the source
-            startIndex:
-              type: integer
-              description: Start character index in response text where citation applies
-            endIndex:
-              type: integer
-              description: End character index in response text where citation applies
     UploadStrategy:
       type: object
       required:
@@ -3029,137 +3278,6 @@ components:
           format: date-time
           description: Expiration time for presigned URL (S3 only)
           example: '2025-09-05T01:00:00Z'
-    ProjectAdminResponse:
-      type: object
-      required:
-      - subject
-      - username
-      properties:
-        subject:
-          type: string
-          example: local:admin
-        username:
-          type: string
-          example: admin
-    ErrorResponse_3:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error message
-        details:
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: object
-          - type: object
-          description: Additional error details
-        message:
-          type: string
-          description: Detailed error message
-        pattern:
-          type: string
-          description: Pattern that caused validation failure (for dangerous code detection)
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          description: Human-readable error message
-          example: Email is already in use
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Please use a different email address
-    ErrorResponse_4:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid input data
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check the request body format
-    EmbeddingsRequest:
-      type: object
-      required:
-      - model
-      - input
-      properties:
-        model:
-          type: string
-          description: Embedding model identifier
-          example: google/gemini-embedding-001
-        input:
-          oneOf:
-          - type: string
-            description: Single text input to embed
-          - type: array
-            items:
-              type: string
-            description: Array of text inputs to embed
-          example: Hello world
-        encoding_format:
-          type: string
-          enum:
-          - float
-          - base64
-          default: float
-          description: The format to return the embeddings in. Can be either float or base64.
-        dimensions:
-          type: integer
-          minimum: 0
-          description: The number of dimensions the resulting output embeddings should have. Only supported in certain models.
-    ErrorResponse_5:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid request
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check your request parameters
     StoredFile:
       type: object
       properties:
@@ -3194,48 +3312,7 @@ components:
       - size
       - uploadedAt
       - url
-    OpenRouterImageMessage:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - image_url
-        image_url:
-          type: object
-          properties:
-            url:
-              type: string
-              description: Can be a direct URL or data:image base64 URL
-    FileParserPlugin:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Enable file parsing for PDFs in messages
-        pdf:
-          type: object
-          properties:
-            engine:
-              type: string
-              enum:
-              - pdf-text
-              - mistral-ocr
-              - native
-              description: 'PDF processing engine:
-
-                - pdf-text: Best for well-structured PDFs with clear text content (Free)
-
-                - mistral-ocr: Best for scanned documents or PDFs with images ($2 per 1,000 pages)
-
-                - native: Only for models with native file support (charged as input tokens)
-
-                If not specified, defaults to native if available, otherwise mistral-ocr
-
-                '
-    ErrorResponse_2:
+    ErrorResponse_5:
       type: object
       required:
       - error
@@ -3249,7 +3326,7 @@ components:
         message:
           type: string
           description: Human-readable error message
-          example: Subject is required
+          example: Invalid request
         statusCode:
           type: integer
           description: HTTP status code
@@ -3257,9 +3334,31 @@ components:
         nextActions:
           type: string
           description: Suggested action to resolve the error
-          example: Please provide a valid subject line
+          example: Check your request parameters
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+    s3SigV4:
+      type: http
+      scheme: aws4-hmac-sha256
+      description: 'AWS SigV4 authentication using S3 access keys minted by
+
+        `POST /api/storage/s3/access-keys`. Region must match the server''s
+
+        `AWS_REGION` (default `us-east-2`); service scope must be `s3`.
+
+        '
+x-refined-from:
+- insforge-ai-openapi.yaml
+- insforge-auth-openapi.yaml
+- insforge-email-openapi.yaml
+- insforge-functions-openapi.yaml
+- insforge-health-openapi.yaml
+- insforge-records-openapi.yaml
+- insforge-storage-openapi.yaml

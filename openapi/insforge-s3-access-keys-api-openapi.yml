@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin S3 Access Keys API
-  version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  title: Insforge Storage S3 Access Keys API
+  version: 2.0.0
+  description: Bucket-based storage system similar to S3
 tags:
 - name: S3 Access Keys
 paths:
@@ -20,9 +20,7 @@ paths:
 
         Intended for Dashboard display so the UI doesn''t make any
 
-        backend-topology assumptions client-side.
-
-        '
+        backend-topology assumptions client-side.'
       tags:
       - S3 Access Keys
       security:
@@ -47,6 +45,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      operationId: getApiStorageS3Config
+      x-operation-id-source: derived
   /api/storage/s3/access-keys:
     get:
       summary: List S3 Access Keys
@@ -54,9 +54,7 @@ paths:
 
         secrets are **never** returned here — the secret is only shown once
 
-        in the response of `POST /api/storage/s3/access-keys`.
-
-        '
+        in the response of `POST /api/storage/s3/access-keys`.'
       tags:
       - S3 Access Keys
       security:
@@ -85,6 +83,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      operationId: getApiStorageS3AccessKeys
+      x-operation-id-source: derived
     post:
       summary: Create S3 Access Key
       description: 'Mint a new S3 credential pair usable against the `/storage/v1/s3`
@@ -100,9 +100,7 @@ paths:
 
         - 50 keys per project (hard cap, enforced transactionally).
 
-        - Rate-limited to 20 management requests per 15 min per IP.
-
-        '
+        - Rate-limited to 20 management requests per 15 min per IP.'
       tags:
       - S3 Access Keys
       security:
@@ -149,6 +147,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      operationId: postApiStorageS3AccessKeys
+      x-operation-id-source: derived
   /api/storage/s3/access-keys/{id}:
     delete:
       summary: Revoke S3 Access Key
@@ -156,9 +156,7 @@ paths:
 
         invalidated synchronously so subsequent S3 protocol requests with
 
-        this credential return `403 InvalidAccessKeyId`.
-
-        '
+        this credential return `403 InvalidAccessKeyId`.'
       tags:
       - S3 Access Keys
       security:
@@ -192,8 +190,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      operationId: deleteApiStorageS3AccessKeysById
+      x-operation-id-source: derived
 components:
   schemas:
+    CreateS3AccessKeyRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          maxLength: 200
+          description: Optional label to help you identify the key later
+          example: backup-script
+    S3AccessKeyWithSecret:
+      allOf:
+      - $ref: '#/components/schemas/S3AccessKey'
+      - type: object
+        required:
+        - secretAccessKey
+        properties:
+          secretAccessKey:
+            type: string
+            description: '40-character base64url secret. **Returned only once** in the
+
+              create response — retrieve, store, and keep it secret.
+
+              '
+            example: x7K2-a_pL9qRs4N8vYzWcE1fH5gJ3mUtBoD6ViXk
     ErrorResponse:
       type: object
       required:
@@ -238,8 +261,9 @@ components:
           description: 20-character access key id with fixed `INSF` prefix
           example: INSFABC123DEF456GH78
         description:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: User-supplied label (max 200 chars)
           example: backup-script
         createdAt:
@@ -247,19 +271,12 @@ components:
           format: date-time
           example: '2026-04-22T00:00:00Z'
         lastUsedAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
           description: Updated asynchronously after each successful SigV4 verification
           example: null
-    CreateS3AccessKeyRequest:
-      type: object
-      properties:
-        description:
-          type: string
-          maxLength: 200
-          description: Optional label to help you identify the key later
-          example: backup-script
     S3GatewayConfig:
       type: object
       description: Read-only config of the S3 protocol gateway.
@@ -275,23 +292,18 @@ components:
           type: string
           description: SigV4 signing region the gateway validates incoming requests against.
           example: us-east-2
-    S3AccessKeyWithSecret:
-      allOf:
-      - $ref: '#/components/schemas/S3AccessKey'
-      - type: object
-        required:
-        - secretAccessKey
-        properties:
-          secretAccessKey:
-            type: string
-            description: '40-character base64url secret. **Returned only once** in the
-
-              create response — retrieve, store, and keep it secret.
-
-              '
-            example: x7K2-a_pL9qRs4N8vYzWcE1fH5gJ3mUtBoD6ViXk
   securitySchemes:
-    bearerAuth:
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+    s3SigV4:
       type: http
-      scheme: bearer
-      bearerFormat: JWT
+      scheme: aws4-hmac-sha256
+      description: 'AWS SigV4 authentication using S3 access keys minted by
+
+        `POST /api/storage/s3/access-keys`. Region must match the server''s
+
+        `AWS_REGION` (default `us-east-2`); service scope must be `s3`.
+
+        '

@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin Stripe Payments API
+  title: Insforge Payments Stripe Payments API
   version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  description: Provider-specific Stripe and Razorpay payment setup, runtime flows, catalog management, sync, and webhook projections
 tags:
 - name: Stripe Payments
   description: Stripe Checkout, Billing Portal, catalog, sync, customer, subscription, and transaction routes
@@ -50,6 +50,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '500':
           $ref: '#/components/responses/InternalError'
+      operationId: postApiPaymentsStripeByEnvironmentCheckoutSessions
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/customer-portal-sessions:
     post:
       summary: Create Stripe Customer Portal Session
@@ -88,6 +90,8 @@ paths:
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/InternalError'
+      operationId: postApiPaymentsStripeByEnvironmentCustomerPortalSessions
+      x-operation-id-source: derived
   /api/payments/stripe/status:
     get:
       summary: Get Stripe Payments Status
@@ -108,6 +112,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: getApiPaymentsStripeStatus
+      x-operation-id-source: derived
   /api/payments/stripe/config:
     get:
       summary: Get Stripe Key Configuration
@@ -128,6 +134,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: getApiPaymentsStripeConfig
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/config:
     put:
       summary: Configure Stripe Secret Key
@@ -160,6 +168,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: putApiPaymentsStripeByEnvironmentConfig
+      x-operation-id-source: derived
     delete:
       summary: Remove Stripe Secret Key
       description: Remove the configured Stripe secret key for one environment and best-effort remove managed webhook endpoints.
@@ -185,6 +195,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+      operationId: deleteApiPaymentsStripeByEnvironmentConfig
+      x-operation-id-source: derived
   /api/payments/stripe/sync:
     post:
       summary: Sync Stripe Payments State
@@ -207,6 +219,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: postApiPaymentsStripeSync
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/sync:
     post:
       summary: Sync Stripe Payments State For One Environment
@@ -231,6 +245,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: postApiPaymentsStripeByEnvironmentSync
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/webhook:
     post:
       summary: Configure Managed Stripe Webhook
@@ -255,6 +271,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: postApiPaymentsStripeByEnvironmentWebhook
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/catalog:
     get:
       summary: List Stripe Catalog
@@ -279,6 +297,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: getApiPaymentsStripeByEnvironmentCatalog
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/catalog/products:
     get:
       summary: List Stripe Products
@@ -303,6 +323,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: getApiPaymentsStripeByEnvironmentCatalogProducts
+      x-operation-id-source: derived
     post:
       summary: Create Stripe Product
       description: Create a Stripe product in the requested environment, then mirror it locally after Stripe succeeds.
@@ -339,6 +361,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: postApiPaymentsStripeByEnvironmentCatalogProducts
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/catalog/products/{productId}:
     get:
       summary: Get Stripe Product
@@ -366,6 +390,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+      operationId: getApiPaymentsStripeByEnvironmentCatalogProductsByProductId
+      x-operation-id-source: derived
     patch:
       summary: Update Stripe Product
       description: Update a Stripe product, then mirror it locally after Stripe succeeds.
@@ -401,6 +427,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+      operationId: patchApiPaymentsStripeByEnvironmentCatalogProductsByProductId
+      x-operation-id-source: derived
     delete:
       summary: Delete Stripe Product
       description: Delete a Stripe product from one environment, then remove it from the local mirror.
@@ -427,6 +455,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+      operationId: deleteApiPaymentsStripeByEnvironmentCatalogProductsByProductId
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/catalog/prices:
     get:
       summary: List Stripe Prices
@@ -459,6 +489,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: getApiPaymentsStripeByEnvironmentCatalogPrices
+      x-operation-id-source: derived
     post:
       summary: Create Stripe Price
       description: Create a Stripe price in the requested environment, then mirror it locally after Stripe succeeds.
@@ -497,6 +529,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: postApiPaymentsStripeByEnvironmentCatalogPrices
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/catalog/prices/{priceId}:
     get:
       summary: Get Stripe Price
@@ -524,6 +558,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+      operationId: getApiPaymentsStripeByEnvironmentCatalogPricesByPriceId
+      x-operation-id-source: derived
     patch:
       summary: Update Stripe Price
       description: Update mutable Stripe price fields, then mirror the price locally after Stripe succeeds.
@@ -559,6 +595,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+      operationId: patchApiPaymentsStripeByEnvironmentCatalogPricesByPriceId
+      x-operation-id-source: derived
     delete:
       summary: Archive Stripe Price
       description: Archive a Stripe price in one environment, then mirror the archived state locally.
@@ -585,6 +623,8 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+      operationId: deleteApiPaymentsStripeByEnvironmentCatalogPricesByPriceId
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/subscriptions:
     get:
       summary: List Stripe Subscriptions
@@ -612,6 +652,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: getApiPaymentsStripeByEnvironmentSubscriptions
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/customers:
     get:
       summary: List Stripe Customers
@@ -637,6 +679,8 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: getApiPaymentsStripeByEnvironmentCustomers
+      x-operation-id-source: derived
   /api/payments/stripe/{environment}/transactions:
     get:
       summary: List Stripe Transactions
@@ -664,14 +708,238 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '403':
           $ref: '#/components/responses/Forbidden'
+      operationId: getApiPaymentsStripeByEnvironmentTransactions
+      x-operation-id-source: derived
 components:
   schemas:
+    ListStripePricesResponse:
+      type: object
+      required:
+      - prices
+      properties:
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/StripePrice'
+    CheckoutSessionStatus:
+      type: string
+      enum:
+      - initialized
+      - open
+      - completed
+      - expired
+      - failed
+    ListPaymentTransactionsResponse:
+      type: object
+      required:
+      - transactions
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentTransaction'
+    GetStripePriceResponse:
+      type: object
+      required:
+      - price
+      properties:
+        price:
+          $ref: '#/components/schemas/StripePrice'
+    CreateCheckoutSessionLineItem:
+      type: object
+      required:
+      - priceId
+      additionalProperties: false
+      properties:
+        priceId:
+          type: string
+          minLength: 1
+          example: price_123
+        quantity:
+          type: integer
+          minimum: 1
+          maximum: 999
+          default: 1
+    PaymentCustomerListItem:
+      allOf:
+      - $ref: '#/components/schemas/PaymentCustomer'
+      - type: object
+        required:
+        - paymentsCount
+        - lastPaymentAt
+        - totalSpend
+        - totalSpendCurrency
+        - paymentMethodBrand
+        - paymentMethodLast4
+        - countryCode
+        properties:
+          paymentsCount:
+            type: integer
+            minimum: 0
+          lastPaymentAt:
+            type:
+            - string
+            - 'null'
+            format: date-time
+          totalSpend:
+            type:
+            - integer
+            - 'null'
+            minimum: 0
+          totalSpendCurrency:
+            type:
+            - string
+            - 'null'
+          paymentMethodBrand:
+            type:
+            - string
+            - 'null'
+          paymentMethodLast4:
+            type:
+            - string
+            - 'null'
+          countryCode:
+            type:
+            - string
+            - 'null'
+            minLength: 2
+            maxLength: 2
+    StripeSubscriptionItem:
+      type: object
+      required:
+      - environment
+      - subscriptionItemId
+      - subscriptionId
+      - productId
+      - priceId
+      - quantity
+      - metadata
+      - createdAt
+      - updatedAt
+      properties:
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        subscriptionItemId:
+          type: string
+          example: si_123
+        subscriptionId:
+          type: string
+          example: sub_123
+        productId:
+          type:
+          - string
+          - 'null'
+          example: prod_123
+        priceId:
+          type:
+          - string
+          - 'null'
+          example: price_123
+        quantity:
+          type:
+          - integer
+          - 'null'
+          example: 1
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    CheckoutSession:
+      type: object
+      required:
+      - id
+      - environment
+      - mode
+      - status
+      - paymentStatus
+      - subjectType
+      - subjectId
+      - customerEmail
+      - checkoutSessionId
+      - customerId
+      - paymentIntentId
+      - subscriptionId
+      - url
+      - lastError
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        mode:
+          $ref: '#/components/schemas/CheckoutMode'
+        status:
+          $ref: '#/components/schemas/CheckoutSessionStatus'
+        paymentStatus:
+          allOf:
+          - $ref: '#/components/schemas/CheckoutSessionPaymentStatus'
+        subjectType:
+          type:
+          - string
+          - 'null'
+        subjectId:
+          type:
+          - string
+          - 'null'
+        customerEmail:
+          type:
+          - string
+          - 'null'
+          format: email
+        checkoutSessionId:
+          type:
+          - string
+          - 'null'
+          example: cs_test_123
+        customerId:
+          type:
+          - string
+          - 'null'
+          example: cus_123
+        paymentIntentId:
+          type:
+          - string
+          - 'null'
+          example: pi_123
+        subscriptionId:
+          type:
+          - string
+          - 'null'
+          example: sub_123
+        url:
+          type:
+          - string
+          - 'null'
+          example: https://checkout.stripe.com/c/pay/cs_test_123
+        lastError:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     CheckoutSessionPaymentStatus:
       type: string
       enum:
       - paid
       - unpaid
       - no_payment_required
+    StripeConnectionStatus:
+      type: string
+      enum:
+      - unconfigured
+      - connected
+      - error
     ListPaymentCustomersResponse:
       type: object
       required:
@@ -681,18 +949,250 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PaymentCustomerListItem'
-    PaymentProvider:
+    BillingSubject:
+      type: object
+      required:
+      - type
+      - id
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: team
+        id:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: team_123
+    SyncStripePaymentsEnvironmentResult:
+      type: object
+      required:
+      - environment
+      - connection
+      - subscriptions
+      properties:
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        connection:
+          $ref: '#/components/schemas/StripeConnection'
+        subscriptions:
+          allOf:
+          - $ref: '#/components/schemas/SyncStripePaymentsSubscriptionsSummary'
+    GetStripeConfigResponse:
+      type: object
+      required:
+      - keys
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/StripeKeyConfig'
+    ConfigureStripeWebhookResponse:
+      type: object
+      required:
+      - connection
+      properties:
+        connection:
+          $ref: '#/components/schemas/StripeConnection'
+    StripeSubscriptionStatus:
       type: string
       enum:
-      - stripe
-      - razorpay
-    MutateStripeProductResponse:
+      - incomplete
+      - incomplete_expired
+      - trialing
+      - active
+      - past_due
+      - canceled
+      - unpaid
+      - paused
+    StripeEnvironment:
+      $ref: '#/components/schemas/PaymentEnvironment'
+    CreateCheckoutSessionBody:
+      type: object
+      required:
+      - mode
+      - lineItems
+      - successUrl
+      - cancelUrl
+      additionalProperties: false
+      description: Metadata keys starting with insforge_ are reserved and rejected.
+      properties:
+        mode:
+          $ref: '#/components/schemas/CheckoutMode'
+        lineItems:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/CreateCheckoutSessionLineItem'
+        successUrl:
+          type: string
+          format: uri
+        cancelUrl:
+          type: string
+          format: uri
+        subject:
+          $ref: '#/components/schemas/BillingSubject'
+        customerEmail:
+          type:
+          - string
+          - 'null'
+          format: email
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        idempotencyKey:
+          type: string
+          minLength: 1
+          maxLength: 200
+    StripePriceTaxBehavior:
+      type: string
+      enum:
+      - exclusive
+      - inclusive
+      - unspecified
+    Metadata:
+      type: object
+      additionalProperties:
+        type: string
+    MutateStripePriceResponse:
+      type: object
+      required:
+      - price
+      properties:
+        price:
+          $ref: '#/components/schemas/StripePrice'
+    StripePrice:
+      type: object
+      required:
+      - environment
+      - priceId
+      - productId
+      - active
+      - currency
+      - unitAmount
+      - unitAmountDecimal
+      - type
+      - lookupKey
+      - billingScheme
+      - taxBehavior
+      - recurringInterval
+      - recurringIntervalCount
+      - metadata
+      - syncedAt
+      properties:
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        priceId:
+          type: string
+          example: price_123
+        productId:
+          type:
+          - string
+          - 'null'
+          example: prod_123
+        active:
+          type: boolean
+        currency:
+          type: string
+          example: usd
+        unitAmount:
+          type:
+          - integer
+          - 'null'
+          example: 2900
+        unitAmountDecimal:
+          type:
+          - string
+          - 'null'
+          example: '2900'
+        type:
+          type: string
+          example: recurring
+        lookupKey:
+          type:
+          - string
+          - 'null'
+          example: pro_monthly
+        billingScheme:
+          type:
+          - string
+          - 'null'
+          example: per_unit
+        taxBehavior:
+          type:
+          - string
+          - 'null'
+          enum:
+          - exclusive
+          - inclusive
+          - unspecified
+          example: unspecified
+        recurringInterval:
+          type:
+          - string
+          - 'null'
+          enum:
+          - day
+          - week
+          - month
+          - year
+          example: month
+        recurringIntervalCount:
+          type:
+          - integer
+          - 'null'
+          example: 1
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        syncedAt:
+          type: string
+          format: date-time
+    UpsertStripeConfigBody:
+      type: object
+      required:
+      - secretKey
+      additionalProperties: false
+      properties:
+        secretKey:
+          type: string
+          minLength: 1
+          writeOnly: true
+          example: sk_test_xxx
+    ListStripeCatalogResponse:
+      type: object
+      required:
+      - products
+      - prices
+      properties:
+        products:
+          type: array
+          items:
+            $ref: '#/components/schemas/StripeProduct'
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/StripePrice'
+    GetStripeProductResponse:
       type: object
       required:
       - product
+      - prices
       properties:
         product:
           $ref: '#/components/schemas/StripeProduct'
+        prices:
+          type: array
+          items:
+            $ref: '#/components/schemas/StripePrice'
+    CreateCheckoutSessionResponse:
+      type: object
+      required:
+      - checkoutSession
+      properties:
+        checkoutSession:
+          $ref: '#/components/schemas/CheckoutSession'
     PaymentTransaction:
       type: object
       required:
@@ -726,941 +1226,78 @@ components:
         status:
           $ref: '#/components/schemas/PaymentTransactionStatus'
         subjectType:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         subjectId:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         providerCustomerId:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           example: cus_123
         customerEmailSnapshot:
-          type: string
+          type:
+          - string
+          - 'null'
           format: email
-          nullable: true
         providerReferenceId:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           example: pi_123
         providerReferenceType:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           example: payment_intent
         amount:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           example: 2900
         amountRefunded:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           example: 0
         currency:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           example: usd
         description:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         paidAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         failedAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         refundedAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         providerCreatedAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-    StripeSubscriptionStatus:
-      type: string
-      enum:
-      - incomplete
-      - incomplete_expired
-      - trialing
-      - active
-      - past_due
-      - canceled
-      - unpaid
-      - paused
-    ArchiveStripePriceResponse:
-      type: object
-      required:
-      - price
-      - archived
-      properties:
-        price:
-          $ref: '#/components/schemas/StripePrice'
-        archived:
-          type: boolean
-    CheckoutSessionStatus:
-      type: string
-      enum:
-      - initialized
-      - open
-      - completed
-      - expired
-      - failed
-    StripeProduct:
-      type: object
-      required:
-      - environment
-      - productId
-      - name
-      - description
-      - active
-      - defaultPriceId
-      - metadata
-      - syncedAt
-      properties:
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        productId:
-          type: string
-          example: prod_123
-        name:
-          type: string
-        description:
-          type: string
-          nullable: true
-        active:
-          type: boolean
-        defaultPriceId:
-          type: string
-          nullable: true
-          example: price_123
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        syncedAt:
-          type: string
-          format: date-time
-    PaymentTransactionStatus:
-      type: string
-      enum:
-      - succeeded
-      - failed
-      - pending
-      - refunded
-      - partially_refunded
-    StripePriceRecurringInterval:
-      type: string
-      enum:
-      - day
-      - week
-      - month
-      - year
-    GetStripeStatusResponse:
-      type: object
-      required:
-      - connections
-      properties:
-        connections:
-          type: array
-          items:
-            $ref: '#/components/schemas/StripeConnection'
-    ListStripeSubscriptionsResponse:
-      type: object
-      required:
-      - subscriptions
-      properties:
-        subscriptions:
-          type: array
-          items:
-            $ref: '#/components/schemas/StripeSubscription'
-    ConfigureStripeWebhookResponse:
-      type: object
-      required:
-      - connection
-      properties:
-        connection:
-          $ref: '#/components/schemas/StripeConnection'
-    MutateStripePriceResponse:
-      type: object
-      required:
-      - price
-      properties:
-        price:
-          $ref: '#/components/schemas/StripePrice'
-    CreateCheckoutSessionLineItem:
-      type: object
-      required:
-      - priceId
-      additionalProperties: false
-      properties:
-        priceId:
-          type: string
-          minLength: 1
-          example: price_123
-        quantity:
-          type: integer
-          minimum: 1
-          maximum: 999
-          default: 1
-    SyncStripePaymentsResponse:
-      type: object
-      required:
-      - results
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SyncStripePaymentsEnvironmentResult'
-    StripeLatestSyncStatus:
-      type: string
-      enum:
-      - succeeded
-      - failed
-    StripeKeyConfig:
-      type: object
-      required:
-      - environment
-      - hasKey
-      - maskedKey
-      properties:
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        hasKey:
-          type: boolean
-        maskedKey:
-          type: string
-          nullable: true
-          example: sk_test_...abcd
-    DeleteStripeProductResponse:
-      type: object
-      required:
-      - productId
-      - deleted
-      properties:
-        productId:
-          type: string
-          example: prod_123
-        deleted:
-          type: boolean
-    PaymentEnvironment:
-      type: string
-      enum:
-      - test
-      - live
-    UpdateStripeProductBody:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-          minLength: 1
-        description:
-          type: string
-          nullable: true
-          maxLength: 5000
-        active:
-          type: boolean
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-      minProperties: 1
-    ListPaymentTransactionsResponse:
-      type: object
-      required:
-      - transactions
-      properties:
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/PaymentTransaction'
-    CreateStripeProductBody:
-      type: object
-      required:
-      - name
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-          minLength: 1
-        description:
-          type: string
-          nullable: true
-          maxLength: 5000
-        active:
-          type: boolean
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        idempotencyKey:
-          type: string
-          minLength: 1
-          maxLength: 200
-    CreateCheckoutSessionBody:
-      type: object
-      required:
-      - mode
-      - lineItems
-      - successUrl
-      - cancelUrl
-      additionalProperties: false
-      description: Metadata keys starting with insforge_ are reserved and rejected.
-      properties:
-        mode:
-          $ref: '#/components/schemas/CheckoutMode'
-        lineItems:
-          type: array
-          minItems: 1
-          maxItems: 100
-          items:
-            $ref: '#/components/schemas/CreateCheckoutSessionLineItem'
-        successUrl:
-          type: string
-          format: uri
-        cancelUrl:
-          type: string
-          format: uri
-        subject:
-          $ref: '#/components/schemas/BillingSubject'
-        customerEmail:
-          type: string
-          format: email
-          nullable: true
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        idempotencyKey:
-          type: string
-          minLength: 1
-          maxLength: 200
-    CreateCheckoutSessionResponse:
-      type: object
-      required:
-      - checkoutSession
-      properties:
-        checkoutSession:
-          $ref: '#/components/schemas/CheckoutSession'
-    CreateCustomerPortalSessionBody:
-      type: object
-      required:
-      - subject
-      additionalProperties: false
-      properties:
-        subject:
-          $ref: '#/components/schemas/BillingSubject'
-        returnUrl:
-          type: string
-          format: uri
-        configuration:
-          type: string
-          minLength: 1
-          maxLength: 255
-    StripePrice:
-      type: object
-      required:
-      - environment
-      - priceId
-      - productId
-      - active
-      - currency
-      - unitAmount
-      - unitAmountDecimal
-      - type
-      - lookupKey
-      - billingScheme
-      - taxBehavior
-      - recurringInterval
-      - recurringIntervalCount
-      - metadata
-      - syncedAt
-      properties:
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        priceId:
-          type: string
-          example: price_123
-        productId:
-          type: string
-          nullable: true
-          example: prod_123
-        active:
-          type: boolean
-        currency:
-          type: string
-          example: usd
-        unitAmount:
-          type: integer
-          nullable: true
-          example: 2900
-        unitAmountDecimal:
-          type: string
-          nullable: true
-          example: '2900'
-        type:
-          type: string
-          example: recurring
-        lookupKey:
-          type: string
-          nullable: true
-          example: pro_monthly
-        billingScheme:
-          type: string
-          nullable: true
-          example: per_unit
-        taxBehavior:
-          type: string
-          nullable: true
-          enum:
-          - exclusive
-          - inclusive
-          - unspecified
-          example: unspecified
-        recurringInterval:
-          type: string
-          nullable: true
-          enum:
-          - day
-          - week
-          - month
-          - year
-          example: month
-        recurringIntervalCount:
-          type: integer
-          nullable: true
-          example: 1
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        syncedAt:
-          type: string
-          format: date-time
-    SyncStripePaymentsSubscriptionsSummary:
-      type: object
-      required:
-      - environment
-      - synced
-      - unmapped
-      - deleted
-      properties:
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        synced:
-          type: integer
-          minimum: 0
-        unmapped:
-          type: integer
-          minimum: 0
-        deleted:
-          type: integer
-          minimum: 0
-    PaymentCustomerListItem:
-      allOf:
-      - $ref: '#/components/schemas/PaymentCustomer'
-      - type: object
-        required:
-        - paymentsCount
-        - lastPaymentAt
-        - totalSpend
-        - totalSpendCurrency
-        - paymentMethodBrand
-        - paymentMethodLast4
-        - countryCode
-        properties:
-          paymentsCount:
-            type: integer
-            minimum: 0
-          lastPaymentAt:
-            type: string
-            format: date-time
-            nullable: true
-          totalSpend:
-            type: integer
-            minimum: 0
-            nullable: true
-          totalSpendCurrency:
-            type: string
-            nullable: true
-          paymentMethodBrand:
-            type: string
-            nullable: true
-          paymentMethodLast4:
-            type: string
-            nullable: true
-          countryCode:
-            type: string
-            nullable: true
-            minLength: 2
-            maxLength: 2
-    SyncStripePaymentsEnvironmentResult:
-      type: object
-      required:
-      - environment
-      - connection
-      - subscriptions
-      properties:
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        connection:
-          $ref: '#/components/schemas/StripeConnection'
-        subscriptions:
-          allOf:
-          - $ref: '#/components/schemas/SyncStripePaymentsSubscriptionsSummary'
-          nullable: true
-    GetStripeProductResponse:
-      type: object
-      required:
-      - product
-      - prices
-      properties:
-        product:
-          $ref: '#/components/schemas/StripeProduct'
-        prices:
-          type: array
-          items:
-            $ref: '#/components/schemas/StripePrice'
-    PaymentTransactionType:
-      type: string
-      enum:
-      - one_time_payment
-      - subscription_invoice
-      - refund
-      - failed_payment
-    StripeSubscriptionItem:
-      type: object
-      required:
-      - environment
-      - subscriptionItemId
-      - subscriptionId
-      - productId
-      - priceId
-      - quantity
-      - metadata
-      - createdAt
-      - updatedAt
-      properties:
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        subscriptionItemId:
-          type: string
-          example: si_123
-        subscriptionId:
-          type: string
-          example: sub_123
-        productId:
-          type: string
-          nullable: true
-          example: prod_123
-        priceId:
-          type: string
-          nullable: true
-          example: price_123
-        quantity:
-          type: integer
-          nullable: true
-          example: 1
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    ListStripeCatalogResponse:
-      type: object
-      required:
-      - products
-      - prices
-      properties:
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/StripeProduct'
-        prices:
-          type: array
-          items:
-            $ref: '#/components/schemas/StripePrice'
-    BillingSubject:
-      type: object
-      required:
-      - type
-      - id
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: team
-        id:
-          type: string
-          minLength: 1
-          maxLength: 255
-          example: team_123
-    CheckoutSession:
-      type: object
-      required:
-      - id
-      - environment
-      - mode
-      - status
-      - paymentStatus
-      - subjectType
-      - subjectId
-      - customerEmail
-      - checkoutSessionId
-      - customerId
-      - paymentIntentId
-      - subscriptionId
-      - url
-      - lastError
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        mode:
-          $ref: '#/components/schemas/CheckoutMode'
-        status:
-          $ref: '#/components/schemas/CheckoutSessionStatus'
-        paymentStatus:
-          allOf:
-          - $ref: '#/components/schemas/CheckoutSessionPaymentStatus'
-          nullable: true
-        subjectType:
-          type: string
-          nullable: true
-        subjectId:
-          type: string
-          nullable: true
-        customerEmail:
-          type: string
-          format: email
-          nullable: true
-        checkoutSessionId:
-          type: string
-          nullable: true
-          example: cs_test_123
-        customerId:
-          type: string
-          nullable: true
-          example: cus_123
-        paymentIntentId:
-          type: string
-          nullable: true
-          example: pi_123
-        subscriptionId:
-          type: string
-          nullable: true
-          example: sub_123
-        url:
-          type: string
-          nullable: true
-          example: https://checkout.stripe.com/c/pay/cs_test_123
-        lastError:
-          type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    StripeConnection:
-      type: object
-      required:
-      - environment
-      - status
-      - accountId
-      - accountEmail
-      - accountLivemode
-      - webhookEndpointId
-      - webhookEndpointUrl
-      - webhookConfiguredAt
-      - maskedKey
-      - lastSyncedAt
-      - lastSyncStatus
-      - lastSyncError
-      - lastSyncCounts
-      properties:
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        status:
-          $ref: '#/components/schemas/StripeConnectionStatus'
-        accountId:
-          type: string
-          nullable: true
-          example: acct_123
-        accountEmail:
-          type: string
-          nullable: true
-          example: owner@example.com
-        accountLivemode:
-          type: boolean
-          nullable: true
-        webhookEndpointId:
-          type: string
-          nullable: true
-          example: we_123
-        webhookEndpointUrl:
-          type: string
-          nullable: true
-          example: https://api.example.com/api/webhooks/stripe/test
-        webhookConfiguredAt:
-          type: string
-          format: date-time
-          nullable: true
-        maskedKey:
-          type: string
-          nullable: true
-          example: sk_test_...abcd
-        lastSyncedAt:
-          type: string
-          format: date-time
-          nullable: true
-        lastSyncStatus:
-          allOf:
-          - $ref: '#/components/schemas/StripeLatestSyncStatus'
-          nullable: true
-        lastSyncError:
-          type: string
-          nullable: true
-        lastSyncCounts:
-          type: object
-          additionalProperties:
-            type: number
-    GetStripeConfigResponse:
-      type: object
-      required:
-      - keys
-      properties:
-        keys:
-          type: array
-          items:
-            $ref: '#/components/schemas/StripeKeyConfig'
-    CustomerPortalSessionStatus:
-      type: string
-      enum:
-      - initialized
-      - created
-      - failed
-    StripePriceTaxBehavior:
-      type: string
-      enum:
-      - exclusive
-      - inclusive
-      - unspecified
-    StripeConnectionStatus:
-      type: string
-      enum:
-      - unconfigured
-      - connected
-      - error
-    UpsertStripeConfigBody:
-      type: object
-      required:
-      - secretKey
-      additionalProperties: false
-      properties:
-        secretKey:
-          type: string
-          minLength: 1
-          writeOnly: true
-          example: sk_test_xxx
-    CustomerPortalSession:
-      type: object
-      required:
-      - id
-      - environment
-      - status
-      - subjectType
-      - subjectId
-      - customerId
-      - returnUrl
-      - configuration
-      - url
-      - lastError
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        environment:
-          $ref: '#/components/schemas/StripeEnvironment'
-        status:
-          $ref: '#/components/schemas/CustomerPortalSessionStatus'
-        subjectType:
-          type: string
-        subjectId:
-          type: string
-        customerId:
-          type: string
-          nullable: true
-          example: cus_123
-        returnUrl:
-          type: string
-          nullable: true
-          example: https://app.example.com/billing
-        configuration:
-          type: string
-          nullable: true
-        url:
-          type: string
-          nullable: true
-          example: https://billing.stripe.com/p/session/test_123
-        lastError:
-          type: string
-          nullable: true
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    GetStripePriceResponse:
-      type: object
-      required:
-      - price
-      properties:
-        price:
-          $ref: '#/components/schemas/StripePrice'
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          example: INVALID_INPUT
-        message:
-          type: string
-          example: 'environment: Invalid enum value'
-        statusCode:
-          type: integer
-          example: 400
-        nextActions:
-          type: string
-          nullable: true
-    CreateStripePriceBody:
-      type: object
-      required:
-      - productId
-      - currency
-      - unitAmount
-      additionalProperties: false
-      properties:
-        productId:
-          type: string
-          minLength: 1
-        currency:
-          type: string
-          minLength: 3
-          maxLength: 3
-          example: usd
-        unitAmount:
-          type: integer
-          minimum: 0
-          example: 2900
-        lookupKey:
-          type: string
-          nullable: true
-          minLength: 1
-          maxLength: 200
-        active:
-          type: boolean
-        recurring:
-          type: object
-          additionalProperties: false
-          required:
-          - interval
-          properties:
-            interval:
-              $ref: '#/components/schemas/StripePriceRecurringInterval'
-            intervalCount:
-              type: integer
-              minimum: 1
-        taxBehavior:
-          $ref: '#/components/schemas/StripePriceTaxBehavior'
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        idempotencyKey:
-          type: string
-          minLength: 1
-          maxLength: 200
-    PaymentCustomer:
-      type: object
-      required:
-      - environment
-      - provider
-      - providerCustomerId
-      - email
-      - name
-      - phone
-      - deleted
-      - metadata
-      - providerCreatedAt
-      - syncedAt
-      properties:
-        environment:
-          $ref: '#/components/schemas/PaymentEnvironment'
-        provider:
-          $ref: '#/components/schemas/PaymentProvider'
-        providerCustomerId:
-          type: string
-          example: cus_123
-        email:
-          type: string
-          nullable: true
-          example: buyer@example.com
-        name:
-          type: string
-          nullable: true
-          example: Buyer Example
-        phone:
-          type: string
-          nullable: true
-          example: +1 555-0100
-        deleted:
-          type: boolean
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        providerCreatedAt:
-          type: string
-          format: date-time
-          nullable: true
-        syncedAt:
-          type: string
-          format: date-time
-    CheckoutMode:
-      type: string
-      enum:
-      - payment
-      - subscription
-    CreateCustomerPortalSessionResponse:
-      type: object
-      required:
-      - customerPortalSession
-      properties:
-        customerPortalSession:
-          $ref: '#/components/schemas/CustomerPortalSession'
-    StripeEnvironment:
-      $ref: '#/components/schemas/PaymentEnvironment'
-    ListStripePricesResponse:
-      type: object
-      required:
-      - prices
-      properties:
-        prices:
-          type: array
-          items:
-            $ref: '#/components/schemas/StripePrice'
     StripeSubscription:
       type: object
       required:
@@ -1690,46 +1327,56 @@ components:
           type: string
           example: sub_123
         customerId:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           example: cus_123
         subjectType:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         subjectId:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         status:
           $ref: '#/components/schemas/StripeSubscriptionStatus'
         currentPeriodStart:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         currentPeriodEnd:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         cancelAtPeriodEnd:
           type: boolean
         cancelAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         canceledAt:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         trialStart:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         trialEnd:
-          type: string
+          type:
+          - string
+          - 'null'
           format: date-time
-          nullable: true
         latestInvoiceId:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           example: in_123
         metadata:
           $ref: '#/components/schemas/Metadata'
@@ -1746,10 +1393,177 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StripeSubscriptionItem'
-    Metadata:
+    SyncStripePaymentsSubscriptionsSummary:
       type: object
-      additionalProperties:
-        type: string
+      required:
+      - environment
+      - synced
+      - unmapped
+      - deleted
+      properties:
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        synced:
+          type: integer
+          minimum: 0
+        unmapped:
+          type: integer
+          minimum: 0
+        deleted:
+          type: integer
+          minimum: 0
+    GetStripeStatusResponse:
+      type: object
+      required:
+      - connections
+      properties:
+        connections:
+          type: array
+          items:
+            $ref: '#/components/schemas/StripeConnection'
+    MutateStripeProductResponse:
+      type: object
+      required:
+      - product
+      properties:
+        product:
+          $ref: '#/components/schemas/StripeProduct'
+    DeleteStripeProductResponse:
+      type: object
+      required:
+      - productId
+      - deleted
+      properties:
+        productId:
+          type: string
+          example: prod_123
+        deleted:
+          type: boolean
+    CustomerPortalSession:
+      type: object
+      required:
+      - id
+      - environment
+      - status
+      - subjectType
+      - subjectId
+      - customerId
+      - returnUrl
+      - configuration
+      - url
+      - lastError
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        status:
+          $ref: '#/components/schemas/CustomerPortalSessionStatus'
+        subjectType:
+          type: string
+        subjectId:
+          type: string
+        customerId:
+          type:
+          - string
+          - 'null'
+          example: cus_123
+        returnUrl:
+          type:
+          - string
+          - 'null'
+          example: https://app.example.com/billing
+        configuration:
+          type:
+          - string
+          - 'null'
+        url:
+          type:
+          - string
+          - 'null'
+          example: https://billing.stripe.com/p/session/test_123
+        lastError:
+          type:
+          - string
+          - 'null'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    StripeProduct:
+      type: object
+      required:
+      - environment
+      - productId
+      - name
+      - description
+      - active
+      - defaultPriceId
+      - metadata
+      - syncedAt
+      properties:
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        productId:
+          type: string
+          example: prod_123
+        name:
+          type: string
+        description:
+          type:
+          - string
+          - 'null'
+        active:
+          type: boolean
+        defaultPriceId:
+          type:
+          - string
+          - 'null'
+          example: price_123
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        syncedAt:
+          type: string
+          format: date-time
+    UpdateStripeProductBody:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 5000
+        active:
+          type: boolean
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      minProperties: 1
+    PaymentProvider:
+      type: string
+      enum:
+      - stripe
+      - razorpay
+    PaymentTransactionType:
+      type: string
+      enum:
+      - one_time_payment
+      - subscription_invoice
+      - refund
+      - failed_payment
+    StripeLatestSyncStatus:
+      type: string
+      enum:
+      - succeeded
+      - failed
     ListStripeProductsResponse:
       type: object
       required:
@@ -1759,6 +1573,251 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/StripeProduct'
+    StripeKeyConfig:
+      type: object
+      required:
+      - environment
+      - hasKey
+      - maskedKey
+      properties:
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        hasKey:
+          type: boolean
+        maskedKey:
+          type:
+          - string
+          - 'null'
+          example: sk_test_...abcd
+    PaymentTransactionStatus:
+      type: string
+      enum:
+      - succeeded
+      - failed
+      - pending
+      - refunded
+      - partially_refunded
+    SyncStripePaymentsResponse:
+      type: object
+      required:
+      - results
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncStripePaymentsEnvironmentResult'
+    CreateStripePriceBody:
+      type: object
+      required:
+      - productId
+      - currency
+      - unitAmount
+      additionalProperties: false
+      properties:
+        productId:
+          type: string
+          minLength: 1
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: usd
+        unitAmount:
+          type: integer
+          minimum: 0
+          example: 2900
+        lookupKey:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 200
+        active:
+          type: boolean
+        recurring:
+          type: object
+          additionalProperties: false
+          required:
+          - interval
+          properties:
+            interval:
+              $ref: '#/components/schemas/StripePriceRecurringInterval'
+            intervalCount:
+              type: integer
+              minimum: 1
+        taxBehavior:
+          $ref: '#/components/schemas/StripePriceTaxBehavior'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        idempotencyKey:
+          type: string
+          minLength: 1
+          maxLength: 200
+    CustomerPortalSessionStatus:
+      type: string
+      enum:
+      - initialized
+      - created
+      - failed
+    CheckoutMode:
+      type: string
+      enum:
+      - payment
+      - subscription
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          example: INVALID_INPUT
+        message:
+          type: string
+          example: 'environment: Invalid enum value'
+        statusCode:
+          type: integer
+          example: 400
+        nextActions:
+          type:
+          - string
+          - 'null'
+    PaymentEnvironment:
+      type: string
+      enum:
+      - test
+      - live
+    StripeConnection:
+      type: object
+      required:
+      - environment
+      - status
+      - accountId
+      - accountEmail
+      - accountLivemode
+      - webhookEndpointId
+      - webhookEndpointUrl
+      - webhookConfiguredAt
+      - maskedKey
+      - lastSyncedAt
+      - lastSyncStatus
+      - lastSyncError
+      - lastSyncCounts
+      properties:
+        environment:
+          $ref: '#/components/schemas/StripeEnvironment'
+        status:
+          $ref: '#/components/schemas/StripeConnectionStatus'
+        accountId:
+          type:
+          - string
+          - 'null'
+          example: acct_123
+        accountEmail:
+          type:
+          - string
+          - 'null'
+          example: owner@example.com
+        accountLivemode:
+          type:
+          - boolean
+          - 'null'
+        webhookEndpointId:
+          type:
+          - string
+          - 'null'
+          example: we_123
+        webhookEndpointUrl:
+          type:
+          - string
+          - 'null'
+          example: https://api.example.com/api/webhooks/stripe/test
+        webhookConfiguredAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        maskedKey:
+          type:
+          - string
+          - 'null'
+          example: sk_test_...abcd
+        lastSyncedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        lastSyncStatus:
+          allOf:
+          - $ref: '#/components/schemas/StripeLatestSyncStatus'
+        lastSyncError:
+          type:
+          - string
+          - 'null'
+        lastSyncCounts:
+          type: object
+          additionalProperties:
+            type: number
+    PaymentCustomer:
+      type: object
+      required:
+      - environment
+      - provider
+      - providerCustomerId
+      - email
+      - name
+      - phone
+      - deleted
+      - metadata
+      - providerCreatedAt
+      - syncedAt
+      properties:
+        environment:
+          $ref: '#/components/schemas/PaymentEnvironment'
+        provider:
+          $ref: '#/components/schemas/PaymentProvider'
+        providerCustomerId:
+          type: string
+          example: cus_123
+        email:
+          type:
+          - string
+          - 'null'
+          example: buyer@example.com
+        name:
+          type:
+          - string
+          - 'null'
+          example: Buyer Example
+        phone:
+          type:
+          - string
+          - 'null'
+          example: +1 555-0100
+        deleted:
+          type: boolean
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        providerCreatedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        syncedAt:
+          type: string
+          format: date-time
+    ArchiveStripePriceResponse:
+      type: object
+      required:
+      - price
+      - archived
+      properties:
+        price:
+          $ref: '#/components/schemas/StripePrice'
+        archived:
+          type: boolean
     UpdateStripePriceBody:
       type: object
       additionalProperties: false
@@ -1766,8 +1825,9 @@ components:
         active:
           type: boolean
         lookupKey:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           minLength: 1
           maxLength: 200
         taxBehavior:
@@ -1775,43 +1835,98 @@ components:
         metadata:
           $ref: '#/components/schemas/Metadata'
       minProperties: 1
+    CreateCustomerPortalSessionResponse:
+      type: object
+      required:
+      - customerPortalSession
+      properties:
+        customerPortalSession:
+          $ref: '#/components/schemas/CustomerPortalSession'
+    CreateCustomerPortalSessionBody:
+      type: object
+      required:
+      - subject
+      additionalProperties: false
+      properties:
+        subject:
+          $ref: '#/components/schemas/BillingSubject'
+        returnUrl:
+          type: string
+          format: uri
+        configuration:
+          type: string
+          minLength: 1
+          maxLength: 255
+    StripePriceRecurringInterval:
+      type: string
+      enum:
+      - day
+      - week
+      - month
+      - year
+    CreateStripeProductBody:
+      type: object
+      required:
+      - name
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 5000
+        active:
+          type: boolean
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        idempotencyKey:
+          type: string
+          minLength: 1
+          maxLength: 200
+    ListStripeSubscriptionsResponse:
+      type: object
+      required:
+      - subscriptions
+      properties:
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/StripeSubscription'
+  responses:
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   parameters:
-    PriceIdPath:
-      name: priceId
-      in: path
-      required: true
-      schema:
-        type: string
-        minLength: 1
-      description: Stripe price ID.
-      example: price_123
-    SubjectIdQuery:
-      name: subjectId
-      in: query
-      required: false
-      schema:
-        type: string
-        minLength: 1
-        maxLength: 255
-      description: Billing subject ID. Must be provided together with subjectType.
-      example: team_123
-    EnvironmentPath:
-      name: environment
-      in: path
-      required: true
-      schema:
-        $ref: '#/components/schemas/PaymentEnvironment'
-      description: Payment provider environment.
-    SubjectTypeQuery:
-      name: subjectType
-      in: query
-      required: false
-      schema:
-        type: string
-        minLength: 1
-        maxLength: 100
-      description: Billing subject type. Must be provided together with subjectId.
-      example: team
     LimitQuery:
       name: limit
       in: query
@@ -1831,39 +1946,56 @@ components:
         minLength: 1
       description: Stripe product ID.
       example: prod_123
-  responses:
-    BadRequest:
-      description: Invalid request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    InternalError:
-      description: Internal server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+    SubjectTypeQuery:
+      name: subjectType
+      in: query
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 100
+      description: Billing subject type. Must be provided together with subjectId.
+      example: team
+    SubjectIdQuery:
+      name: subjectId
+      in: query
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 255
+      description: Billing subject ID. Must be provided together with subjectType.
+      example: team_123
+    EnvironmentPath:
+      name: environment
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/PaymentEnvironment'
+      description: Payment provider environment.
+    PriceIdPath:
+      name: priceId
+      in: path
+      required: true
+      schema:
+        type: string
+        minLength: 1
+      description: Stripe price ID.
+      example: price_123
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+    stripeSignature:
+      type: apiKey
+      in: header
+      name: stripe-signature
+    razorpaySignature:
+      type: apiKey
+      in: header
+      name: x-razorpay-signature

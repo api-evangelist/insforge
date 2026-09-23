@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin S3 Protocol API
-  version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  title: Insforge Storage S3 Protocol API
+  version: 2.0.0
+  description: Bucket-based storage system similar to S3
 tags:
 - name: S3 Protocol
 paths:
@@ -37,6 +37,8 @@ paths:
           description: NoSuchBucket / NoSuchKey
         '501':
           description: NotImplemented (backend is not S3-compatible, or op unsupported)
+      operationId: getStorageV1S3ByPath
+      x-operation-id-source: derived
     put:
       summary: S3 protocol (PUT)
       description: Dispatched to PutObject / UploadPart / CopyObject / CreateBucket based on path shape, query, and headers.
@@ -53,6 +55,8 @@ paths:
           description: SignatureDoesNotMatch / AuthorizationHeaderMalformed
         '409':
           description: BucketAlreadyOwnedByYou
+      operationId: putStorageV1S3ByPath
+      x-operation-id-source: derived
     post:
       summary: S3 protocol (POST)
       description: Dispatched to CreateMultipartUpload / CompleteMultipartUpload / DeleteObjects based on query.
@@ -63,6 +67,8 @@ paths:
       responses:
         '200':
           description: Success
+      operationId: postStorageV1S3ByPath
+      x-operation-id-source: derived
     delete:
       summary: S3 protocol (DELETE)
       description: Dispatched to DeleteObject / DeleteBucket / AbortMultipartUpload based on path and query.
@@ -75,6 +81,8 @@ paths:
           description: Success
         '409':
           description: BucketNotEmpty
+      operationId: deleteStorageV1S3ByPath
+      x-operation-id-source: derived
     head:
       summary: S3 protocol (HEAD)
       description: Dispatched to HeadBucket / HeadObject based on path shape.
@@ -87,9 +95,21 @@ paths:
           description: Success
         '404':
           description: NoSuchBucket / NoSuchKey
+      operationId: headStorageV1S3ByPath
+      x-operation-id-source: derived
 components:
   securitySchemes:
-    bearerAuth:
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+    s3SigV4:
       type: http
-      scheme: bearer
-      bearerFormat: JWT
+      scheme: aws4-hmac-sha256
+      description: 'AWS SigV4 authentication using S3 access keys minted by
+
+        `POST /api/storage/s3/access-keys`. Region must match the server''s
+
+        `AWS_REGION` (default `us-east-2`); service scope must be `s3`.
+
+        '

@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin Messages API
+  title: Insforge Realtime Messages API
   version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  description: Realtime channel management, message history, permissions, and retention API. Live pub/sub uses Socket.IO.
 tags:
 - name: Messages
   description: Inspect realtime message history and delivery stats.
@@ -82,6 +82,8 @@ paths:
                 error: INVALID_INPUT
                 message: 'channelId: Invalid uuid'
                 statusCode: 400
+      operationId: getApiRealtimeMessages
+      x-operation-id-source: derived
     delete:
       summary: Clear Messages
       description: Permanently delete all stored realtime messages
@@ -99,6 +101,8 @@ paths:
                 $ref: '#/components/schemas/ClearMessagesResponse'
               example:
                 deleted: 42
+      operationId: deleteApiRealtimeMessages
+      x-operation-id-source: derived
   /api/realtime/messages/stats:
     get:
       summary: Get Message Statistics
@@ -153,115 +157,10 @@ paths:
                 error: INVALID_INPUT
                 message: 'since: Invalid datetime'
                 statusCode: 400
+      operationId: getApiRealtimeMessagesStats
+      x-operation-id-source: derived
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: INVALID_INPUT
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid request
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check your request parameters
-    ClearMessagesResponse:
-      type: object
-      required:
-      - deleted
-      properties:
-        deleted:
-          type: integer
-          minimum: 0
-          description: Number of realtime messages deleted
-          example: 42
-    Message:
-      type: object
-      required:
-      - id
-      - eventName
-      - channelName
-      - payload
-      - senderType
-      - wsAudienceCount
-      - whAudienceCount
-      - whDeliveredCount
-      - createdAt
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the message
-          example: 660e8400-e29b-41d4-a716-446655440000
-        eventName:
-          type: string
-          minLength: 1
-          description: Name of the event
-          example: order.created
-        channelId:
-          type: string
-          format: uuid
-          nullable: true
-          description: ID of the channel this message belongs to
-          example: 550e8400-e29b-41d4-a716-446655440000
-        channelName:
-          type: string
-          minLength: 1
-          description: Resolved channel name (instance of the pattern)
-          example: order:123
-        payload:
-          type: object
-          additionalProperties: true
-          description: Message payload data
-          example:
-            orderId: '123'
-            status: pending
-        senderType:
-          type: string
-          enum:
-          - system
-          - user
-          description: Type of sender that published the message
-          example: user
-        senderId:
-          type: string
-          format: uuid
-          nullable: true
-          description: ID of the user who sent the message (null for system messages)
-          example: 770e8400-e29b-41d4-a716-446655440000
-        wsAudienceCount:
-          type: integer
-          minimum: 0
-          description: Number of WebSocket clients who received the message
-          example: 5
-        whAudienceCount:
-          type: integer
-          minimum: 0
-          description: Number of webhooks that should receive the message
-          example: 1
-        whDeliveredCount:
-          type: integer
-          minimum: 0
-          description: Number of webhooks that successfully received the message
-          example: 1
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp when the message was created
-          example: '2024-01-15T10:30:00Z'
     MessageStats:
       type: object
       required:
@@ -300,13 +199,126 @@ components:
                 description: Number of occurrences
                 example: 450
         retentionDays:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           minimum: 1
           description: Number of days messages are retained. Null means messages are kept indefinitely.
           example: null
+    Message:
+      type: object
+      required:
+      - id
+      - eventName
+      - channelName
+      - payload
+      - senderType
+      - wsAudienceCount
+      - whAudienceCount
+      - whDeliveredCount
+      - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the message
+          example: 660e8400-e29b-41d4-a716-446655440000
+        eventName:
+          type: string
+          minLength: 1
+          description: Name of the event
+          example: order.created
+        channelId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: ID of the channel this message belongs to
+          example: 550e8400-e29b-41d4-a716-446655440000
+        channelName:
+          type: string
+          minLength: 1
+          description: Resolved channel name (instance of the pattern)
+          example: order:123
+        payload:
+          type: object
+          additionalProperties: true
+          description: Message payload data
+          example:
+            orderId: '123'
+            status: pending
+        senderType:
+          type: string
+          enum:
+          - system
+          - user
+          description: Type of sender that published the message
+          example: user
+        senderId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: ID of the user who sent the message (null for system messages)
+          example: 770e8400-e29b-41d4-a716-446655440000
+        wsAudienceCount:
+          type: integer
+          minimum: 0
+          description: Number of WebSocket clients who received the message
+          example: 5
+        whAudienceCount:
+          type: integer
+          minimum: 0
+          description: Number of webhooks that should receive the message
+          example: 1
+        whDeliveredCount:
+          type: integer
+          minimum: 0
+          description: Number of webhooks that successfully received the message
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the message was created
+          example: '2024-01-15T10:30:00Z'
+    ClearMessagesResponse:
+      type: object
+      required:
+      - deleted
+      properties:
+        deleted:
+          type: integer
+          minimum: 0
+          description: Number of realtime messages deleted
+          example: 42
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key

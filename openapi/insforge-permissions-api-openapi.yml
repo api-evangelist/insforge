@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin Permissions API
+  title: Insforge Realtime Permissions API
   version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  description: Realtime channel management, message history, permissions, and retention API. Live pub/sub uses Socket.IO.
 tags:
 - name: Permissions
   description: Manage helper endpoints for realtime RLS examples.
@@ -42,6 +42,8 @@ paths:
                     - authenticated
                     using: null
                     withCheck: 'true'
+      operationId: getApiRealtimePermissions
+      x-operation-id-source: derived
 components:
   schemas:
     RlsPolicy:
@@ -72,13 +74,15 @@ components:
           example:
           - authenticated
         using:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: USING clause for row-level filtering
           example: enabled = true
         withCheck:
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
           description: WITH CHECK clause for row-level validation
           example: null
     RealtimePermissions:
@@ -111,4 +115,7 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key

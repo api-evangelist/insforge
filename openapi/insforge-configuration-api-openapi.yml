@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin Configuration API
+  title: Insforge Realtime Configuration API
   version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  description: Realtime channel management, message history, permissions, and retention API. Live pub/sub uses Socket.IO.
 tags:
 - name: Configuration
   description: Manage realtime retention settings.
@@ -25,6 +25,8 @@ paths:
                 $ref: '#/components/schemas/RealtimeConfig'
               example:
                 retentionDays: null
+      operationId: getApiRealtimeConfig
+      x-operation-id-source: derived
     patch:
       summary: Update Realtime Config
       description: Update realtime message retention configuration
@@ -70,30 +72,34 @@ paths:
                 error: INVALID_INPUT
                 message: 'retentionDays: Number must be greater than 0'
                 statusCode: 400
+      operationId: patchApiRealtimeConfig
+      x-operation-id-source: derived
 components:
   schemas:
-    RealtimeConfig:
-      type: object
-      required:
-      - retentionDays
-      properties:
-        retentionDays:
-          type: integer
-          nullable: true
-          minimum: 1
-          description: Number of days messages are retained. Null means messages are kept indefinitely.
-          example: null
     UpdateRealtimeConfigRequest:
       type: object
       required:
       - retentionDays
       properties:
         retentionDays:
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
           minimum: 1
           description: Number of days messages are retained. Null means messages are kept indefinitely.
           example: 90
+    RealtimeConfig:
+      type: object
+      required:
+      - retentionDays
+      properties:
+        retentionDays:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          description: Number of days messages are retained. Null means messages are kept indefinitely.
+          example: null
     ErrorResponse:
       type: object
       required:
@@ -121,4 +127,7 @@ components:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key

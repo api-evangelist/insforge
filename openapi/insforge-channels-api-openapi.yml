@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin Channels API
+  title: Insforge Realtime Channels API
   version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  description: Realtime channel management, message history, permissions, and retention API. Live pub/sub uses Socket.IO.
 tags:
 - name: Channels
   description: Configure realtime channel patterns, webhooks, and availability.
@@ -41,6 +41,8 @@ paths:
                 enabled: true
                 createdAt: '2024-01-16T11:00:00Z'
                 updatedAt: '2024-01-16T11:00:00Z'
+      operationId: getApiRealtimeChannels
+      x-operation-id-source: derived
     post:
       summary: Create Channel
       description: Create a new realtime channel with a pattern for subscription matching
@@ -87,6 +89,8 @@ paths:
                 error: INVALID_INPUT
                 message: 'pattern: Channel pattern is required'
                 statusCode: 400
+      operationId: postApiRealtimeChannels
+      x-operation-id-source: derived
   /api/realtime/channels/{id}:
     get:
       summary: Get Channel by ID
@@ -130,6 +134,8 @@ paths:
                 error: NOT_FOUND
                 message: Channel not found
                 statusCode: 404
+      operationId: getApiRealtimeChannelsById
+      x-operation-id-source: derived
     put:
       summary: Update Channel
       description: Update an existing channel's configuration
@@ -191,6 +197,8 @@ paths:
                 error: NOT_FOUND
                 message: Channel not found
                 statusCode: 404
+      operationId: putApiRealtimeChannelsById
+      x-operation-id-source: derived
     delete:
       summary: Delete Channel
       description: Delete a channel definition. Existing message history is preserved with null channelId values.
@@ -229,8 +237,33 @@ paths:
                 error: NOT_FOUND
                 message: Channel not found
                 statusCode: 404
+      operationId: deleteApiRealtimeChannelsById
+      x-operation-id-source: derived
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
     CreateChannelRequest:
       type: object
       required:
@@ -258,76 +291,6 @@ components:
           default: true
           description: Whether the channel should be active upon creation
           example: true
-    Channel:
-      type: object
-      required:
-      - id
-      - pattern
-      - enabled
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the channel
-          example: 550e8400-e29b-41d4-a716-446655440000
-        pattern:
-          type: string
-          minLength: 1
-          description: Channel pattern for subscription matching. Uses SQL LIKE wildcards, for example "order:%".
-          example: order:%
-        description:
-          type: string
-          nullable: true
-          description: Human-readable description of the channel
-          example: Order updates channel
-        webhookUrls:
-          type: array
-          nullable: true
-          items:
-            type: string
-            format: uri
-          description: URLs to receive webhook notifications for messages on this channel
-          example:
-          - https://example.com/webhook
-        enabled:
-          type: boolean
-          description: Whether the channel is currently active
-          example: true
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp when the channel was created
-          example: '2024-01-15T10:30:00Z'
-        updatedAt:
-          type: string
-          format: date-time
-          description: Timestamp when the channel was last updated
-          example: '2024-01-15T10:30:00Z'
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: INVALID_INPUT
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid request
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check your request parameters
     UpdateChannelRequest:
       type: object
       properties:
@@ -352,8 +315,60 @@ components:
           type: boolean
           description: Updated enabled status
           example: false
+    Channel:
+      type: object
+      required:
+      - id
+      - pattern
+      - enabled
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the channel
+          example: 550e8400-e29b-41d4-a716-446655440000
+        pattern:
+          type: string
+          minLength: 1
+          description: Channel pattern for subscription matching. Uses SQL LIKE wildcards, for example "order:%".
+          example: order:%
+        description:
+          type:
+          - string
+          - 'null'
+          description: Human-readable description of the channel
+          example: Order updates channel
+        webhookUrls:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+            format: uri
+          description: URLs to receive webhook notifications for messages on this channel
+          example:
+          - https://example.com/webhook
+        enabled:
+          type: boolean
+          description: Whether the channel is currently active
+          example: true
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the channel was created
+          example: '2024-01-15T10:30:00Z'
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the channel was last updated
+          example: '2024-01-15T10:30:00Z'
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
-      bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key

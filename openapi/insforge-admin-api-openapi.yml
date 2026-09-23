@@ -1,8 +1,8 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Insforge AI Admin API
-  version: 1.0.0
-  description: Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes
+  title: Insforge Admin API
+  version: '1.0'
+  description: 'Operations tagged Admin across 9 of this provider''s published API definitions: insforge-ai-openapi.yaml, insforge-auth-openapi.yaml, insforge-deployments-openapi.yaml, insforge-functions-openapi.yaml, insforge-logs-openapi.yaml, insforge-metadata-openapi.yaml, insforge-secrets-openapi.yaml, insforge-storage-openapi.yaml, insforge-tables-openapi.yaml. Each path carries the servers of the definition it was published in.'
 tags:
 - name: Admin
 paths:
@@ -25,6 +25,8 @@ paths:
           description: Unauthorized
         '500':
           description: Failed to get models list
+      operationId: getApiAiModels
+      x-operation-id-source: derived
   /api/ai/overview:
     get:
       summary: Get Model Gateway overview
@@ -44,6 +46,8 @@ paths:
           description: Unauthorized
         '500':
           description: Failed to fetch overview
+      operationId: getApiAiOverview
+      x-operation-id-source: derived
   /api/ai/{provider}/api-key:
     get:
       summary: Get active provider API key
@@ -67,6 +71,8 @@ paths:
           description: Unauthorized
         '500':
           description: Failed to fetch API key details
+      operationId: getApiAiByProviderApiKey
+      x-operation-id-source: derived
   /api/ai/{provider}/api-key/rotate:
     post:
       summary: Rotate provider API key
@@ -90,6 +96,8 @@ paths:
           description: Unauthorized
         '500':
           description: Failed to rotate API key
+      operationId: postApiAiByProviderApiKeyRotate
+      x-operation-id-source: derived
   /api/auth/config:
     get:
       summary: Get authentication configuration
@@ -153,6 +161,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: getApiAuthConfig
+      x-operation-id-source: derived
     put:
       summary: Update authentication configuration
       description: Update authentication settings (admin only)
@@ -256,6 +266,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: putApiAuthConfig
+      x-operation-id-source: derived
   /api/auth/users:
     get:
       summary: List all users (admin only)
@@ -307,6 +319,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: getApiAuthUsers
+      x-operation-id-source: derived
     delete:
       summary: Delete users (admin only)
       description: Delete multiple users by their IDs
@@ -343,6 +357,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: deleteApiAuthUsers
+      x-operation-id-source: derived
   /api/auth/users/{userId}:
     get:
       summary: Get specific user
@@ -374,6 +390,8 @@ paths:
           description: Forbidden - Admin only
         '404':
           description: User not found
+      operationId: getApiAuthUsersByUserId
+      x-operation-id-source: derived
   /api/auth/admin/sessions:
     post:
       summary: Admin login
@@ -414,6 +432,8 @@ paths:
           description: Invalid credentials
         '403':
           description: User is not an admin
+      operationId: postApiAuthAdminSessions
+      x-operation-id-source: derived
   /api/auth/admin/sessions/exchange:
     post:
       summary: Exchange cloud provider authorization code for admin session
@@ -455,6 +475,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
+      operationId: postApiAuthAdminSessionsExchange
+      x-operation-id-source: derived
   /api/auth/admin/refresh:
     post:
       summary: Refresh admin dashboard access token
@@ -487,6 +509,8 @@ paths:
           description: No admin refresh token provided or project admin not found
         '403':
           description: Invalid CSRF token
+      operationId: postApiAuthAdminRefresh
+      x-operation-id-source: derived
   /api/auth/admin/logout:
     post:
       summary: Logout admin dashboard session
@@ -499,9 +523,7 @@ paths:
 
         invalid, or wrong-session-type admin refresh cookies are cleared idempotently and still return
 
-        success.
-
-        '
+        success.'
       tags:
       - Admin
       parameters:
@@ -524,6 +546,8 @@ paths:
                     type: string
         '403':
           description: Invalid or missing CSRF token for a valid admin refresh cookie
+      operationId: postApiAuthAdminLogout
+      x-operation-id-source: derived
   /api/auth/tokens/anon:
     post:
       summary: Get anon key (deprecated)
@@ -555,6 +579,8 @@ paths:
           description: Forbidden - admin access required
         '404':
           description: Anon key not initialized
+      operationId: postApiAuthTokensAnon
+      x-operation-id-source: derived
   /api/auth/oauth/configs:
     get:
       summary: List all OAuth configurations
@@ -581,6 +607,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: getApiAuthOauthConfigs
+      x-operation-id-source: derived
     post:
       summary: Create OAuth configuration
       description: Create a new OAuth provider configuration (admin only)
@@ -636,6 +664,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: postApiAuthOauthConfigs
+      x-operation-id-source: derived
   /api/auth/oauth/{provider}/config:
     get:
       summary: Get OAuth configuration for specific provider
@@ -680,6 +710,8 @@ paths:
           description: Forbidden - Admin only
         '404':
           description: Configuration not found
+      operationId: getApiAuthOauthByProviderConfig
+      x-operation-id-source: derived
     put:
       summary: Update OAuth configuration
       description: Update OAuth provider configuration (admin only)
@@ -739,6 +771,8 @@ paths:
           description: Forbidden - Admin only
         '404':
           description: Configuration not found
+      operationId: putApiAuthOauthByProviderConfig
+      x-operation-id-source: derived
     delete:
       summary: Delete OAuth configuration
       description: Delete OAuth provider configuration (admin only)
@@ -782,6 +816,8 @@ paths:
           description: Forbidden - Admin only
         '404':
           description: Configuration not found
+      operationId: deleteApiAuthOauthByProviderConfig
+      x-operation-id-source: derived
   /api/auth/oauth/custom/configs:
     get:
       summary: List all custom OAuth configurations
@@ -808,6 +844,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: getApiAuthOauthCustomConfigs
+      x-operation-id-source: derived
     post:
       summary: Create custom OAuth configuration
       description: Create a new custom OAuth provider configuration (admin only)
@@ -854,6 +892,8 @@ paths:
           description: Forbidden - Admin only
         '409':
           description: Configuration already exists
+      operationId: postApiAuthOauthCustomConfigs
+      x-operation-id-source: derived
   /api/auth/oauth/custom/{key}/config:
     get:
       summary: Get custom OAuth configuration
@@ -886,6 +926,8 @@ paths:
           description: Forbidden - Admin only
         '404':
           description: Configuration not found
+      operationId: getApiAuthOauthCustomByKeyConfig
+      x-operation-id-source: derived
     put:
       summary: Update custom OAuth configuration
       description: Update a custom OAuth provider configuration (admin only)
@@ -930,6 +972,8 @@ paths:
           description: Forbidden - Admin only
         '404':
           description: Configuration not found
+      operationId: putApiAuthOauthCustomByKeyConfig
+      x-operation-id-source: derived
     delete:
       summary: Delete custom OAuth configuration
       description: Delete a custom OAuth provider configuration (admin only)
@@ -961,6 +1005,8 @@ paths:
           description: Forbidden - Admin only
         '404':
           description: Configuration not found
+      operationId: deleteApiAuthOauthCustomByKeyConfig
+      x-operation-id-source: derived
   /api/auth/admin/sessions/current:
     get:
       summary: Get current admin session
@@ -987,6 +1033,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin access required
+      operationId: getApiAuthAdminSessionsCurrent
+      x-operation-id-source: derived
   /api/auth/smtp-config:
     get:
       summary: Get SMTP configuration
@@ -1007,15 +1055,15 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: getApiAuthSmtpConfig
+      x-operation-id-source: derived
     put:
       summary: Update SMTP configuration
       description: 'Create or update SMTP email configuration (admin only).
 
         When `enabled` is true, the fields `host`, `username`, `senderEmail`, and `senderName` are required by the backend validation.
 
-        When `enabled` is false, these fields may be empty.
-
-        '
+        When `enabled` is false, these fields may be empty.'
       tags:
       - Admin
       security:
@@ -1075,6 +1123,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: putApiAuthSmtpConfig
+      x-operation-id-source: derived
   /api/auth/email-templates:
     get:
       summary: Get all email templates
@@ -1100,6 +1150,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: getApiAuthEmailTemplates
+      x-operation-id-source: derived
   /api/auth/email-templates/{type}:
     put:
       summary: Update email template
@@ -1150,6 +1202,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: putApiAuthEmailTemplatesByType
+      x-operation-id-source: derived
   /api/deployments:
     get:
       summary: List deployments
@@ -1173,6 +1227,8 @@ paths:
           description: Admin access required
         '500':
           $ref: '#/components/responses/Error'
+      operationId: getApiDeployments
+      x-operation-id-source: derived
     post:
       summary: Create legacy deployment session (deprecated)
       deprecated: true
@@ -1201,6 +1257,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: postApiDeployments
+      x-operation-id-source: derived
   /api/deployments/direct:
     post:
       summary: Create direct-upload deployment session
@@ -1237,6 +1295,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: postApiDeploymentsDirect
+      x-operation-id-source: derived
   /api/deployments/metadata:
     get:
       summary: Get deployment metadata
@@ -1259,6 +1319,8 @@ paths:
           description: Admin access required
         '500':
           $ref: '#/components/responses/Error'
+      operationId: getApiDeploymentsMetadata
+      x-operation-id-source: derived
   /api/deployments/slug:
     put:
       summary: Update InsForge-hosted slug
@@ -1295,6 +1357,8 @@ paths:
           description: Admin access required
         '500':
           $ref: '#/components/responses/Error'
+      operationId: putApiDeploymentsSlug
+      x-operation-id-source: derived
   /api/deployments/env-vars:
     get:
       summary: List deployment environment variables
@@ -1323,6 +1387,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: getApiDeploymentsEnvVars
+      x-operation-id-source: derived
     post:
       summary: Create or update deployment environment variables
       description: Upserts encrypted Vercel environment variables for production, preview, and development targets.
@@ -1358,6 +1424,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: postApiDeploymentsEnvVars
+      x-operation-id-source: derived
   /api/deployments/env-vars/{id}:
     get:
       summary: Get deployment environment variable
@@ -1390,6 +1458,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: getApiDeploymentsEnvVarsById
+      x-operation-id-source: derived
     delete:
       summary: Delete deployment environment variable
       description: Deletes a provider environment variable by Vercel environment variable ID.
@@ -1421,6 +1491,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: deleteApiDeploymentsEnvVarsById
+      x-operation-id-source: derived
   /api/deployments/domains:
     get:
       summary: List custom domains
@@ -1449,6 +1521,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: getApiDeploymentsDomains
+      x-operation-id-source: derived
     post:
       summary: Add custom domain
       description: Registers a user-owned custom domain on the provider project and returns DNS setup instructions.
@@ -1484,6 +1558,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: postApiDeploymentsDomains
+      x-operation-id-source: derived
   /api/deployments/domains/{domain}/verify:
     post:
       summary: Verify custom domain
@@ -1518,6 +1594,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: postApiDeploymentsDomainsByDomainVerify
+      x-operation-id-source: derived
   /api/deployments/domains/{domain}:
     delete:
       summary: Remove custom domain
@@ -1552,6 +1630,8 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse_2'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: deleteApiDeploymentsDomainsByDomain
+      x-operation-id-source: derived
   /api/deployments/{id}:
     get:
       summary: Get deployment
@@ -1578,6 +1658,8 @@ paths:
           $ref: '#/components/responses/Error'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: getApiDeploymentsById
+      x-operation-id-source: derived
   /api/deployments/{id}/files/{fileId}/content:
     put:
       summary: Upload direct deployment file content
@@ -1622,6 +1704,8 @@ paths:
           $ref: '#/components/responses/Error'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: putApiDeploymentsByIdFilesByFileIdContent
+      x-operation-id-source: derived
   /api/deployments/{id}/start:
     post:
       summary: Start deployment
@@ -1658,6 +1742,8 @@ paths:
           $ref: '#/components/responses/Error'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: postApiDeploymentsByIdStart
+      x-operation-id-source: derived
   /api/deployments/{id}/sync:
     post:
       summary: Sync deployment status
@@ -1686,6 +1772,8 @@ paths:
           $ref: '#/components/responses/Error'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: postApiDeploymentsByIdSync
+      x-operation-id-source: derived
   /api/deployments/{id}/cancel:
     post:
       summary: Cancel deployment
@@ -1714,6 +1802,8 @@ paths:
           $ref: '#/components/responses/Error'
         '500':
           $ref: '#/components/responses/Error'
+      operationId: postApiDeploymentsByIdCancel
+      x-operation-id-source: derived
   /api/functions:
     get:
       summary: List all functions
@@ -1758,6 +1848,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_3'
+      operationId: getApiFunctions
+      x-operation-id-source: derived
     post:
       summary: Create new function
       description: Create a new function with code that runs in Deno runtime
@@ -1857,6 +1949,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_3'
+      operationId: postApiFunctions
+      x-operation-id-source: derived
   /api/functions/{slug}:
     get:
       summary: Get function details
@@ -1909,6 +2003,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_3'
+      operationId: getApiFunctionsBySlug
+      x-operation-id-source: derived
     put:
       summary: Update function
       description: Update an existing function's code or metadata
@@ -1989,6 +2085,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_3'
+      operationId: putApiFunctionsBySlug
+      x-operation-id-source: derived
     delete:
       summary: Delete function
       description: Permanently delete a function
@@ -2034,6 +2132,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_3'
+      operationId: deleteApiFunctionsBySlug
+      x-operation-id-source: derived
   /api/logs:
     get:
       summary: List activity logs
@@ -2106,16 +2206,19 @@ paths:
                       - DELETE
                       - LOGIN
                     table:
-                      type: string
-                      nullable: true
+                      type:
+                      - string
+                      - 'null'
                     record_id:
-                      type: string
-                      nullable: true
+                      type:
+                      - string
+                      - 'null'
                     user_id:
                       type: string
                     details:
-                      type: object
-                      nullable: true
+                      type:
+                      - object
+                      - 'null'
               example:
               - id: log-123
                 timestamp: '2024-01-21T10:30:00Z'
@@ -2135,6 +2238,8 @@ paths:
                 details:
                   ip: 192.168.1.1
                   user_agent: Mozilla/5.0...
+      operationId: getApiLogs
+      x-operation-id-source: derived
     delete:
       summary: Clear logs
       tags:
@@ -2173,6 +2278,8 @@ paths:
                 message: Invalid date format for 'before' parameter
                 statusCode: 400
                 nextAction: Use ISO 8601 date format (YYYY-MM-DDTHH:mm:ssZ)
+      operationId: deleteApiLogs
+      x-operation-id-source: derived
   /api/logs/stats:
     get:
       summary: Get logs statistics
@@ -2229,6 +2336,8 @@ paths:
                   count: 223
                 recentActivity: 47
                 totalLogs: 1035
+      operationId: getApiLogsStats
+      x-operation-id-source: derived
   /api/metadata:
     get:
       summary: Get app metadata
@@ -2330,8 +2439,9 @@ paths:
                     description: Optional; present on cloud-hosted projects only
                     properties:
                       customSlug:
-                        type: string
-                        nullable: true
+                        type:
+                        - string
+                        - 'null'
                   version:
                     type: string
               example:
@@ -2395,6 +2505,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_5'
+      operationId: getApiMetadata
+      x-operation-id-source: derived
   /api/metadata/database:
     get:
       summary: Get database metadata
@@ -2451,6 +2563,8 @@ paths:
                 message: Invalid or missing authentication
                 statusCode: 401
                 nextAction: Please provide valid authentication credentials
+      operationId: getApiMetadataDatabase
+      x-operation-id-source: derived
   /api/metadata/api-key:
     get:
       summary: Get API key
@@ -2482,6 +2596,8 @@ paths:
                 message: Only admin users can access API keys
                 statusCode: 403
                 nextAction: Contact an administrator for API key access
+      operationId: getApiMetadataApiKey
+      x-operation-id-source: derived
   /api/metadata/anon-key:
     get:
       summary: Get anon key
@@ -2514,6 +2630,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_5'
+      operationId: getApiMetadataAnonKey
+      x-operation-id-source: derived
   /api/secrets:
     get:
       summary: List all secrets
@@ -2554,6 +2672,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: getApiSecrets
+      x-operation-id-source: derived
     post:
       summary: Create a new secret
       description: Create a new encrypted secret with a unique key
@@ -2585,9 +2705,10 @@ paths:
                   default: false
                   description: Whether the secret is protected from deletion
                 expiresAt:
-                  type: string
+                  type:
+                  - string
+                  - 'null'
                   format: date-time
-                  nullable: true
                   description: Optional expiration date for the secret
       responses:
         '201':
@@ -2635,6 +2756,8 @@ paths:
                 error: INVALID_INPUT
                 message: 'Secret already exists: STRIPE_API_KEY'
                 statusCode: 409
+      operationId: postApiSecrets
+      x-operation-id-source: derived
   /api/secrets/{key}:
     get:
       summary: Get secret value
@@ -2681,6 +2804,8 @@ paths:
           description: Unauthorized
         '403':
           description: Forbidden - Admin only
+      operationId: getApiSecretsByKey
+      x-operation-id-source: derived
     put:
       summary: Update secret
       description: Update an existing secret's value or metadata
@@ -2714,9 +2839,10 @@ paths:
                   type: boolean
                   description: Whether the secret is protected from deletion
                 expiresAt:
-                  type: string
+                  type:
+                  - string
+                  - 'null'
                   format: date-time
-                  nullable: true
                   description: Expiration date (null to remove expiration)
       responses:
         '200':
@@ -2753,6 +2879,8 @@ paths:
                 error: INTERNAL_ERROR
                 message: 'Failed to update secret: STRIPE_API_KEY'
                 statusCode: 500
+      operationId: putApiSecretsByKey
+      x-operation-id-source: derived
     delete:
       summary: Delete secret
       description: Mark a secret as inactive (soft delete). Cannot delete reserved secrets.
@@ -2804,6 +2932,8 @@ paths:
                 error: NOT_FOUND
                 message: 'Secret not found: INVALID_KEY'
                 statusCode: 404
+      operationId: deleteApiSecretsByKey
+      x-operation-id-source: derived
   /api/secrets/api-key/rotate:
     post:
       summary: Rotate API key
@@ -2867,6 +2997,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_6'
+      operationId: postApiSecretsApiKeyRotate
+      x-operation-id-source: derived
   /api/secrets/anon-key/rotate:
     post:
       summary: Rotate anon key
@@ -2924,6 +3056,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_6'
+      operationId: postApiSecretsAnonKeyRotate
+      x-operation-id-source: derived
   /api/storage/config:
     get:
       summary: Get storage configuration
@@ -2951,6 +3085,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_7'
+      operationId: getApiStorageConfig
+      x-operation-id-source: derived
     put:
       summary: Update storage configuration
       description: Update storage settings such as maximum file size (admin only)
@@ -2997,6 +3133,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse_7'
+      operationId: putApiStorageConfig
+      x-operation-id-source: derived
   /api/storage/buckets:
     get:
       summary: List All Buckets
@@ -3027,6 +3165,8 @@ paths:
                 - uploads
                 - public
                 - private
+      operationId: getApiStorageBuckets
+      x-operation-id-source: derived
     post:
       summary: Create New Bucket
       tags:
@@ -3091,6 +3231,8 @@ paths:
                 message: Bucket 'avatars' already exists
                 statusCode: 409
                 nextActions: Choose a different bucket name
+      operationId: postApiStorageBuckets
+      x-operation-id-source: derived
   /api/storage/buckets/{bucketName}:
     delete:
       summary: Delete Bucket
@@ -3133,6 +3275,8 @@ paths:
                 message: Bucket 'nonexistent' does not exist
                 statusCode: 404
                 nextActions: Check bucket name and try again
+      operationId: deleteApiStorageBucketsByBucketName
+      x-operation-id-source: derived
     patch:
       summary: Update Bucket
       tags:
@@ -3192,6 +3336,8 @@ paths:
                 message: Bucket 'nonexistent' does not exist
                 statusCode: 404
                 nextActions: Check bucket name and try again
+      operationId: patchApiStorageBucketsByBucketName
+      x-operation-id-source: derived
   /api/storage/buckets/{bucketName}/objects:
     get:
       summary: List Objects in Bucket
@@ -3282,6 +3428,8 @@ paths:
                   limit: 100
                   total: 2
                 nextActions: You can use PUT /api/storage/buckets/:bucketName/objects/:objectKey to upload with a specific key, or POST /api/storage/buckets/:bucketName/objects to upload with auto-generated key, and GET /api/storage/buckets/:bucketName/objects/:objectKey to download an object.
+      operationId: getApiStorageBucketsByBucketNameObjects
+      x-operation-id-source: derived
   /api/database/tables:
     get:
       summary: List Tables
@@ -3303,6 +3451,8 @@ paths:
               - posts
               - comments
               - categories
+      operationId: getApiDatabaseTables
+      x-operation-id-source: derived
     post:
       summary: Create Table
       tags:
@@ -3396,6 +3546,8 @@ paths:
                 message: 'Invalid field type: ''text''. Valid types are: string, integer, float, boolean, datetime, uuid, json, file'
                 statusCode: 422
                 nextActions: Use one of the valid field types
+      operationId: postApiDatabaseTables
+      x-operation-id-source: derived
   /api/database/tables/{tableName}/schema:
     get:
       summary: Get Table Schema
@@ -3434,8 +3586,9 @@ paths:
                         unique:
                           type: boolean
                         default:
-                          type: string
-                          nullable: true
+                          type:
+                          - string
+                          - 'null'
                         isPrimaryKey:
                           type: boolean
                   foreignKeys:
@@ -3448,19 +3601,16 @@ paths:
                 columns:
                 - name: id
                   type: uuid
-                  nullable: false
                   unique: true
                   default: gen_random_uuid()
                   isPrimaryKey: true
                 - name: title
                   type: string
-                  nullable: false
                   unique: false
                   default: null
                   isPrimaryKey: false
                 - name: userId
                   type: uuid
-                  nullable: false
                   unique: false
                   default: null
                   isPrimaryKey: false
@@ -3483,6 +3633,8 @@ paths:
                 message: Table 'nonexistent' does not exist
                 statusCode: 404
                 nextActions: Check table name and try again
+      operationId: getApiDatabaseTablesByTableNameSchema
+      x-operation-id-source: derived
     patch:
       summary: Update Table Schema
       tags:
@@ -3649,6 +3801,8 @@ paths:
                 message: Table 'nonexistent' does not exist
                 statusCode: 404
                 nextActions: Check table name and try again
+      operationId: patchApiDatabaseTablesByTableNameSchema
+      x-operation-id-source: derived
   /api/database/tables/{tableName}:
     delete:
       summary: Delete Table
@@ -3689,6 +3843,8 @@ paths:
                 message: Table 'nonexistent' does not exist
                 statusCode: 404
                 nextActions: Check table name and try again
+      operationId: deleteApiDatabaseTablesByTableName
+      x-operation-id-source: derived
   /api/database/migrations:
     get:
       summary: List Database Migrations
@@ -3718,6 +3874,8 @@ paths:
                   statements:
                   - CREATE TABLE posts (id UUID PRIMARY KEY DEFAULT gen_random_uuid(), title TEXT NOT NULL);
                   createdAt: '2026-04-16T17:05:00.000Z'
+      operationId: getApiDatabaseMigrations
+      x-operation-id-source: derived
     post:
       summary: Create and Execute Database Migration
       tags:
@@ -3801,24 +3959,63 @@ paths:
                 error: ALREADY_EXISTS
                 message: Migration version already exists.
                 statusCode: 409
+      operationId: postApiDatabaseMigrations
+      x-operation-id-source: derived
 components:
   schemas:
-    GetEnvVarResponse:
+    OpenRouterKeyResponse:
       type: object
-      required:
-      - envVar
       properties:
-        envVar:
-          $ref: '#/components/schemas/DeploymentEnvVarWithValue'
-    ListCustomDomainsResponse:
+        apiKey:
+          type: string
+          description: Active OpenRouter API key for admin copy workflows
+        maskedKey:
+          type: string
+          description: Masked OpenRouter API key for display
+    AIModel:
       type: object
-      required:
-      - domains
       properties:
-        domains:
+        id:
+          type: string
+          example: openai/gpt-4o
+        created:
+          type: integer
+        inputModality:
           type: array
           items:
-            $ref: '#/components/schemas/CustomDomain'
+            type: string
+          example:
+          - text
+          - image
+        outputModality:
+          type: array
+          items:
+            type: string
+          example:
+          - text
+        provider:
+          type: string
+          example: openrouter
+        modelId:
+          type: string
+          example: openai/gpt-4o
+        inputPrice:
+          type: number
+          description: Input price per million tokens in USD when token pricing is available.
+        outputPrice:
+          type: number
+          description: Output price per million tokens in USD when token pricing is available.
+        inputPriceLabel:
+          type: string
+          description: Human-readable input pricing label, such as "$2.50 / 1M tokens" or "Free", when available.
+        outputPriceLabel:
+          type: string
+          description: Human-readable output pricing label, such as "$10.00 / 1M tokens" or "Free", when available.
+    ListModelsResponse:
+      type: array
+      description: Normalized OpenRouter model catalog returned by GET /api/ai/models.
+      items:
+        $ref: '#/components/schemas/AIModel'
     AIOverviewMetricPoint:
       type: object
       properties:
@@ -3826,30 +4023,97 @@ components:
           type: string
         value:
           type: number
-    DeleteResponse:
+    AIOverview:
       type: object
-      required:
-      - success
-      - message
       properties:
-        success:
-          type: boolean
-        message:
-          type: string
-    UpsertEnvVarsResponse:
+        key:
+          type: object
+          properties:
+            label:
+              type: string
+            limit:
+              type:
+              - number
+              - 'null'
+            limitRemaining:
+              type:
+              - number
+              - 'null'
+            limitReset:
+              type:
+              - string
+              - 'null'
+            usage:
+              type: number
+            usageDaily:
+              type: number
+            usageWeekly:
+              type: number
+            usageMonthly:
+              type: number
+            isFreeTier:
+              type: boolean
+            observabilityAvailable:
+              type: boolean
+            observabilityError:
+              type: string
+        charts:
+          type: object
+          properties:
+            spend:
+              type: array
+              items:
+                $ref: '#/components/schemas/AIOverviewMetricPoint'
+            requests:
+              type: array
+              items:
+                $ref: '#/components/schemas/AIOverviewMetricPoint'
+            tokens:
+              type: array
+              items:
+                $ref: '#/components/schemas/AIOverviewMetricPoint'
+    OAuthConfig:
       type: object
-      required:
-      - success
-      - message
-      - count
       properties:
-        success:
-          type: boolean
-        message:
+        id:
           type: string
-        count:
-          type: integer
-          minimum: 1
+          format: uuid
+        provider:
+          type: string
+          enum:
+          - google
+          - github
+          - discord
+          - linkedin
+          - facebook
+          - instagram
+          - tiktok
+          - apple
+          - x
+          - spotify
+          - microsoft
+        clientId:
+          type:
+          - string
+          - 'null'
+        redirectUri:
+          type:
+          - string
+          - 'null'
+        scopes:
+          type:
+          - array
+          - 'null'
+          items:
+            type: string
+        useSharedKey:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     UserResponse:
       type: object
       properties:
@@ -3860,8 +4124,9 @@ components:
           type: string
           format: email
         profile:
-          type: object
-          nullable: true
+          type:
+          - object
+          - 'null'
           additionalProperties: true
           description: User profile data (name, avatar_url, and custom fields)
           properties:
@@ -3871,8 +4136,9 @@ components:
               type: string
               format: uri
         metadata:
-          type: object
-          nullable: true
+          type:
+          - object
+          - 'null'
           additionalProperties: true
           description: System metadata (device ID, login IP, etc.)
         emailVerified:
@@ -3887,22 +4153,7 @@ components:
         updatedAt:
           type: string
           format: date-time
-    UpdateSlugResponse:
-      type: object
-      required:
-      - success
-      - slug
-      - domain
-      properties:
-        success:
-          type: boolean
-        slug:
-          type: string
-          nullable: true
-        domain:
-          type: string
-          nullable: true
-    ErrorResponse_8:
+    ErrorResponse:
       type: object
       required:
       - error
@@ -3912,66 +4163,19 @@ components:
         error:
           type: string
           description: Error code for programmatic handling
+          example: VALIDATION_ERROR
         message:
           type: string
           description: Human-readable error message
+          example: Email is already in use
         statusCode:
           type: integer
           description: HTTP status code
+          example: 400
         nextActions:
           type: string
           description: Suggested action to resolve the error
-    CustomOAuthConfig:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        key:
-          type: string
-        name:
-          type: string
-        discoveryEndpoint:
-          type: string
-          format: uri
-        clientId:
-          type: string
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    ListModelsResponse:
-      type: array
-      description: Normalized OpenRouter model catalog returned by GET /api/ai/models.
-      items:
-        $ref: '#/components/schemas/AIModel'
-    DeploymentManifestFileUploaded:
-      allOf:
-      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
-      - type: object
-        required:
-        - fileId
-        - uploadedAt
-        properties:
-          fileId:
-            type: string
-            format: uuid
-          uploadedAt:
-            type: string
-            format: date-time
-    UpdateSlugRequest:
-      type: object
-      required:
-      - slug
-      properties:
-        slug:
-          type: string
-          nullable: true
-          minLength: 3
-          maxLength: 63
-          pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$
+          example: Please use a different email address
     SmtpConfig:
       type: object
       properties:
@@ -4003,6 +4207,39 @@ components:
         updatedAt:
           type: string
           format: date-time
+    ProjectAdminResponse:
+      type: object
+      required:
+      - subject
+      - username
+      properties:
+        subject:
+          type: string
+          example: local:admin
+        username:
+          type: string
+          example: admin
+    CustomOAuthConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        key:
+          type: string
+        name:
+          type: string
+        discoveryEndpoint:
+          type: string
+          format: uri
+        clientId:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
     EmailTemplate:
       type: object
       properties:
@@ -4026,16 +4263,81 @@ components:
         updatedAt:
           type: string
           format: date-time
-    FunctionDetails:
-      allOf:
-      - $ref: '#/components/schemas/FunctionMetadata'
-      - type: object
-        properties:
-          code:
-            type: string
-            description: The function's JavaScript/TypeScript code
-        required:
-        - code
+    Deployment:
+      type: object
+      required:
+      - id
+      - providerDeploymentId
+      - provider
+      - status
+      - url
+      - metadata
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        providerDeploymentId:
+          type:
+          - string
+          - 'null'
+          description: Provider deployment ID. Null until the provider deployment is created.
+        provider:
+          type: string
+          example: vercel
+        status:
+          $ref: '#/components/schemas/DeploymentStatus'
+        url:
+          type:
+          - string
+          - 'null'
+          example: https://my-app.vercel.app
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    DeploymentMetadata:
+      type: object
+      required:
+      - currentDeploymentId
+      - defaultDomainUrl
+      - customDomainUrl
+      properties:
+        currentDeploymentId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+        defaultDomainUrl:
+          type:
+          - string
+          - 'null'
+        customDomainUrl:
+          type:
+          - string
+          - 'null'
+    UpsertEnvVarsResponse:
+      type: object
+      required:
+      - success
+      - message
+      - count
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        count:
+          type: integer
+          minimum: 1
     CreateDirectDeploymentResponse:
       type: object
       required:
@@ -4052,6 +4354,617 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeploymentManifestFile'
+    StartDeploymentRequest:
+      type: object
+      properties:
+        projectSettings:
+          $ref: '#/components/schemas/ProjectSettings'
+        envVars:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+        meta:
+          type: object
+          additionalProperties:
+            type: string
+    ListCustomDomainsResponse:
+      type: object
+      required:
+      - domains
+      properties:
+        domains:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomDomain'
+    UpdateSlugRequest:
+      type: object
+      required:
+      - slug
+      properties:
+        slug:
+          type:
+          - string
+          - 'null'
+          minLength: 3
+          maxLength: 63
+          pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$
+    DeploymentEnvVar:
+      type: object
+      required:
+      - id
+      - key
+      - type
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        type:
+          type: string
+          enum:
+          - plain
+          - encrypted
+          - secret
+          - sensitive
+          - system
+        updatedAt:
+          type: integer
+          description: Unix timestamp in milliseconds.
+    DeploymentManifestFileEntry:
+      type: object
+      required:
+      - path
+      - sha
+      - size
+      properties:
+        path:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          description: Relative source path using forward slashes.
+          example: src/App.tsx
+        sha:
+          type: string
+          pattern: ^[a-fA-F0-9]{40}$
+          description: SHA-1 hex digest of the file content.
+        size:
+          type: integer
+          minimum: 0
+          description: File size in bytes.
+    UpsertEnvVarsRequest:
+      type: object
+      required:
+      - envVars
+      properties:
+        envVars:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+    DomainVerificationRecord:
+      type: object
+      required:
+      - type
+      - domain
+      - value
+      properties:
+        type:
+          type: string
+          example: TXT
+        domain:
+          type: string
+        value:
+          type: string
+    DeleteResponse:
+      type: object
+      required:
+      - success
+      - message
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+    GetEnvVarResponse:
+      type: object
+      required:
+      - envVar
+      properties:
+        envVar:
+          $ref: '#/components/schemas/DeploymentEnvVarWithValue'
+    CustomDomain:
+      type: object
+      required:
+      - domain
+      - apexDomain
+      - verified
+      - misconfigured
+      - verification
+      - cnameTarget
+      - aRecordValue
+      properties:
+        domain:
+          type: string
+          example: app.example.com
+        apexDomain:
+          type: string
+          example: example.com
+        verified:
+          type: boolean
+        misconfigured:
+          type: boolean
+        verification:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainVerificationRecord'
+        cnameTarget:
+          type:
+          - string
+          - 'null'
+        aRecordValue:
+          type:
+          - string
+          - 'null'
+    UpdateSlugResponse:
+      type: object
+      required:
+      - success
+      - slug
+      - domain
+      properties:
+        success:
+          type: boolean
+        slug:
+          type:
+          - string
+          - 'null'
+        domain:
+          type:
+          - string
+          - 'null'
+    EnvVarInput:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ListEnvVarsResponse:
+      type: object
+      required:
+      - envVars
+      properties:
+        envVars:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeploymentEnvVar'
+    DeploymentEnvVarWithValue:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentEnvVar'
+      - type: object
+        required:
+        - value
+        properties:
+          value:
+            type: string
+    AddCustomDomainRequest:
+      type: object
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
+          example: app.example.com
+          description: User-owned domain. Domains ending in `.insforge.site` are reserved.
+    ProjectSettings:
+      type: object
+      properties:
+        buildCommand:
+          type:
+          - string
+          - 'null'
+        outputDirectory:
+          type:
+          - string
+          - 'null'
+        installCommand:
+          type:
+          - string
+          - 'null'
+        devCommand:
+          type:
+          - string
+          - 'null'
+        rootDirectory:
+          type:
+          - string
+          - 'null'
+    ErrorResponse_2:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling.
+        message:
+          type: string
+          description: Human-readable error message.
+        statusCode:
+          type: integer
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error.
+    DeploymentManifestFileUploaded:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
+      - type: object
+        required:
+        - fileId
+        - uploadedAt
+        properties:
+          fileId:
+            type: string
+            format: uuid
+          uploadedAt:
+            type: string
+            format: date-time
+    CreateDirectDeploymentRequest:
+      type: object
+      required:
+      - files
+      properties:
+        files:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          description: Source file manifest. The default backend limit is 5000 files.
+          items:
+            $ref: '#/components/schemas/DeploymentManifestFileEntry'
+    DeploymentManifestFile:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
+      - type: object
+        required:
+        - fileId
+        - uploadedAt
+        properties:
+          fileId:
+            type: string
+            format: uuid
+          uploadedAt:
+            type:
+            - string
+            - 'null'
+            format: date-time
+    CreateDeploymentResponse:
+      type: object
+      required:
+      - id
+      - uploadUrl
+      - uploadFields
+      properties:
+        id:
+          type: string
+          format: uuid
+        uploadUrl:
+          type: string
+          format: uri
+        uploadFields:
+          type: object
+          additionalProperties:
+            type: string
+    DeploymentStatus:
+      type: string
+      enum:
+      - WAITING
+      - UPLOADING
+      - QUEUED
+      - BUILDING
+      - READY
+      - ERROR
+      - CANCELED
+    FunctionDetails:
+      allOf:
+      - $ref: '#/components/schemas/FunctionMetadata'
+      - type: object
+        properties:
+          code:
+            type: string
+            description: The function's JavaScript/TypeScript code
+        required:
+        - code
+    FunctionMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the function
+        slug:
+          type: string
+          description: URL-friendly identifier
+          example: hello-world
+        name:
+          type: string
+          description: Display name for the function
+          example: Hello World Function
+        description:
+          type:
+          - string
+          - 'null'
+          description: Description of what the function does
+        status:
+          type: string
+          enum:
+          - draft
+          - active
+          - error
+          description: Current status of the function
+        created_at:
+          type: string
+          format: date-time
+          description: When the function was created
+        updated_at:
+          type: string
+          format: date-time
+          description: When the function was last updated
+        deployed_at:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When the function was last deployed (null if never deployed)
+      required:
+      - id
+      - slug
+      - name
+      - status
+      - created_at
+      - updated_at
+    ErrorResponse_3:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: object
+          - type: object
+          description: Additional error details
+        message:
+          type: string
+          description: Detailed error message
+        pattern:
+          type: string
+          description: Pattern that caused validation failure (for dangerous code detection)
+    ErrorResponse_4:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+        message:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+        nextAction:
+          type: string
+          description: Suggested action to resolve the error
+    ErrorResponse_5:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+        message:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+        nextAction:
+          type: string
+          description: Suggested action to resolve the error
+    SecretMetadata:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the secret
+        key:
+          type: string
+          description: Unique key identifier (uppercase with underscores)
+          example: STRIPE_API_KEY
+        isActive:
+          type: boolean
+          description: Whether the secret is currently active
+        isReserved:
+          type: boolean
+          description: Whether the secret is protected from deletion
+        createdAt:
+          type: string
+          format: date-time
+          description: When the secret was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: When the secret was last updated
+        expiresAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+          description: When the secret expires (null if no expiration)
+      required:
+      - id
+      - key
+      - isActive
+      - isReserved
+      - createdAt
+      - updatedAt
+    ErrorResponse_6:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid input data
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check the request body format
+    StorageConfig:
+      type: object
+      required:
+      - id
+      - maxFileSizeMb
+      - createdAt
+      - updatedAt
+      properties:
+        id:
+          type: string
+          format: uuid
+        maxFileSizeMb:
+          type: integer
+          minimum: 1
+          maximum: 200
+          description: Maximum file upload size in megabytes
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    StoredFile:
+      type: object
+      properties:
+        bucket:
+          type: string
+          example: avatars
+          description: Name of the bucket containing the object
+        key:
+          type: string
+          example: user123.jpg
+          description: Unique key identifying the object within the bucket
+        size:
+          type: integer
+          example: 102400
+          description: Size of the file in bytes
+        mimeType:
+          type: string
+          example: image/jpeg
+          description: MIME type of the file
+        uploadedAt:
+          type: string
+          format: date-time
+          example: '2024-01-15T10:30:00Z'
+          description: ISO timestamp when the file was uploaded
+        url:
+          type: string
+          example: /api/storage/buckets/avatars/objects/user123.jpg
+          description: URL to download the file
+      required:
+      - bucket
+      - key
+      - size
+      - uploadedAt
+      - url
+    ErrorResponse_7:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
+    Migration:
+      type: object
+      required:
+      - version
+      - name
+      - statements
+      - createdAt
+      properties:
+        version:
+          type: string
+          pattern: ^\d{1,64}$
+        name:
+          type: string
+        statements:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+    ErrorResponse_8:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+        message:
+          type: string
+          description: Human-readable error message
+        statusCode:
+          type: integer
+          description: HTTP status code
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
     ForeignKeyConstraint:
       type: object
       description: A table-level foreign key constraint. One entry per constraint; composite keys list multiple column mappings.
@@ -4100,738 +5013,65 @@ components:
           - SET DEFAULT
           - NO ACTION
           - RESTRICT
-    DeploymentEnvVar:
-      type: object
-      required:
-      - id
-      - key
-      - type
-      properties:
-        id:
-          type: string
-        key:
-          type: string
-        type:
-          type: string
-          enum:
-          - plain
-          - encrypted
-          - secret
-          - sensitive
-          - system
-        updatedAt:
-          type: integer
-          description: Unix timestamp in milliseconds.
-    UpsertEnvVarsRequest:
-      type: object
-      required:
-      - envVars
-      properties:
-        envVars:
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/EnvVarInput'
-    OAuthConfig:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        provider:
-          type: string
-          enum:
-          - google
-          - github
-          - discord
-          - linkedin
-          - facebook
-          - instagram
-          - tiktok
-          - apple
-          - x
-          - spotify
-          - microsoft
-        clientId:
-          type: string
-          nullable: true
-        redirectUri:
-          type: string
-          nullable: true
-        scopes:
-          type: array
-          items:
-            type: string
-          nullable: true
-        useSharedKey:
-          type: boolean
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    OpenRouterKeyResponse:
-      type: object
-      properties:
-        apiKey:
-          type: string
-          description: Active OpenRouter API key for admin copy workflows
-        maskedKey:
-          type: string
-          description: Masked OpenRouter API key for display
-    DomainVerificationRecord:
-      type: object
-      required:
-      - type
-      - domain
-      - value
-      properties:
-        type:
-          type: string
-          example: TXT
-        domain:
-          type: string
-        value:
-          type: string
-    StartDeploymentRequest:
-      type: object
-      properties:
-        projectSettings:
-          $ref: '#/components/schemas/ProjectSettings'
-        envVars:
-          type: array
-          items:
-            $ref: '#/components/schemas/EnvVarInput'
-        meta:
-          type: object
-          additionalProperties:
-            type: string
-    DeploymentStatus:
-      type: string
-      enum:
-      - WAITING
-      - UPLOADING
-      - QUEUED
-      - BUILDING
-      - READY
-      - ERROR
-      - CANCELED
-    AIModel:
-      type: object
-      properties:
-        id:
-          type: string
-          example: openai/gpt-4o
-        created:
-          type: integer
-        inputModality:
-          type: array
-          items:
-            type: string
-          example:
-          - text
-          - image
-        outputModality:
-          type: array
-          items:
-            type: string
-          example:
-          - text
-        provider:
-          type: string
-          example: openrouter
-        modelId:
-          type: string
-          example: openai/gpt-4o
-        inputPrice:
-          type: number
-          description: Input price per million tokens in USD when token pricing is available.
-        outputPrice:
-          type: number
-          description: Output price per million tokens in USD when token pricing is available.
-        inputPriceLabel:
-          type: string
-          description: Human-readable input pricing label, such as "$2.50 / 1M tokens" or "Free", when available.
-        outputPriceLabel:
-          type: string
-          description: Human-readable output pricing label, such as "$10.00 / 1M tokens" or "Free", when available.
-    DeploymentMetadata:
-      type: object
-      required:
-      - currentDeploymentId
-      - defaultDomainUrl
-      - customDomainUrl
-      properties:
-        currentDeploymentId:
-          type: string
-          format: uuid
-          nullable: true
-        defaultDomainUrl:
-          type: string
-          nullable: true
-        customDomainUrl:
-          type: string
-          nullable: true
-    ListEnvVarsResponse:
-      type: object
-      required:
-      - envVars
-      properties:
-        envVars:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeploymentEnvVar'
-    Deployment:
-      type: object
-      required:
-      - id
-      - providerDeploymentId
-      - provider
-      - status
-      - url
-      - metadata
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        providerDeploymentId:
-          type: string
-          nullable: true
-          description: Provider deployment ID. Null until the provider deployment is created.
-        provider:
-          type: string
-          example: vercel
-        status:
-          $ref: '#/components/schemas/DeploymentStatus'
-        url:
-          type: string
-          nullable: true
-          example: https://my-app.vercel.app
-        metadata:
-          type: object
-          nullable: true
-          additionalProperties: true
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    CustomDomain:
-      type: object
-      required:
-      - domain
-      - apexDomain
-      - verified
-      - misconfigured
-      - verification
-      - cnameTarget
-      - aRecordValue
-      properties:
-        domain:
-          type: string
-          example: app.example.com
-        apexDomain:
-          type: string
-          example: example.com
-        verified:
-          type: boolean
-        misconfigured:
-          type: boolean
-        verification:
-          type: array
-          items:
-            $ref: '#/components/schemas/DomainVerificationRecord'
-        cnameTarget:
-          type: string
-          nullable: true
-        aRecordValue:
-          type: string
-          nullable: true
-    StorageConfig:
-      type: object
-      required:
-      - id
-      - maxFileSizeMb
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        maxFileSizeMb:
-          type: integer
-          minimum: 1
-          maximum: 200
-          description: Maximum file upload size in megabytes
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    ProjectSettings:
-      type: object
-      properties:
-        buildCommand:
-          type: string
-          nullable: true
-        outputDirectory:
-          type: string
-          nullable: true
-        installCommand:
-          type: string
-          nullable: true
-        devCommand:
-          type: string
-          nullable: true
-        rootDirectory:
-          type: string
-          nullable: true
-    ErrorResponse_7:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid request
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check your request parameters
-    DeploymentManifestFile:
-      allOf:
-      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
-      - type: object
-        required:
-        - fileId
-        - uploadedAt
-        properties:
-          fileId:
-            type: string
-            format: uuid
-          uploadedAt:
-            type: string
-            format: date-time
-            nullable: true
-    FunctionMetadata:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the function
-        slug:
-          type: string
-          description: URL-friendly identifier
-          example: hello-world
-        name:
-          type: string
-          description: Display name for the function
-          example: Hello World Function
-        description:
-          type: string
-          nullable: true
-          description: Description of what the function does
-        status:
-          type: string
-          enum:
-          - draft
-          - active
-          - error
-          description: Current status of the function
-        created_at:
-          type: string
-          format: date-time
-          description: When the function was created
-        updated_at:
-          type: string
-          format: date-time
-          description: When the function was last updated
-        deployed_at:
-          type: string
-          format: date-time
-          nullable: true
-          description: When the function was last deployed (null if never deployed)
-      required:
-      - id
-      - slug
-      - name
-      - status
-      - created_at
-      - updated_at
-    ProjectAdminResponse:
-      type: object
-      required:
-      - subject
-      - username
-      properties:
-        subject:
-          type: string
-          example: local:admin
-        username:
-          type: string
-          example: admin
-    EnvVarInput:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-    ErrorResponse_3:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error message
-        details:
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: object
-          - type: object
-          description: Additional error details
-        message:
-          type: string
-          description: Detailed error message
-        pattern:
-          type: string
-          description: Pattern that caused validation failure (for dangerous code detection)
-    AddCustomDomainRequest:
-      type: object
-      required:
-      - domain
-      properties:
-        domain:
-          type: string
-          pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
-          example: app.example.com
-          description: User-owned domain. Domains ending in `.insforge.site` are reserved.
-    AIOverview:
-      type: object
-      properties:
-        key:
-          type: object
-          properties:
-            label:
-              type: string
-            limit:
-              type: number
-              nullable: true
-            limitRemaining:
-              type: number
-              nullable: true
-            limitReset:
-              type: string
-              nullable: true
-            usage:
-              type: number
-            usageDaily:
-              type: number
-            usageWeekly:
-              type: number
-            usageMonthly:
-              type: number
-            isFreeTier:
-              type: boolean
-            observabilityAvailable:
-              type: boolean
-            observabilityError:
-              type: string
-        charts:
-          type: object
-          properties:
-            spend:
-              type: array
-              items:
-                $ref: '#/components/schemas/AIOverviewMetricPoint'
-            requests:
-              type: array
-              items:
-                $ref: '#/components/schemas/AIOverviewMetricPoint'
-            tokens:
-              type: array
-              items:
-                $ref: '#/components/schemas/AIOverviewMetricPoint'
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          description: Human-readable error message
-          example: Email is already in use
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Please use a different email address
-    DeploymentEnvVarWithValue:
-      allOf:
-      - $ref: '#/components/schemas/DeploymentEnvVar'
-      - type: object
-        required:
-        - value
-        properties:
-          value:
-            type: string
-    SecretMetadata:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the secret
-        key:
-          type: string
-          description: Unique key identifier (uppercase with underscores)
-          example: STRIPE_API_KEY
-        isActive:
-          type: boolean
-          description: Whether the secret is currently active
-        isReserved:
-          type: boolean
-          description: Whether the secret is protected from deletion
-        createdAt:
-          type: string
-          format: date-time
-          description: When the secret was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: When the secret was last updated
-        expiresAt:
-          type: string
-          format: date-time
-          nullable: true
-          description: When the secret expires (null if no expiration)
-      required:
-      - id
-      - key
-      - isActive
-      - isReserved
-      - createdAt
-      - updatedAt
-    ErrorResponse_4:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-        message:
-          type: string
-          description: Human-readable error message
-        statusCode:
-          type: integer
-          description: HTTP status code
-        nextAction:
-          type: string
-          description: Suggested action to resolve the error
-    ErrorResponse_5:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-        message:
-          type: string
-          description: Human-readable error message
-        statusCode:
-          type: integer
-          description: HTTP status code
-        nextAction:
-          type: string
-          description: Suggested action to resolve the error
-    ErrorResponse_6:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: INVALID_INPUT
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid input data
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check the request body format
-    StoredFile:
-      type: object
-      properties:
-        bucket:
-          type: string
-          example: avatars
-          description: Name of the bucket containing the object
-        key:
-          type: string
-          example: user123.jpg
-          description: Unique key identifying the object within the bucket
-        size:
-          type: integer
-          example: 102400
-          description: Size of the file in bytes
-        mimeType:
-          type: string
-          example: image/jpeg
-          description: MIME type of the file
-        uploadedAt:
-          type: string
-          format: date-time
-          example: '2024-01-15T10:30:00Z'
-          description: ISO timestamp when the file was uploaded
-        url:
-          type: string
-          example: /api/storage/buckets/avatars/objects/user123.jpg
-          description: URL to download the file
-      required:
-      - bucket
-      - key
-      - size
-      - uploadedAt
-      - url
-    CreateDeploymentResponse:
-      type: object
-      required:
-      - id
-      - uploadUrl
-      - uploadFields
-      properties:
-        id:
-          type: string
-          format: uuid
-        uploadUrl:
-          type: string
-          format: uri
-        uploadFields:
-          type: object
-          additionalProperties:
-            type: string
-    Migration:
-      type: object
-      required:
-      - version
-      - name
-      - statements
-      - createdAt
-      properties:
-        version:
-          type: string
-          pattern: ^\d{1,64}$
-        name:
-          type: string
-        statements:
-          type: array
-          items:
-            type: string
-        createdAt:
-          type: string
-          format: date-time
-    DeploymentManifestFileEntry:
-      type: object
-      required:
-      - path
-      - sha
-      - size
-      properties:
-        path:
-          type: string
-          minLength: 1
-          maxLength: 2048
-          description: Relative source path using forward slashes.
-          example: src/App.tsx
-        sha:
-          type: string
-          pattern: ^[a-fA-F0-9]{40}$
-          description: SHA-1 hex digest of the file content.
-        size:
-          type: integer
-          minimum: 0
-          description: File size in bytes.
-    CreateDirectDeploymentRequest:
-      type: object
-      required:
-      - files
-      properties:
-        files:
-          type: array
-          minItems: 1
-          maxItems: 5000
-          description: Source file manifest. The default backend limit is 5000 files.
-          items:
-            $ref: '#/components/schemas/DeploymentManifestFileEntry'
-    ErrorResponse_2:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling.
-        message:
-          type: string
-          description: Human-readable error message.
-        statusCode:
-          type: integer
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error.
+  parameters:
+    AIProvider:
+      name: provider
+      in: path
+      required: true
+      schema:
+        type: string
+        enum:
+        - openrouter
+      description: AI provider identifier
+    Limit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 50
+      description: Maximum number of deployments to return.
+    Domain:
+      name: domain
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
+      description: User-owned custom domain.
+      example: app.example.com
+    FileId:
+      name: fileId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Direct upload file ID returned by `POST /api/deployments/direct`.
+    DeploymentId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Deployment run ID.
+    Offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of deployments to skip.
+    EnvVarId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Provider environment variable ID.
   responses:
-    Error:
-      description: Error response
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse_2'
     DeploymentList:
       description: Deployment runs
       headers:
@@ -4849,66 +5089,38 @@ components:
             type: array
             items:
               $ref: '#/components/schemas/Deployment'
-  parameters:
-    DeploymentId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      description: Deployment run ID.
-    Offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-      description: Number of deployments to skip.
-    AIProvider:
-      name: provider
-      in: path
-      required: true
-      schema:
-        type: string
-        enum:
-        - openrouter
-      description: AI provider identifier
-    EnvVarId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Provider environment variable ID.
-    FileId:
-      name: fileId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      description: Direct upload file ID returned by `POST /api/deployments/direct`.
-    Domain:
-      name: domain
-      in: path
-      required: true
-      schema:
-        type: string
-        pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
-      description: User-owned custom domain.
-      example: app.example.com
-    Limit:
-      name: limit
-      in: query
-      schema:
-        type: integer
-        minimum: 1
-        default: 50
-      description: Maximum number of deployments to return.
+    Error:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse_2'
   securitySchemes:
     bearerAuth:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    apiKey:
+      type: apiKey
+      in: header
+      name: x-api-key
+    s3SigV4:
+      type: http
+      scheme: aws4-hmac-sha256
+      description: 'AWS SigV4 authentication using S3 access keys minted by
+
+        `POST /api/storage/s3/access-keys`. Region must match the server''s
+
+        `AWS_REGION` (default `us-east-2`); service scope must be `s3`.
+
+        '
+x-refined-from:
+- insforge-ai-openapi.yaml
+- insforge-auth-openapi.yaml
+- insforge-deployments-openapi.yaml
+- insforge-functions-openapi.yaml
+- insforge-logs-openapi.yaml
+- insforge-metadata-openapi.yaml
+- insforge-secrets-openapi.yaml
+- insforge-storage-openapi.yaml
+- insforge-tables-openapi.yaml
