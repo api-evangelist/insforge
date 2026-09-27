@@ -48,7 +48,7 @@ image: https://insforge.dev/logo.png
 tags:
 - Company
 - Backend-as-a-Service
-- agent-native
+- Agent-Native
 - Cloud Infrastructure
 - Database
 - Authentication
@@ -58,7 +58,7 @@ tags:
 - AI Gateway
 - Payments
 - Real-Time
-- Open-Source
+- Open Source
 - Y Combinator
 tags_raw:
 - Company
@@ -75,6 +75,8 @@ tags_raw:
 - Realtime
 - Open Source
 - Y Combinator
+- agent-native
+- Open-Source
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com

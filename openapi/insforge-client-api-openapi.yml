@@ -2610,79 +2610,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    EmbeddingObject:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - embedding
-          description: Object type, always "embedding"
-        embedding:
-          type: array
-          items:
-            type: number
-          description: The embedding vector (array of floats)
-        index:
-          type: integer
-          description: Index of this embedding in the input array
-    ToolCall:
-      type: object
-      required:
-      - id
-      - type
-      - function
-      properties:
-        id:
-          type: string
-          description: Unique identifier for this tool call
-        type:
-          type: string
-          enum:
-          - function
-        function:
-          type: object
-          required:
-          - name
-          - arguments
-          properties:
-            name:
-              type: string
-              description: The name of the function called
-            arguments:
-              type: string
-              description: JSON string of the function arguments
-    WebSearchPlugin:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Enable web search integration
-        engine:
-          type: string
-          enum:
-          - native
-          - exa
-          description: 'Search engine selection:
-
-            - native: Use provider''s built-in web search (OpenAI, Anthropic, Perplexity, xAI)
-
-            - exa: Use Exa''s search API
-
-            - undefined: Auto-select (native if available, otherwise Exa)
-
-            '
-        maxResults:
-          type: integer
-          minimum: 1
-          maximum: 10
-          default: 5
-          description: Maximum number of search results to include
-        searchPrompt:
-          type: string
-          description: Custom prompt for attaching search results to the message
     TokenUsage:
       type: object
       properties:
@@ -2692,191 +2619,6 @@ components:
           type: integer
         totalTokens:
           type: integer
-    ChatMessage:
-      type: object
-      required:
-      - role
-      properties:
-        role:
-          type: string
-          enum:
-          - user
-          - assistant
-          - system
-          - tool
-          description: Role of the message sender
-        content:
-          type:
-          - string
-          - 'null'
-          description: Message content (nullable for assistant messages with tool_calls)
-        tool_calls:
-          type: array
-          description: Tool calls made by the assistant (assistant messages only)
-          items:
-            $ref: '#/components/schemas/ToolCall'
-        tool_call_id:
-          type: string
-          description: ID of the tool call being responded to (tool messages only)
-    FunctionDefinition:
-      type: object
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: The name of the function to call
-        description:
-          type: string
-          description: A description of what the function does
-        parameters:
-          type: object
-          description: JSON Schema describing the function parameters
-    UrlCitationAnnotation:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - url_citation
-        urlCitation:
-          type: object
-          properties:
-            url:
-              type: string
-              description: URL of the cited source
-            title:
-              type: string
-              description: Title of the cited page
-            content:
-              type: string
-              description: Relevant content snippet from the source
-            startIndex:
-              type: integer
-              description: Start character index in response text where citation applies
-            endIndex:
-              type: integer
-              description: End character index in response text where citation applies
-    EmbeddingsRequest:
-      type: object
-      required:
-      - model
-      - input
-      properties:
-        model:
-          type: string
-          description: Embedding model identifier
-          example: google/gemini-embedding-001
-        input:
-          oneOf:
-          - type: string
-            description: Single text input to embed
-          - type: array
-            items:
-              type: string
-            description: Array of text inputs to embed
-          example: Hello world
-        encoding_format:
-          type: string
-          enum:
-          - float
-          - base64
-          default: float
-          description: The format to return the embeddings in. Can be either float or base64.
-        dimensions:
-          type: integer
-          minimum: 0
-          description: The number of dimensions the resulting output embeddings should have. Only supported in certain models.
-    ChatCompletionResponse:
-      type: object
-      properties:
-        text:
-          type: string
-          description: AI model response content
-        tool_calls:
-          type: array
-          description: Tool calls requested by the model (present when the model invokes tools)
-          items:
-            $ref: '#/components/schemas/ToolCall'
-        annotations:
-          type: array
-          description: URL citations from web search results (present when webSearch is enabled)
-          items:
-            $ref: '#/components/schemas/UrlCitationAnnotation'
-        metadata:
-          type: object
-          properties:
-            model:
-              type: string
-            usage:
-              $ref: '#/components/schemas/TokenUsage'
-    Tool:
-      type: object
-      required:
-      - type
-      - function
-      properties:
-        type:
-          type: string
-          enum:
-          - function
-        function:
-          $ref: '#/components/schemas/FunctionDefinition'
-    FileParserPlugin:
-      type: object
-      required:
-      - enabled
-      properties:
-        enabled:
-          type: boolean
-          description: Enable file parsing for PDFs in messages
-        pdf:
-          type: object
-          properties:
-            engine:
-              type: string
-              enum:
-              - pdf-text
-              - mistral-ocr
-              - native
-              description: 'PDF processing engine:
-
-                - pdf-text: Best for well-structured PDFs with clear text content (Free)
-
-                - mistral-ocr: Best for scanned documents or PDFs with images ($2 per 1,000 pages)
-
-                - native: Only for models with native file support (charged as input tokens)
-
-                If not specified, defaults to native if available, otherwise mistral-ocr
-
-                '
-    OpenRouterImageMessage:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - image_url
-        image_url:
-          type: object
-          properties:
-            url:
-              type: string
-              description: Can be a direct URL or data:image base64 URL
-    ImageGenerationOptions:
-      type: object
-      required:
-      - model
-      - prompt
-      properties:
-        model:
-          type: string
-          description: OpenRouter model identifier for image generation
-          example: openai/dall-e-3
-        prompt:
-          type: string
-          description: Text prompt describing the desired image
-          example: A serene landscape with mountains and a lake at sunset
     ChatRequest:
       type: object
       required:
@@ -2948,6 +2690,83 @@ components:
         parallelToolCalls:
           type: boolean
           description: Allow the model to call multiple tools in parallel
+    FileParserPlugin:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Enable file parsing for PDFs in messages
+        pdf:
+          type: object
+          properties:
+            engine:
+              type: string
+              enum:
+              - pdf-text
+              - mistral-ocr
+              - native
+              description: 'PDF processing engine:
+
+                - pdf-text: Best for well-structured PDFs with clear text content (Free)
+
+                - mistral-ocr: Best for scanned documents or PDFs with images ($2 per 1,000 pages)
+
+                - native: Only for models with native file support (charged as input tokens)
+
+                If not specified, defaults to native if available, otherwise mistral-ocr
+
+                '
+    ChatMessage:
+      type: object
+      required:
+      - role
+      properties:
+        role:
+          type: string
+          enum:
+          - user
+          - assistant
+          - system
+          - tool
+          description: Role of the message sender
+        content:
+          type:
+          - string
+          - 'null'
+          description: Message content (nullable for assistant messages with tool_calls)
+        tool_calls:
+          type: array
+          description: Tool calls made by the assistant (assistant messages only)
+          items:
+            $ref: '#/components/schemas/ToolCall'
+        tool_call_id:
+          type: string
+          description: ID of the tool call being responded to (tool messages only)
+    ChatCompletionResponse:
+      type: object
+      properties:
+        text:
+          type: string
+          description: AI model response content
+        tool_calls:
+          type: array
+          description: Tool calls requested by the model (present when the model invokes tools)
+          items:
+            $ref: '#/components/schemas/ToolCall'
+        annotations:
+          type: array
+          description: URL citations from web search results (present when webSearch is enabled)
+          items:
+            $ref: '#/components/schemas/UrlCitationAnnotation'
+        metadata:
+          type: object
+          properties:
+            model:
+              type: string
+            usage:
+              $ref: '#/components/schemas/TokenUsage'
     EmbeddingsResponse:
       type: object
       properties:
@@ -2969,37 +2788,210 @@ components:
               example: text-embedding-ada-002
             usage:
               $ref: '#/components/schemas/TokenUsage'
-    ProjectAdminResponse:
+    ImageGenerationOptions:
       type: object
       required:
-      - subject
-      - username
+      - model
+      - prompt
       properties:
-        subject:
+        model:
           type: string
-          example: local:admin
-        username:
+          description: OpenRouter model identifier for image generation
+          example: openai/dall-e-3
+        prompt:
           type: string
-          example: admin
-    ProfileResponse:
+          description: Text prompt describing the desired image
+          example: A serene landscape with mountains and a lake at sunset
+    OpenRouterImageMessage:
       type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - image_url
+        image_url:
+          type: object
+          properties:
+            url:
+              type: string
+              description: Can be a direct URL or data:image base64 URL
+    EmbeddingObject:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - embedding
+          description: Object type, always "embedding"
+        embedding:
+          type: array
+          items:
+            type: number
+          description: The embedding vector (array of floats)
+        index:
+          type: integer
+          description: Index of this embedding in the input array
+    WebSearchPlugin:
+      type: object
+      required:
+      - enabled
+      properties:
+        enabled:
+          type: boolean
+          description: Enable web search integration
+        engine:
+          type: string
+          enum:
+          - native
+          - exa
+          description: 'Search engine selection:
+
+            - native: Use provider''s built-in web search (OpenAI, Anthropic, Perplexity, xAI)
+
+            - exa: Use Exa''s search API
+
+            - undefined: Auto-select (native if available, otherwise Exa)
+
+            '
+        maxResults:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 5
+          description: Maximum number of search results to include
+        searchPrompt:
+          type: string
+          description: Custom prompt for attaching search results to the message
+    Tool:
+      type: object
+      required:
+      - type
+      - function
+      properties:
+        type:
+          type: string
+          enum:
+          - function
+        function:
+          $ref: '#/components/schemas/FunctionDefinition'
+    UrlCitationAnnotation:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - url_citation
+        urlCitation:
+          type: object
+          properties:
+            url:
+              type: string
+              description: URL of the cited source
+            title:
+              type: string
+              description: Title of the cited page
+            content:
+              type: string
+              description: Relevant content snippet from the source
+            startIndex:
+              type: integer
+              description: Start character index in response text where citation applies
+            endIndex:
+              type: integer
+              description: End character index in response text where citation applies
+    ToolCall:
+      type: object
+      required:
+      - id
+      - type
+      - function
       properties:
         id:
           type: string
-          format: uuid
-          description: User ID
-        profile:
-          type:
-          - object
-          - 'null'
-          additionalProperties: true
-          description: User profile data (can contain custom fields)
+          description: Unique identifier for this tool call
+        type:
+          type: string
+          enum:
+          - function
+        function:
+          type: object
+          required:
+          - name
+          - arguments
           properties:
             name:
               type: string
-            avatar_url:
+              description: The name of the function called
+            arguments:
               type: string
-              format: uri
+              description: JSON string of the function arguments
+    FunctionDefinition:
+      type: object
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the function to call
+        description:
+          type: string
+          description: A description of what the function does
+        parameters:
+          type: object
+          description: JSON Schema describing the function parameters
+    EmbeddingsRequest:
+      type: object
+      required:
+      - model
+      - input
+      properties:
+        model:
+          type: string
+          description: Embedding model identifier
+          example: google/gemini-embedding-001
+        input:
+          oneOf:
+          - type: string
+            description: Single text input to embed
+          - type: array
+            items:
+              type: string
+            description: Array of text inputs to embed
+          example: Hello world
+        encoding_format:
+          type: string
+          enum:
+          - float
+          - base64
+          default: float
+          description: The format to return the embeddings in. Can be either float or base64.
+        dimensions:
+          type: integer
+          minimum: 0
+          description: The number of dimensions the resulting output embeddings should have. Only supported in certain models.
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Email is already in use
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Please use a different email address
     UserResponse:
       type: object
       properties:
@@ -3039,29 +3031,37 @@ components:
         updatedAt:
           type: string
           format: date-time
-    ErrorResponse:
+    ProfileResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User ID
+        profile:
+          type:
+          - object
+          - 'null'
+          additionalProperties: true
+          description: User profile data (can contain custom fields)
+          properties:
+            name:
+              type: string
+            avatar_url:
+              type: string
+              format: uri
+    ProjectAdminResponse:
       type: object
       required:
-      - error
-      - message
-      - statusCode
+      - subject
+      - username
       properties:
-        error:
+        subject:
           type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
+          example: local:admin
+        username:
           type: string
-          description: Human-readable error message
-          example: Email is already in use
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Please use a different email address
+          example: admin
     SendRawEmailRequest:
       type: object
       required:
@@ -3133,9 +3133,6 @@ components:
           format: email
           description: Reply-to email address
           example: support@example.com
-    SendEmailResponse:
-      type: object
-      description: Empty object on success - extend with optional fields later if needed
     ErrorResponse_2:
       type: object
       required:
@@ -3159,6 +3156,9 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Please provide a valid subject line
+    SendEmailResponse:
+      type: object
+      description: Empty object on success - extend with optional fields later if needed
     ErrorResponse_3:
       type: object
       properties:
@@ -3202,82 +3202,6 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Check the request body format
-    DownloadStrategy:
-      type: object
-      required:
-      - method
-      - url
-      properties:
-        method:
-          type: string
-          enum:
-          - presigned
-          - direct
-          description: 'Download method:
-
-            - `direct`: Direct URL access (S3 public buckets or local storage)
-
-            - `presigned`: Secure URL with signature and expiration (S3 private buckets)
-
-            '
-          example: direct
-        url:
-          type: string
-          description: URL to download the file from
-          example: https://s3-bucket.s3.us-east-2.amazonaws.com/app-key/public-assets/logo.png
-        expiresAt:
-          type: string
-          format: date-time
-          description: Expiration time for presigned URLs (only present when method is 'presigned')
-          example: '2025-09-05T01:00:00Z'
-        headers:
-          type: object
-          description: Optional headers to include in the download request
-          additionalProperties: true
-    UploadStrategy:
-      type: object
-      required:
-      - method
-      - uploadUrl
-      - key
-      - confirmRequired
-      properties:
-        method:
-          type: string
-          enum:
-          - presigned
-          - direct
-          description: Upload method - presigned for S3, direct for local storage
-          example: presigned
-        uploadUrl:
-          type: string
-          description: URL to upload the file to
-          example: https://s3-bucket.amazonaws.com/
-        fields:
-          type: object
-          description: Form fields for presigned POST (S3 only)
-          additionalProperties: true
-          example:
-            bucket: my-s3-bucket
-            key: app-key/avatars/profile.jpg
-            X-Amz-Algorithm: AWS4-HMAC-SHA256
-        key:
-          type: string
-          description: Generated unique key for the file
-          example: profile-photo-1234567890-abc123.jpg
-        confirmRequired:
-          type: boolean
-          description: Whether upload confirmation is required
-          example: true
-        confirmUrl:
-          type: string
-          description: URL to confirm the upload (if confirmRequired is true)
-          example: /api/storage/buckets/avatars/objects/profile.jpg/confirm-upload
-        expiresAt:
-          type: string
-          format: date-time
-          description: Expiration time for presigned URL (S3 only)
-          example: '2025-09-05T01:00:00Z'
     StoredFile:
       type: object
       properties:
@@ -3335,6 +3259,82 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Check your request parameters
+    UploadStrategy:
+      type: object
+      required:
+      - method
+      - uploadUrl
+      - key
+      - confirmRequired
+      properties:
+        method:
+          type: string
+          enum:
+          - presigned
+          - direct
+          description: Upload method - presigned for S3, direct for local storage
+          example: presigned
+        uploadUrl:
+          type: string
+          description: URL to upload the file to
+          example: https://s3-bucket.amazonaws.com/
+        fields:
+          type: object
+          description: Form fields for presigned POST (S3 only)
+          additionalProperties: true
+          example:
+            bucket: my-s3-bucket
+            key: app-key/avatars/profile.jpg
+            X-Amz-Algorithm: AWS4-HMAC-SHA256
+        key:
+          type: string
+          description: Generated unique key for the file
+          example: profile-photo-1234567890-abc123.jpg
+        confirmRequired:
+          type: boolean
+          description: Whether upload confirmation is required
+          example: true
+        confirmUrl:
+          type: string
+          description: URL to confirm the upload (if confirmRequired is true)
+          example: /api/storage/buckets/avatars/objects/profile.jpg/confirm-upload
+        expiresAt:
+          type: string
+          format: date-time
+          description: Expiration time for presigned URL (S3 only)
+          example: '2025-09-05T01:00:00Z'
+    DownloadStrategy:
+      type: object
+      required:
+      - method
+      - url
+      properties:
+        method:
+          type: string
+          enum:
+          - presigned
+          - direct
+          description: 'Download method:
+
+            - `direct`: Direct URL access (S3 public buckets or local storage)
+
+            - `presigned`: Secure URL with signature and expiration (S3 private buckets)
+
+            '
+          example: direct
+        url:
+          type: string
+          description: URL to download the file from
+          example: https://s3-bucket.s3.us-east-2.amazonaws.com/app-key/public-assets/logo.png
+        expiresAt:
+          type: string
+          format: date-time
+          description: Expiration time for presigned URLs (only present when method is 'presigned')
+          example: '2025-09-05T01:00:00Z'
+        headers:
+          type: object
+          description: Optional headers to include in the download request
+          additionalProperties: true
   securitySchemes:
     bearerAuth:
       type: http

@@ -76,18 +76,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    UpdateRealtimeConfigRequest:
-      type: object
-      required:
-      - retentionDays
-      properties:
-        retentionDays:
-          type:
-          - integer
-          - 'null'
-          minimum: 1
-          description: Number of days messages are retained. Null means messages are kept indefinitely.
-          example: 90
     RealtimeConfig:
       type: object
       required:
@@ -123,6 +111,18 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Check your request parameters
+    UpdateRealtimeConfigRequest:
+      type: object
+      required:
+      - retentionDays
+      properties:
+        retentionDays:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          description: Number of days messages are retained. Null means messages are kept indefinitely.
+          example: 90
   securitySchemes:
     bearerAuth:
       type: http

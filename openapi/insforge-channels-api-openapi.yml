@@ -241,29 +241,30 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ErrorResponse:
+    UpdateChannelRequest:
       type: object
-      required:
-      - error
-      - message
-      - statusCode
       properties:
-        error:
+        pattern:
           type: string
-          description: Error code for programmatic handling
-          example: INVALID_INPUT
-        message:
+          minLength: 1
+          description: Updated channel pattern
+          example: order:%
+        description:
           type: string
-          description: Human-readable error message
-          example: Invalid request
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check your request parameters
+          description: Updated description
+          example: Updated order channel
+        webhookUrls:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Updated webhook URLs
+          example:
+          - https://example.com/webhook
+        enabled:
+          type: boolean
+          description: Updated enabled status
+          example: false
     CreateChannelRequest:
       type: object
       required:
@@ -291,30 +292,29 @@ components:
           default: true
           description: Whether the channel should be active upon creation
           example: true
-    UpdateChannelRequest:
+    ErrorResponse:
       type: object
+      required:
+      - error
+      - message
+      - statusCode
       properties:
-        pattern:
+        error:
           type: string
-          minLength: 1
-          description: Updated channel pattern
-          example: order:%
-        description:
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
           type: string
-          description: Updated description
-          example: Updated order channel
-        webhookUrls:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Updated webhook URLs
-          example:
-          - https://example.com/webhook
-        enabled:
-          type: boolean
-          description: Updated enabled status
-          example: false
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
     Channel:
       type: object
       required:

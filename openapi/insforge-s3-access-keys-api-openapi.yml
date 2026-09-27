@@ -194,29 +194,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    CreateS3AccessKeyRequest:
-      type: object
-      properties:
-        description:
-          type: string
-          maxLength: 200
-          description: Optional label to help you identify the key later
-          example: backup-script
-    S3AccessKeyWithSecret:
-      allOf:
-      - $ref: '#/components/schemas/S3AccessKey'
-      - type: object
-        required:
-        - secretAccessKey
-        properties:
-          secretAccessKey:
-            type: string
-            description: '40-character base64url secret. **Returned only once** in the
-
-              create response — retrieve, store, and keep it secret.
-
-              '
-            example: x7K2-a_pL9qRs4N8vYzWcE1fH5gJ3mUtBoD6ViXk
     ErrorResponse:
       type: object
       required:
@@ -240,6 +217,44 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Check your request parameters
+    CreateS3AccessKeyRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          maxLength: 200
+          description: Optional label to help you identify the key later
+          example: backup-script
+    S3GatewayConfig:
+      type: object
+      description: Read-only config of the S3 protocol gateway.
+      required:
+      - endpoint
+      - region
+      properties:
+        endpoint:
+          type: string
+          description: Full URL clients should configure as their S3 endpoint.
+          example: https://proj.insforge.app/storage/v1/s3
+        region:
+          type: string
+          description: SigV4 signing region the gateway validates incoming requests against.
+          example: us-east-2
+    S3AccessKeyWithSecret:
+      allOf:
+      - $ref: '#/components/schemas/S3AccessKey'
+      - type: object
+        required:
+        - secretAccessKey
+        properties:
+          secretAccessKey:
+            type: string
+            description: '40-character base64url secret. **Returned only once** in the
+
+              create response — retrieve, store, and keep it secret.
+
+              '
+            example: x7K2-a_pL9qRs4N8vYzWcE1fH5gJ3mUtBoD6ViXk
     S3AccessKey:
       type: object
       description: An S3 access key record (without the plaintext secret).
@@ -277,21 +292,6 @@ components:
           format: date-time
           description: Updated asynchronously after each successful SigV4 verification
           example: null
-    S3GatewayConfig:
-      type: object
-      description: Read-only config of the S3 protocol gateway.
-      required:
-      - endpoint
-      - region
-      properties:
-        endpoint:
-          type: string
-          description: Full URL clients should configure as their S3 endpoint.
-          example: https://proj.insforge.app/storage/v1/s3
-        region:
-          type: string
-          description: SigV4 signing region the gateway validates incoming requests against.
-          example: us-east-2
   securitySchemes:
     apiKey:
       type: apiKey

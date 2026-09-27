@@ -3963,6 +3963,18 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    AIOverviewMetricPoint:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: number
+    ListModelsResponse:
+      type: array
+      description: Normalized OpenRouter model catalog returned by GET /api/ai/models.
+      items:
+        $ref: '#/components/schemas/AIModel'
     OpenRouterKeyResponse:
       type: object
       properties:
@@ -4011,18 +4023,6 @@ components:
         outputPriceLabel:
           type: string
           description: Human-readable output pricing label, such as "$10.00 / 1M tokens" or "Free", when available.
-    ListModelsResponse:
-      type: array
-      description: Normalized OpenRouter model catalog returned by GET /api/ai/models.
-      items:
-        $ref: '#/components/schemas/AIModel'
-    AIOverviewMetricPoint:
-      type: object
-      properties:
-        label:
-          type: string
-        value:
-          type: number
     AIOverview:
       type: object
       properties:
@@ -4114,6 +4114,41 @@ components:
         updatedAt:
           type: string
           format: date-time
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Email is already in use
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Please use a different email address
+    ProjectAdminResponse:
+      type: object
+      required:
+      - subject
+      - username
+      properties:
+        subject:
+          type: string
+          example: local:admin
+        username:
+          type: string
+          example: admin
     UserResponse:
       type: object
       properties:
@@ -4153,72 +4188,6 @@ components:
         updatedAt:
           type: string
           format: date-time
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          description: Human-readable error message
-          example: Email is already in use
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Please use a different email address
-    SmtpConfig:
-      type: object
-      properties:
-        id:
-          type: string
-          format: uuid
-        enabled:
-          type: boolean
-        host:
-          type: string
-        port:
-          type: integer
-        username:
-          type: string
-        hasPassword:
-          type: boolean
-          description: Whether a password is set (actual password is never exposed)
-        senderEmail:
-          type: string
-          format: email
-        senderName:
-          type: string
-        minIntervalSeconds:
-          type: integer
-          minimum: 0
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    ProjectAdminResponse:
-      type: object
-      required:
-      - subject
-      - username
-      properties:
-        subject:
-          type: string
-          example: local:admin
-        username:
-          type: string
-          example: admin
     CustomOAuthConfig:
       type: object
       properties:
@@ -4263,6 +4232,171 @@ components:
         updatedAt:
           type: string
           format: date-time
+    SmtpConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        enabled:
+          type: boolean
+        host:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        hasPassword:
+          type: boolean
+          description: Whether a password is set (actual password is never exposed)
+        senderEmail:
+          type: string
+          format: email
+        senderName:
+          type: string
+        minIntervalSeconds:
+          type: integer
+          minimum: 0
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    DeploymentManifestFile:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
+      - type: object
+        required:
+        - fileId
+        - uploadedAt
+        properties:
+          fileId:
+            type: string
+            format: uuid
+          uploadedAt:
+            type:
+            - string
+            - 'null'
+            format: date-time
+    GetEnvVarResponse:
+      type: object
+      required:
+      - envVar
+      properties:
+        envVar:
+          $ref: '#/components/schemas/DeploymentEnvVarWithValue'
+    UpdateSlugRequest:
+      type: object
+      required:
+      - slug
+      properties:
+        slug:
+          type:
+          - string
+          - 'null'
+          minLength: 3
+          maxLength: 63
+          pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$
+    ErrorResponse_2:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling.
+        message:
+          type: string
+          description: Human-readable error message.
+        statusCode:
+          type: integer
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error.
+    CreateDirectDeploymentRequest:
+      type: object
+      required:
+      - files
+      properties:
+        files:
+          type: array
+          minItems: 1
+          maxItems: 5000
+          description: Source file manifest. The default backend limit is 5000 files.
+          items:
+            $ref: '#/components/schemas/DeploymentManifestFileEntry'
+    CustomDomain:
+      type: object
+      required:
+      - domain
+      - apexDomain
+      - verified
+      - misconfigured
+      - verification
+      - cnameTarget
+      - aRecordValue
+      properties:
+        domain:
+          type: string
+          example: app.example.com
+        apexDomain:
+          type: string
+          example: example.com
+        verified:
+          type: boolean
+        misconfigured:
+          type: boolean
+        verification:
+          type: array
+          items:
+            $ref: '#/components/schemas/DomainVerificationRecord'
+        cnameTarget:
+          type:
+          - string
+          - 'null'
+        aRecordValue:
+          type:
+          - string
+          - 'null'
+    StartDeploymentRequest:
+      type: object
+      properties:
+        projectSettings:
+          $ref: '#/components/schemas/ProjectSettings'
+        envVars:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+        meta:
+          type: object
+          additionalProperties:
+            type: string
+    UpsertEnvVarsResponse:
+      type: object
+      required:
+      - success
+      - message
+      - count
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        count:
+          type: integer
+          minimum: 1
+    ListCustomDomainsResponse:
+      type: object
+      required:
+      - domains
+      properties:
+        domains:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomDomain'
     Deployment:
       type: object
       required:
@@ -4304,6 +4438,99 @@ components:
         updatedAt:
           type: string
           format: date-time
+    DeploymentManifestFileUploaded:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
+      - type: object
+        required:
+        - fileId
+        - uploadedAt
+        properties:
+          fileId:
+            type: string
+            format: uuid
+          uploadedAt:
+            type: string
+            format: date-time
+    EnvVarInput:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    ProjectSettings:
+      type: object
+      properties:
+        buildCommand:
+          type:
+          - string
+          - 'null'
+        outputDirectory:
+          type:
+          - string
+          - 'null'
+        installCommand:
+          type:
+          - string
+          - 'null'
+        devCommand:
+          type:
+          - string
+          - 'null'
+        rootDirectory:
+          type:
+          - string
+          - 'null'
+    DeploymentStatus:
+      type: string
+      enum:
+      - WAITING
+      - UPLOADING
+      - QUEUED
+      - BUILDING
+      - READY
+      - ERROR
+      - CANCELED
+    DeleteResponse:
+      type: object
+      required:
+      - success
+      - message
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+    ListEnvVarsResponse:
+      type: object
+      required:
+      - envVars
+      properties:
+        envVars:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeploymentEnvVar'
+    UpdateSlugResponse:
+      type: object
+      required:
+      - success
+      - slug
+      - domain
+      properties:
+        success:
+          type: boolean
+        slug:
+          type:
+          - string
+          - 'null'
+        domain:
+          type:
+          - string
+          - 'null'
     DeploymentMetadata:
       type: object
       required:
@@ -4324,20 +4551,43 @@ components:
           type:
           - string
           - 'null'
-    UpsertEnvVarsResponse:
+    UpsertEnvVarsRequest:
       type: object
       required:
-      - success
-      - message
-      - count
+      - envVars
       properties:
-        success:
-          type: boolean
-        message:
+        envVars:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+    AddCustomDomainRequest:
+      type: object
+      required:
+      - domain
+      properties:
+        domain:
           type: string
-        count:
-          type: integer
-          minimum: 1
+          pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
+          example: app.example.com
+          description: User-owned domain. Domains ending in `.insforge.site` are reserved.
+    CreateDeploymentResponse:
+      type: object
+      required:
+      - id
+      - uploadUrl
+      - uploadFields
+      properties:
+        id:
+          type: string
+          format: uuid
+        uploadUrl:
+          type: string
+          format: uri
+        uploadFields:
+          type: object
+          additionalProperties:
+            type: string
     CreateDirectDeploymentResponse:
       type: object
       required:
@@ -4354,40 +4604,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/DeploymentManifestFile'
-    StartDeploymentRequest:
-      type: object
-      properties:
-        projectSettings:
-          $ref: '#/components/schemas/ProjectSettings'
-        envVars:
-          type: array
-          items:
-            $ref: '#/components/schemas/EnvVarInput'
-        meta:
-          type: object
-          additionalProperties:
-            type: string
-    ListCustomDomainsResponse:
-      type: object
-      required:
-      - domains
-      properties:
-        domains:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomDomain'
-    UpdateSlugRequest:
-      type: object
-      required:
-      - slug
-      properties:
-        slug:
-          type:
-          - string
-          - 'null'
-          minLength: 3
-          maxLength: 63
-          pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$
     DeploymentEnvVar:
       type: object
       required:
@@ -4431,16 +4647,15 @@ components:
           type: integer
           minimum: 0
           description: File size in bytes.
-    UpsertEnvVarsRequest:
-      type: object
-      required:
-      - envVars
-      properties:
-        envVars:
-          type: array
-          minItems: 1
-          items:
-            $ref: '#/components/schemas/EnvVarInput'
+    DeploymentEnvVarWithValue:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentEnvVar'
+      - type: object
+        required:
+        - value
+        properties:
+          value:
+            type: string
     DomainVerificationRecord:
       type: object
       required:
@@ -4455,221 +4670,26 @@ components:
           type: string
         value:
           type: string
-    DeleteResponse:
+    ErrorResponse_3:
       type: object
-      required:
-      - success
-      - message
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-    GetEnvVarResponse:
-      type: object
-      required:
-      - envVar
-      properties:
-        envVar:
-          $ref: '#/components/schemas/DeploymentEnvVarWithValue'
-    CustomDomain:
-      type: object
-      required:
-      - domain
-      - apexDomain
-      - verified
-      - misconfigured
-      - verification
-      - cnameTarget
-      - aRecordValue
-      properties:
-        domain:
-          type: string
-          example: app.example.com
-        apexDomain:
-          type: string
-          example: example.com
-        verified:
-          type: boolean
-        misconfigured:
-          type: boolean
-        verification:
-          type: array
-          items:
-            $ref: '#/components/schemas/DomainVerificationRecord'
-        cnameTarget:
-          type:
-          - string
-          - 'null'
-        aRecordValue:
-          type:
-          - string
-          - 'null'
-    UpdateSlugResponse:
-      type: object
-      required:
-      - success
-      - slug
-      - domain
-      properties:
-        success:
-          type: boolean
-        slug:
-          type:
-          - string
-          - 'null'
-        domain:
-          type:
-          - string
-          - 'null'
-    EnvVarInput:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-    ListEnvVarsResponse:
-      type: object
-      required:
-      - envVars
-      properties:
-        envVars:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeploymentEnvVar'
-    DeploymentEnvVarWithValue:
-      allOf:
-      - $ref: '#/components/schemas/DeploymentEnvVar'
-      - type: object
-        required:
-        - value
-        properties:
-          value:
-            type: string
-    AddCustomDomainRequest:
-      type: object
-      required:
-      - domain
-      properties:
-        domain:
-          type: string
-          pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
-          example: app.example.com
-          description: User-owned domain. Domains ending in `.insforge.site` are reserved.
-    ProjectSettings:
-      type: object
-      properties:
-        buildCommand:
-          type:
-          - string
-          - 'null'
-        outputDirectory:
-          type:
-          - string
-          - 'null'
-        installCommand:
-          type:
-          - string
-          - 'null'
-        devCommand:
-          type:
-          - string
-          - 'null'
-        rootDirectory:
-          type:
-          - string
-          - 'null'
-    ErrorResponse_2:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
       properties:
         error:
           type: string
-          description: Error code for programmatic handling.
+          description: Error message
+        details:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: object
+          - type: object
+          description: Additional error details
         message:
           type: string
-          description: Human-readable error message.
-        statusCode:
-          type: integer
-        nextActions:
+          description: Detailed error message
+        pattern:
           type: string
-          description: Suggested action to resolve the error.
-    DeploymentManifestFileUploaded:
-      allOf:
-      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
-      - type: object
-        required:
-        - fileId
-        - uploadedAt
-        properties:
-          fileId:
-            type: string
-            format: uuid
-          uploadedAt:
-            type: string
-            format: date-time
-    CreateDirectDeploymentRequest:
-      type: object
-      required:
-      - files
-      properties:
-        files:
-          type: array
-          minItems: 1
-          maxItems: 5000
-          description: Source file manifest. The default backend limit is 5000 files.
-          items:
-            $ref: '#/components/schemas/DeploymentManifestFileEntry'
-    DeploymentManifestFile:
-      allOf:
-      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
-      - type: object
-        required:
-        - fileId
-        - uploadedAt
-        properties:
-          fileId:
-            type: string
-            format: uuid
-          uploadedAt:
-            type:
-            - string
-            - 'null'
-            format: date-time
-    CreateDeploymentResponse:
-      type: object
-      required:
-      - id
-      - uploadUrl
-      - uploadFields
-      properties:
-        id:
-          type: string
-          format: uuid
-        uploadUrl:
-          type: string
-          format: uri
-        uploadFields:
-          type: object
-          additionalProperties:
-            type: string
-    DeploymentStatus:
-      type: string
-      enum:
-      - WAITING
-      - UPLOADING
-      - QUEUED
-      - BUILDING
-      - READY
-      - ERROR
-      - CANCELED
+          description: Pattern that caused validation failure (for dangerous code detection)
     FunctionDetails:
       allOf:
       - $ref: '#/components/schemas/FunctionMetadata'
@@ -4728,26 +4748,6 @@ components:
       - status
       - created_at
       - updated_at
-    ErrorResponse_3:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error message
-        details:
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: object
-          - type: object
-          description: Additional error details
-        message:
-          type: string
-          description: Detailed error message
-        pattern:
-          type: string
-          description: Pattern that caused validation failure (for dangerous code detection)
     ErrorResponse_4:
       type: object
       required:
@@ -4847,28 +4847,6 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Check the request body format
-    StorageConfig:
-      type: object
-      required:
-      - id
-      - maxFileSizeMb
-      - createdAt
-      - updatedAt
-      properties:
-        id:
-          type: string
-          format: uuid
-        maxFileSizeMb:
-          type: integer
-          minimum: 1
-          maximum: 200
-          description: Maximum file upload size in megabytes
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
     StoredFile:
       type: object
       properties:
@@ -4926,24 +4904,26 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Check your request parameters
-    Migration:
+    StorageConfig:
       type: object
       required:
-      - version
-      - name
-      - statements
+      - id
+      - maxFileSizeMb
       - createdAt
+      - updatedAt
       properties:
-        version:
+        id:
           type: string
-          pattern: ^\d{1,64}$
-        name:
-          type: string
-        statements:
-          type: array
-          items:
-            type: string
+          format: uuid
+        maxFileSizeMb:
+          type: integer
+          minimum: 1
+          maximum: 200
+          description: Maximum file upload size in megabytes
         createdAt:
+          type: string
+          format: date-time
+        updatedAt:
           type: string
           format: date-time
     ErrorResponse_8:
@@ -5013,6 +4993,26 @@ components:
           - SET DEFAULT
           - NO ACTION
           - RESTRICT
+    Migration:
+      type: object
+      required:
+      - version
+      - name
+      - statements
+      - createdAt
+      properties:
+        version:
+          type: string
+          pattern: ^\d{1,64}$
+        name:
+          type: string
+        statements:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
   parameters:
     AIProvider:
       name: provider
@@ -5023,6 +5023,37 @@ components:
         enum:
         - openrouter
       description: AI provider identifier
+    EnvVarId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Provider environment variable ID.
+    DeploymentId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Deployment run ID.
+    FileId:
+      name: fileId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Direct upload file ID returned by `POST /api/deployments/direct`.
+    Offset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      description: Number of deployments to skip.
     Limit:
       name: limit
       in: query
@@ -5040,37 +5071,6 @@ components:
         pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
       description: User-owned custom domain.
       example: app.example.com
-    FileId:
-      name: fileId
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      description: Direct upload file ID returned by `POST /api/deployments/direct`.
-    DeploymentId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      description: Deployment run ID.
-    Offset:
-      name: offset
-      in: query
-      schema:
-        type: integer
-        minimum: 0
-        default: 0
-      description: Number of deployments to skip.
-    EnvVarId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Provider environment variable ID.
   responses:
     DeploymentList:
       description: Deployment runs
