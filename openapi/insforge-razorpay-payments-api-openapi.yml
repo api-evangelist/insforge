@@ -700,14 +700,78 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    PaymentTransactionStatus:
+    ListPaymentCustomersResponse:
+      type: object
+      required:
+      - customers
+      properties:
+        customers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentCustomerListItem'
+    MutateRazorpayPlanResponse:
+      type: object
+      required:
+      - plan
+      properties:
+        plan:
+          $ref: '#/components/schemas/RazorpayPlan'
+    RazorpayLatestSyncStatus:
       type: string
       enum:
       - succeeded
       - failed
-      - pending
-      - refunded
-      - partially_refunded
+    ListPaymentTransactionsResponse:
+      type: object
+      required:
+      - transactions
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PaymentTransaction'
+    PauseRazorpaySubscriptionResponse:
+      type: object
+      required:
+      - subscription
+      properties:
+        subscription:
+          $ref: '#/components/schemas/RazorpaySubscription'
+    CreateRazorpayItemBody:
+      type: object
+      required:
+      - name
+      - amount
+      - currency
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 2048
+        amount:
+          type: integer
+          minimum: 1
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: INR
+    PauseRazorpaySubscriptionBody:
+      type: object
+      additionalProperties: false
+    MutateRazorpayItemResponse:
+      type: object
+      required:
+      - item
+      properties:
+        item:
+          $ref: '#/components/schemas/RazorpayItem'
     UpsertRazorpayConfigBody:
       type: object
       required:
@@ -728,6 +792,58 @@ components:
           type: string
           writeOnly: true
           example: webhook_secret_xxx
+    SyncRazorpayPaymentsResponse:
+      type: object
+      required:
+      - results
+      properties:
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SyncRazorpayPaymentsEnvironmentResult'
+    SyncRazorpayPaymentsEnvironmentResult:
+      type: object
+      required:
+      - environment
+      - status
+      - connection
+      - syncCounts
+      - error
+      additionalProperties: false
+      properties:
+        environment:
+          $ref: '#/components/schemas/RazorpayEnvironment'
+        status:
+          type: string
+          enum:
+          - succeeded
+          - failed
+        connection:
+          $ref: '#/components/schemas/RazorpayConnection'
+        syncCounts:
+          $ref: '#/components/schemas/RazorpaySyncCounts'
+        error:
+          type:
+          - string
+          - 'null'
+    PaymentTransactionStatus:
+      type: string
+      enum:
+      - succeeded
+      - failed
+      - pending
+      - refunded
+      - partially_refunded
+    RotateRazorpayWebhookSecretResponse:
+      allOf:
+      - $ref: '#/components/schemas/GetRazorpayWebhookSetupResponse'
+    CancelRazorpaySubscriptionResponse:
+      type: object
+      required:
+      - subscription
+      properties:
+        subscription:
+          $ref: '#/components/schemas/RazorpaySubscription'
     GetRazorpayWebhookSetupResponse:
       type: object
       required:
@@ -745,6 +861,164 @@ components:
           type: string
           description: Raw signing secret to copy into the Razorpay Dashboard.
           example: webhook_secret_xxx
+    RazorpayKeyConfig:
+      type: object
+      required:
+      - environment
+      - keyType
+      - hasKey
+      - maskedKey
+      properties:
+        environment:
+          $ref: '#/components/schemas/RazorpayEnvironment'
+        keyType:
+          type: string
+          enum:
+          - api_key
+          - api_secret
+          - webhook_secret
+        hasKey:
+          type: boolean
+        maskedKey:
+          type:
+          - string
+          - 'null'
+          example: rzp_test_...abcd
+    RazorpayPlan:
+      type: object
+      required:
+      - environment
+      - planId
+      - itemId
+      - period
+      - interval
+      - amount
+      - unitAmount
+      - currency
+      - active
+      - notes
+      - providerCreatedAt
+      - syncedAt
+      properties:
+        environment:
+          $ref: '#/components/schemas/RazorpayEnvironment'
+        planId:
+          type: string
+          example: plan_123
+        itemId:
+          type: string
+          example: item_123
+        period:
+          type: string
+          enum:
+          - daily
+          - weekly
+          - monthly
+          - yearly
+          example: monthly
+        interval:
+          type: integer
+          example: 1
+        amount:
+          type:
+          - integer
+          - 'null'
+          example: 290000
+        unitAmount:
+          type:
+          - integer
+          - 'null'
+          description: Razorpay nested item per-unit amount mirror. Usually equals amount.
+          example: 290000
+        currency:
+          type: string
+          example: inr
+        active:
+          type: boolean
+        notes:
+          $ref: '#/components/schemas/Metadata'
+        providerCreatedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        syncedAt:
+          type: string
+          format: date-time
+    CancelRazorpaySubscriptionBody:
+      type: object
+      additionalProperties: false
+      properties:
+        cancelAtCycleEnd:
+          type: boolean
+          default: false
+          description: When true, cancels at the end of the current billing cycle. Defaults to immediate cancellation.
+    UpdateRazorpayItemBody:
+      type: object
+      minProperties: 1
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 2048
+        amount:
+          type: integer
+          minimum: 1
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: INR
+        active:
+          type: boolean
+    VerifyRazorpaySubscriptionResponse:
+      type: object
+      required:
+      - verified
+      - subscription
+      properties:
+        verified:
+          type: boolean
+        subscription:
+          $ref: '#/components/schemas/RazorpaySubscription'
+    ListRazorpaySubscriptionsResponse:
+      type: object
+      required:
+      - subscriptions
+      properties:
+        subscriptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/RazorpaySubscription'
+    BillingSubject:
+      type: object
+      required:
+      - type
+      - id
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          minLength: 1
+          maxLength: 100
+          example: team
+        id:
+          type: string
+          minLength: 1
+          maxLength: 255
+          example: team_123
+    RazorpayConnectionStatus:
+      type: string
+      enum:
+      - unconfigured
+      - connected
+      - error
     CreateRazorpaySubscriptionBody:
       type: object
       required:
@@ -821,72 +1095,49 @@ components:
           description: Native Razorpay subscription notes, available in webhook payloads.
           allOf:
           - $ref: '#/components/schemas/Metadata'
-    RazorpayLatestSyncStatus:
-      type: string
-      enum:
-      - succeeded
-      - failed
-    ErrorResponse:
+    ListRazorpayCatalogResponse:
       type: object
       required:
-      - error
-      - message
-      - statusCode
+      - items
+      - plans
       properties:
-        error:
-          type: string
-          example: INVALID_INPUT
-        message:
-          type: string
-          example: 'environment: Invalid enum value'
-        statusCode:
-          type: integer
-          example: 400
-        nextActions:
-          type:
-          - string
-          - 'null'
-    RazorpayCheckoutPrefill:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/RazorpayItem'
+        plans:
+          type: array
+          items:
+            $ref: '#/components/schemas/RazorpayPlan'
+    PaymentTransactionType:
+      type: string
+      enum:
+      - one_time_payment
+      - subscription_invoice
+      - refund
+      - failed_payment
+    ResumeRazorpaySubscriptionBody:
       type: object
       additionalProperties: false
-      properties:
-        name:
-          type:
-          - string
-          - 'null'
-        email:
-          type:
-          - string
-          - 'null'
-          format: email
-        contact:
-          type:
-          - string
-          - 'null'
-    RazorpaySubscriptionStatus:
-      type: string
-      enum:
-      - created
-      - authenticated
-      - active
-      - pending
-      - halted
-      - cancelled
-      - completed
-      - expired
-      - paused
-    VerifyRazorpaySubscriptionBody:
+    ResumeRazorpaySubscriptionResponse:
       type: object
       required:
-      - subscriptionId
+      - subscription
+      properties:
+        subscription:
+          $ref: '#/components/schemas/RazorpaySubscription'
+    VerifyRazorpayOrderBody:
+      type: object
+      required:
+      - orderId
       - paymentId
       - signature
       additionalProperties: false
       properties:
-        subscriptionId:
+        orderId:
           type: string
           minLength: 1
-          example: sub_123
+          example: order_123
         paymentId:
           type: string
           minLength: 1
@@ -894,6 +1145,77 @@ components:
         signature:
           type: string
           minLength: 1
+    RazorpayConnection:
+      type: object
+      required:
+      - environment
+      - status
+      - accountId
+      - merchantName
+      - accountLivemode
+      - webhookEndpointId
+      - webhookEndpointUrl
+      - webhookConfiguredAt
+      - maskedKey
+      - lastSyncedAt
+      - lastSyncStatus
+      - lastSyncError
+      - lastSyncCounts
+      properties:
+        environment:
+          $ref: '#/components/schemas/RazorpayEnvironment'
+        status:
+          $ref: '#/components/schemas/RazorpayConnectionStatus'
+        accountId:
+          type:
+          - string
+          - 'null'
+          example: acc_123
+        merchantName:
+          type:
+          - string
+          - 'null'
+          example: Example Merchant
+        accountLivemode:
+          type:
+          - boolean
+          - 'null'
+        webhookEndpointId:
+          type:
+          - string
+          - 'null'
+          example: manual
+        webhookEndpointUrl:
+          type:
+          - string
+          - 'null'
+          example: https://api.example.com/api/webhooks/razorpay/test
+        webhookConfiguredAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        maskedKey:
+          type:
+          - string
+          - 'null'
+          example: rzp_test_...abcd
+        lastSyncedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        lastSyncStatus:
+          allOf:
+          - $ref: '#/components/schemas/RazorpayLatestSyncStatus'
+        lastSyncError:
+          type:
+          - string
+          - 'null'
+        lastSyncCounts:
+          type: object
+          additionalProperties:
+            type: number
     CreateRazorpaySubscriptionResponse:
       type: object
       required:
@@ -930,365 +1252,52 @@ components:
               - 'null'
             prefill:
               $ref: '#/components/schemas/RazorpayCheckoutPrefill'
-    CreateRazorpayOrderBody:
+    CreateRazorpayPlanBody:
       type: object
       required:
-      - amount
-      - currency
+      - period
+      - interval
+      - item
       additionalProperties: false
       description: Notes keys starting with insforge_ are reserved and rejected.
       properties:
-        amount:
-          type: integer
-          minimum: 1
-          example: 50000
-        currency:
-          type: string
-          minLength: 3
-          maxLength: 3
-          example: INR
-        receipt:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          maxLength: 40
-        description:
-          type:
-          - string
-          - 'null'
-          maxLength: 2048
-        subject:
-          $ref: '#/components/schemas/BillingSubject'
-        customerName:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          maxLength: 255
-        customerEmail:
-          type:
-          - string
-          - 'null'
-          format: email
-        customerContact:
-          type:
-          - string
-          - 'null'
-          minLength: 1
-          maxLength: 32
-        callbackUrl:
-          type:
-          - string
-          - 'null'
-          format: uri
-        notes:
-          description: Native Razorpay notes. Use stable app identifiers such as `order_id` for webhook fulfillment triggers.
-          allOf:
-          - $ref: '#/components/schemas/Metadata'
-    PaymentEnvironment:
-      type: string
-      enum:
-      - test
-      - live
-    RazorpayConnectionStatus:
-      type: string
-      enum:
-      - unconfigured
-      - connected
-      - error
-    PaymentTransaction:
-      type: object
-      required:
-      - environment
-      - provider
-      - type
-      - status
-      - subjectType
-      - subjectId
-      - providerCustomerId
-      - customerEmailSnapshot
-      - providerReferenceId
-      - providerReferenceType
-      - amount
-      - amountRefunded
-      - currency
-      - description
-      - paidAt
-      - failedAt
-      - refundedAt
-      - providerCreatedAt
-      - createdAt
-      - updatedAt
-      properties:
-        environment:
-          $ref: '#/components/schemas/PaymentEnvironment'
-        provider:
-          $ref: '#/components/schemas/PaymentProvider'
-        type:
-          $ref: '#/components/schemas/PaymentTransactionType'
-        status:
-          $ref: '#/components/schemas/PaymentTransactionStatus'
-        subjectType:
-          type:
-          - string
-          - 'null'
-        subjectId:
-          type:
-          - string
-          - 'null'
-        providerCustomerId:
-          type:
-          - string
-          - 'null'
-          example: cus_123
-        customerEmailSnapshot:
-          type:
-          - string
-          - 'null'
-          format: email
-        providerReferenceId:
-          type:
-          - string
-          - 'null'
-          example: pi_123
-        providerReferenceType:
-          type:
-          - string
-          - 'null'
-          example: payment_intent
-        amount:
-          type:
-          - integer
-          - 'null'
-          example: 2900
-        amountRefunded:
-          type:
-          - integer
-          - 'null'
-          example: 0
-        currency:
-          type:
-          - string
-          - 'null'
-          example: usd
-        description:
-          type:
-          - string
-          - 'null'
-        paidAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        failedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        refundedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        providerCreatedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        createdAt:
-          type: string
-          format: date-time
-        updatedAt:
-          type: string
-          format: date-time
-    PaymentTransactionType:
-      type: string
-      enum:
-      - one_time_payment
-      - subscription_invoice
-      - refund
-      - failed_payment
-    RazorpayOrderStatus:
-      type: string
-      enum:
-      - initialized
-      - created
-      - attempted
-      - paid
-      - failed
-    RazorpayKeyConfig:
-      type: object
-      required:
-      - environment
-      - keyType
-      - hasKey
-      - maskedKey
-      properties:
-        environment:
-          $ref: '#/components/schemas/RazorpayEnvironment'
-        keyType:
+        period:
           type: string
           enum:
-          - api_key
-          - api_secret
-          - webhook_secret
-        hasKey:
-          type: boolean
-        maskedKey:
-          type:
-          - string
-          - 'null'
-          example: rzp_test_...abcd
-    MutateRazorpayItemResponse:
-      type: object
-      required:
-      - item
-      properties:
+          - daily
+          - weekly
+          - monthly
+          - yearly
+        interval:
+          type: integer
+          minimum: 1
         item:
-          $ref: '#/components/schemas/RazorpayItem'
-    ListRazorpaySubscriptionsResponse:
-      type: object
-      required:
-      - subscriptions
-      properties:
-        subscriptions:
-          type: array
-          items:
-            $ref: '#/components/schemas/RazorpaySubscription'
-    ResumeRazorpaySubscriptionResponse:
-      type: object
-      required:
-      - subscription
-      properties:
-        subscription:
-          $ref: '#/components/schemas/RazorpaySubscription'
-    VerifyRazorpaySubscriptionResponse:
-      type: object
-      required:
-      - verified
-      - subscription
-      properties:
-        verified:
-          type: boolean
-        subscription:
-          $ref: '#/components/schemas/RazorpaySubscription'
-    VerifyRazorpayOrderResponse:
-      type: object
-      required:
-      - verified
-      - order
-      properties:
-        verified:
-          type: boolean
-        order:
-          $ref: '#/components/schemas/RazorpayOrder'
-    CreateRazorpayItemBody:
-      type: object
-      required:
-      - name
-      - amount
-      - currency
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 255
-        description:
-          type:
-          - string
-          - 'null'
-          maxLength: 2048
-        amount:
-          type: integer
-          minimum: 1
-        currency:
-          type: string
-          minLength: 3
-          maxLength: 3
-          example: INR
-    RazorpaySyncCounts:
-      type: object
-      required:
-      - plans
-      - items
-      - customers
-      - subscriptions
-      - invoices
-      - payments
-      additionalProperties: false
-      properties:
-        plans:
-          type: integer
-          minimum: 0
-        items:
-          type: integer
-          minimum: 0
-        customers:
-          type: integer
-          minimum: 0
-        subscriptions:
-          type: integer
-          minimum: 0
-        invoices:
-          type: integer
-          minimum: 0
-        payments:
-          type: integer
-          minimum: 0
-    RotateRazorpayWebhookSecretResponse:
-      allOf:
-      - $ref: '#/components/schemas/GetRazorpayWebhookSetupResponse'
-    PaymentProvider:
-      type: string
-      enum:
-      - stripe
-      - razorpay
-    SyncRazorpayPaymentsEnvironmentResult:
-      type: object
-      required:
-      - environment
-      - status
-      - connection
-      - syncCounts
-      - error
-      additionalProperties: false
-      properties:
-        environment:
-          $ref: '#/components/schemas/RazorpayEnvironment'
-        status:
-          type: string
-          enum:
-          - succeeded
-          - failed
-        connection:
-          $ref: '#/components/schemas/RazorpayConnection'
-        syncCounts:
-          $ref: '#/components/schemas/RazorpaySyncCounts'
-        error:
-          type:
-          - string
-          - 'null'
-    RazorpayEnvironment:
-      $ref: '#/components/schemas/PaymentEnvironment'
-    MutateRazorpayPlanResponse:
-      type: object
-      required:
-      - plan
-      properties:
-        plan:
-          $ref: '#/components/schemas/RazorpayPlan'
-    PauseRazorpaySubscriptionBody:
-      type: object
-      additionalProperties: false
-    PauseRazorpaySubscriptionResponse:
-      type: object
-      required:
-      - subscription
-      properties:
-        subscription:
-          $ref: '#/components/schemas/RazorpaySubscription'
+          type: object
+          required:
+          - name
+          - amount
+          - currency
+          additionalProperties: false
+          properties:
+            name:
+              type: string
+              minLength: 1
+              maxLength: 255
+            description:
+              type:
+              - string
+              - 'null'
+              maxLength: 2048
+            amount:
+              type: integer
+              minimum: 1
+            currency:
+              type: string
+              minLength: 3
+              maxLength: 3
+              example: INR
+        notes:
+          $ref: '#/components/schemas/Metadata'
     RazorpaySubscription:
       type: object
       required:
@@ -1436,9 +1445,65 @@ components:
         updatedAt:
           type: string
           format: date-time
-    ResumeRazorpaySubscriptionBody:
+    GetRazorpayStatusResponse:
+      type: object
+      required:
+      - razorpayConnections
+      properties:
+        razorpayConnections:
+          type: array
+          items:
+            $ref: '#/components/schemas/RazorpayConnection'
+    RazorpaySubscriptionStatus:
+      type: string
+      enum:
+      - created
+      - authenticated
+      - active
+      - pending
+      - halted
+      - cancelled
+      - completed
+      - expired
+      - paused
+    RazorpayCheckoutPrefill:
       type: object
       additionalProperties: false
+      properties:
+        name:
+          type:
+          - string
+          - 'null'
+        email:
+          type:
+          - string
+          - 'null'
+          format: email
+        contact:
+          type:
+          - string
+          - 'null'
+    RazorpayEnvironment:
+      $ref: '#/components/schemas/PaymentEnvironment'
+    GetRazorpayConfigResponse:
+      type: object
+      required:
+      - keys
+      properties:
+        keys:
+          type: array
+          items:
+            $ref: '#/components/schemas/RazorpayKeyConfig'
+    PaymentEnvironment:
+      type: string
+      enum:
+      - test
+      - live
+    PaymentProvider:
+      type: string
+      enum:
+      - stripe
+      - razorpay
     PaymentCustomerListItem:
       allOf:
       - $ref: '#/components/schemas/PaymentCustomer'
@@ -1483,173 +1548,6 @@ components:
             - 'null'
             minLength: 2
             maxLength: 2
-    CreateRazorpayOrderResponse:
-      type: object
-      required:
-      - order
-      - checkoutOptions
-      properties:
-        order:
-          $ref: '#/components/schemas/RazorpayOrder'
-        checkoutOptions:
-          type: object
-          required:
-          - key
-          - amount
-          - currency
-          - order_id
-          - prefill
-          additionalProperties: false
-          properties:
-            key:
-              type: string
-              example: rzp_test_xxx
-            amount:
-              type: integer
-              minimum: 1
-            currency:
-              type: string
-              example: INR
-            order_id:
-              type: string
-              example: order_123
-            name:
-              type:
-              - string
-              - 'null'
-            description:
-              type:
-              - string
-              - 'null'
-            callback_url:
-              type:
-              - string
-              - 'null'
-            prefill:
-              $ref: '#/components/schemas/RazorpayCheckoutPrefill'
-    VerifyRazorpayOrderBody:
-      type: object
-      required:
-      - orderId
-      - paymentId
-      - signature
-      additionalProperties: false
-      properties:
-        orderId:
-          type: string
-          minLength: 1
-          example: order_123
-        paymentId:
-          type: string
-          minLength: 1
-          example: pay_123
-        signature:
-          type: string
-          minLength: 1
-    RazorpayConnection:
-      type: object
-      required:
-      - environment
-      - status
-      - accountId
-      - merchantName
-      - accountLivemode
-      - webhookEndpointId
-      - webhookEndpointUrl
-      - webhookConfiguredAt
-      - maskedKey
-      - lastSyncedAt
-      - lastSyncStatus
-      - lastSyncError
-      - lastSyncCounts
-      properties:
-        environment:
-          $ref: '#/components/schemas/RazorpayEnvironment'
-        status:
-          $ref: '#/components/schemas/RazorpayConnectionStatus'
-        accountId:
-          type:
-          - string
-          - 'null'
-          example: acc_123
-        merchantName:
-          type:
-          - string
-          - 'null'
-          example: Example Merchant
-        accountLivemode:
-          type:
-          - boolean
-          - 'null'
-        webhookEndpointId:
-          type:
-          - string
-          - 'null'
-          example: manual
-        webhookEndpointUrl:
-          type:
-          - string
-          - 'null'
-          example: https://api.example.com/api/webhooks/razorpay/test
-        webhookConfiguredAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        maskedKey:
-          type:
-          - string
-          - 'null'
-          example: rzp_test_...abcd
-        lastSyncedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        lastSyncStatus:
-          allOf:
-          - $ref: '#/components/schemas/RazorpayLatestSyncStatus'
-        lastSyncError:
-          type:
-          - string
-          - 'null'
-        lastSyncCounts:
-          type: object
-          additionalProperties:
-            type: number
-    UpdateRazorpayItemBody:
-      type: object
-      minProperties: 1
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 255
-        description:
-          type:
-          - string
-          - 'null'
-          maxLength: 2048
-        amount:
-          type: integer
-          minimum: 1
-        currency:
-          type: string
-          minLength: 3
-          maxLength: 3
-          example: INR
-        active:
-          type: boolean
-    SyncRazorpayPaymentsResponse:
-      type: object
-      required:
-      - results
-      properties:
-        results:
-          type: array
-          items:
-            $ref: '#/components/schemas/SyncRazorpayPaymentsEnvironmentResult'
     RazorpayOrder:
       type: object
       required:
@@ -1752,169 +1650,219 @@ components:
         updatedAt:
           type: string
           format: date-time
-    BillingSubject:
-      type: object
-      required:
-      - type
-      - id
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-          minLength: 1
-          maxLength: 100
-          example: team
-        id:
-          type: string
-          minLength: 1
-          maxLength: 255
-          example: team_123
-    CancelRazorpaySubscriptionResponse:
-      type: object
-      required:
-      - subscription
-      properties:
-        subscription:
-          $ref: '#/components/schemas/RazorpaySubscription'
-    RazorpayPlan:
-      type: object
-      required:
-      - environment
-      - planId
-      - itemId
-      - period
-      - interval
-      - amount
-      - unitAmount
-      - currency
-      - active
-      - notes
-      - providerCreatedAt
-      - syncedAt
-      properties:
-        environment:
-          $ref: '#/components/schemas/RazorpayEnvironment'
-        planId:
-          type: string
-          example: plan_123
-        itemId:
-          type: string
-          example: item_123
-        period:
-          type: string
-          enum:
-          - daily
-          - weekly
-          - monthly
-          - yearly
-          example: monthly
-        interval:
-          type: integer
-          example: 1
-        amount:
-          type:
-          - integer
-          - 'null'
-          example: 290000
-        unitAmount:
-          type:
-          - integer
-          - 'null'
-          description: Razorpay nested item per-unit amount mirror. Usually equals amount.
-          example: 290000
-        currency:
-          type: string
-          example: inr
-        active:
-          type: boolean
-        notes:
-          $ref: '#/components/schemas/Metadata'
-        providerCreatedAt:
-          type:
-          - string
-          - 'null'
-          format: date-time
-        syncedAt:
-          type: string
-          format: date-time
-    CancelRazorpaySubscriptionBody:
-      type: object
-      additionalProperties: false
-      properties:
-        cancelAtCycleEnd:
-          type: boolean
-          default: false
-          description: When true, cancels at the end of the current billing cycle. Defaults to immediate cancellation.
-    PaymentCustomer:
+    PaymentTransaction:
       type: object
       required:
       - environment
       - provider
+      - type
+      - status
+      - subjectType
+      - subjectId
       - providerCustomerId
-      - email
-      - name
-      - phone
-      - deleted
-      - metadata
+      - customerEmailSnapshot
+      - providerReferenceId
+      - providerReferenceType
+      - amount
+      - amountRefunded
+      - currency
+      - description
+      - paidAt
+      - failedAt
+      - refundedAt
       - providerCreatedAt
-      - syncedAt
+      - createdAt
+      - updatedAt
       properties:
         environment:
           $ref: '#/components/schemas/PaymentEnvironment'
         provider:
           $ref: '#/components/schemas/PaymentProvider'
+        type:
+          $ref: '#/components/schemas/PaymentTransactionType'
+        status:
+          $ref: '#/components/schemas/PaymentTransactionStatus'
+        subjectType:
+          type:
+          - string
+          - 'null'
+        subjectId:
+          type:
+          - string
+          - 'null'
         providerCustomerId:
-          type: string
+          type:
+          - string
+          - 'null'
           example: cus_123
-        email:
+        customerEmailSnapshot:
           type:
           - string
           - 'null'
-          example: buyer@example.com
-        name:
+          format: email
+        providerReferenceId:
           type:
           - string
           - 'null'
-          example: Buyer Example
-        phone:
+          example: pi_123
+        providerReferenceType:
           type:
           - string
           - 'null'
-          example: +1 555-0100
-        deleted:
-          type: boolean
-        metadata:
-          $ref: '#/components/schemas/Metadata'
+          example: payment_intent
+        amount:
+          type:
+          - integer
+          - 'null'
+          example: 2900
+        amountRefunded:
+          type:
+          - integer
+          - 'null'
+          example: 0
+        currency:
+          type:
+          - string
+          - 'null'
+          example: usd
+        description:
+          type:
+          - string
+          - 'null'
+        paidAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        failedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        refundedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
         providerCreatedAt:
           type:
           - string
           - 'null'
           format: date-time
-        syncedAt:
+        createdAt:
           type: string
           format: date-time
-    GetRazorpayConfigResponse:
+        updatedAt:
+          type: string
+          format: date-time
+    CreateRazorpayOrderBody:
       type: object
       required:
-      - keys
+      - amount
+      - currency
+      additionalProperties: false
+      description: Notes keys starting with insforge_ are reserved and rejected.
       properties:
-        keys:
-          type: array
-          items:
-            $ref: '#/components/schemas/RazorpayKeyConfig'
-    ListPaymentCustomersResponse:
-      type: object
-      required:
-      - customers
-      properties:
-        customers:
-          type: array
-          items:
-            $ref: '#/components/schemas/PaymentCustomerListItem'
+        amount:
+          type: integer
+          minimum: 1
+          example: 50000
+        currency:
+          type: string
+          minLength: 3
+          maxLength: 3
+          example: INR
+        receipt:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 40
+        description:
+          type:
+          - string
+          - 'null'
+          maxLength: 2048
+        subject:
+          $ref: '#/components/schemas/BillingSubject'
+        customerName:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 255
+        customerEmail:
+          type:
+          - string
+          - 'null'
+          format: email
+        customerContact:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 32
+        callbackUrl:
+          type:
+          - string
+          - 'null'
+          format: uri
+        notes:
+          description: Native Razorpay notes. Use stable app identifiers such as `order_id` for webhook fulfillment triggers.
+          allOf:
+          - $ref: '#/components/schemas/Metadata'
     Metadata:
       type: object
       additionalProperties:
         type: string
+    VerifyRazorpaySubscriptionBody:
+      type: object
+      required:
+      - subscriptionId
+      - paymentId
+      - signature
+      additionalProperties: false
+      properties:
+        subscriptionId:
+          type: string
+          minLength: 1
+          example: sub_123
+        paymentId:
+          type: string
+          minLength: 1
+          example: pay_123
+        signature:
+          type: string
+          minLength: 1
+    RazorpaySyncCounts:
+      type: object
+      required:
+      - plans
+      - items
+      - customers
+      - subscriptions
+      - invoices
+      - payments
+      additionalProperties: false
+      properties:
+        plans:
+          type: integer
+          minimum: 0
+        items:
+          type: integer
+          minimum: 0
+        customers:
+          type: integer
+          minimum: 0
+        subscriptions:
+          type: integer
+          minimum: 0
+        invoices:
+          type: integer
+          minimum: 0
+        payments:
+          type: integer
+          minimum: 0
     RazorpayItem:
       type: object
       required:
@@ -1971,126 +1919,146 @@ components:
         syncedAt:
           type: string
           format: date-time
-    ListPaymentTransactionsResponse:
+    RazorpayOrderStatus:
+      type: string
+      enum:
+      - initialized
+      - created
+      - attempted
+      - paid
+      - failed
+    PaymentCustomer:
       type: object
       required:
-      - transactions
+      - environment
+      - provider
+      - providerCustomerId
+      - email
+      - name
+      - phone
+      - deleted
+      - metadata
+      - providerCreatedAt
+      - syncedAt
       properties:
-        transactions:
-          type: array
-          items:
-            $ref: '#/components/schemas/PaymentTransaction'
-    GetRazorpayStatusResponse:
-      type: object
-      required:
-      - razorpayConnections
-      properties:
-        razorpayConnections:
-          type: array
-          items:
-            $ref: '#/components/schemas/RazorpayConnection'
-    CreateRazorpayPlanBody:
-      type: object
-      required:
-      - period
-      - interval
-      - item
-      additionalProperties: false
-      description: Notes keys starting with insforge_ are reserved and rejected.
-      properties:
-        period:
+        environment:
+          $ref: '#/components/schemas/PaymentEnvironment'
+        provider:
+          $ref: '#/components/schemas/PaymentProvider'
+        providerCustomerId:
           type: string
-          enum:
-          - daily
-          - weekly
-          - monthly
-          - yearly
-        interval:
+          example: cus_123
+        email:
+          type:
+          - string
+          - 'null'
+          example: buyer@example.com
+        name:
+          type:
+          - string
+          - 'null'
+          example: Buyer Example
+        phone:
+          type:
+          - string
+          - 'null'
+          example: +1 555-0100
+        deleted:
+          type: boolean
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        providerCreatedAt:
+          type:
+          - string
+          - 'null'
+          format: date-time
+        syncedAt:
+          type: string
+          format: date-time
+    VerifyRazorpayOrderResponse:
+      type: object
+      required:
+      - verified
+      - order
+      properties:
+        verified:
+          type: boolean
+        order:
+          $ref: '#/components/schemas/RazorpayOrder'
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          example: INVALID_INPUT
+        message:
+          type: string
+          example: 'environment: Invalid enum value'
+        statusCode:
           type: integer
-          minimum: 1
-        item:
+          example: 400
+        nextActions:
+          type:
+          - string
+          - 'null'
+    CreateRazorpayOrderResponse:
+      type: object
+      required:
+      - order
+      - checkoutOptions
+      properties:
+        order:
+          $ref: '#/components/schemas/RazorpayOrder'
+        checkoutOptions:
           type: object
           required:
-          - name
+          - key
           - amount
           - currency
+          - order_id
+          - prefill
           additionalProperties: false
           properties:
-            name:
+            key:
               type: string
-              minLength: 1
-              maxLength: 255
-            description:
-              type:
-              - string
-              - 'null'
-              maxLength: 2048
+              example: rzp_test_xxx
             amount:
               type: integer
               minimum: 1
             currency:
               type: string
-              minLength: 3
-              maxLength: 3
               example: INR
-        notes:
-          $ref: '#/components/schemas/Metadata'
-    ListRazorpayCatalogResponse:
-      type: object
-      required:
-      - items
-      - plans
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/RazorpayItem'
-        plans:
-          type: array
-          items:
-            $ref: '#/components/schemas/RazorpayPlan'
-  responses:
-    NotFound:
-      description: Resource not found
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    BadRequest:
-      description: Invalid request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Forbidden:
-      description: Forbidden
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    InternalError:
-      description: Internal server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+            order_id:
+              type: string
+              example: order_123
+            name:
+              type:
+              - string
+              - 'null'
+            description:
+              type:
+              - string
+              - 'null'
+            callback_url:
+              type:
+              - string
+              - 'null'
+            prefill:
+              $ref: '#/components/schemas/RazorpayCheckoutPrefill'
   parameters:
-    SubjectTypeQuery:
-      name: subjectType
-      in: query
-      required: false
+    RazorpaySubscriptionIdPath:
+      name: subscriptionId
+      in: path
+      required: true
       schema:
         type: string
         minLength: 1
-        maxLength: 100
-      description: Billing subject type. Must be provided together with subjectId.
-      example: team
+      description: Razorpay subscription ID.
+      example: sub_123
     LimitQuery:
       name: limit
       in: query
@@ -2101,25 +2069,6 @@ components:
         maximum: 100
         default: 50
       description: Maximum rows to return.
-    SubjectIdQuery:
-      name: subjectId
-      in: query
-      required: false
-      schema:
-        type: string
-        minLength: 1
-        maxLength: 255
-      description: Billing subject ID. Must be provided together with subjectType.
-      example: team_123
-    RazorpaySubscriptionIdPath:
-      name: subscriptionId
-      in: path
-      required: true
-      schema:
-        type: string
-        minLength: 1
-      description: Razorpay subscription ID.
-      example: sub_123
     RazorpayItemIdPath:
       name: itemId
       in: path
@@ -2136,6 +2085,57 @@ components:
       schema:
         $ref: '#/components/schemas/PaymentEnvironment'
       description: Payment provider environment.
+    SubjectIdQuery:
+      name: subjectId
+      in: query
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 255
+      description: Billing subject ID. Must be provided together with subjectType.
+      example: team_123
+    SubjectTypeQuery:
+      name: subjectType
+      in: query
+      required: false
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 100
+      description: Billing subject type. Must be provided together with subjectId.
+      example: team
+  responses:
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     bearerAuth:
       type: http

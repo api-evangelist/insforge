@@ -194,52 +194,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid request
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check your request parameters
-    CreateS3AccessKeyRequest:
-      type: object
-      properties:
-        description:
-          type: string
-          maxLength: 200
-          description: Optional label to help you identify the key later
-          example: backup-script
-    S3GatewayConfig:
-      type: object
-      description: Read-only config of the S3 protocol gateway.
-      required:
-      - endpoint
-      - region
-      properties:
-        endpoint:
-          type: string
-          description: Full URL clients should configure as their S3 endpoint.
-          example: https://proj.insforge.app/storage/v1/s3
-        region:
-          type: string
-          description: SigV4 signing region the gateway validates incoming requests against.
-          example: us-east-2
     S3AccessKeyWithSecret:
       allOf:
       - $ref: '#/components/schemas/S3AccessKey'
@@ -292,6 +246,52 @@ components:
           format: date-time
           description: Updated asynchronously after each successful SigV4 verification
           example: null
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
+    S3GatewayConfig:
+      type: object
+      description: Read-only config of the S3 protocol gateway.
+      required:
+      - endpoint
+      - region
+      properties:
+        endpoint:
+          type: string
+          description: Full URL clients should configure as their S3 endpoint.
+          example: https://proj.insforge.app/storage/v1/s3
+        region:
+          type: string
+          description: SigV4 signing region the gateway validates incoming requests against.
+          example: us-east-2
+    CreateS3AccessKeyRequest:
+      type: object
+      properties:
+        description:
+          type: string
+          maxLength: 200
+          description: Optional label to help you identify the key later
+          example: backup-script
   securitySchemes:
     apiKey:
       type: apiKey

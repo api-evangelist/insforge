@@ -72,75 +72,7 @@ paths:
       operationId: postApiWebhooksRazorpayByEnvironment
       x-operation-id-source: derived
 components:
-  responses:
-    BadRequest:
-      description: Invalid request
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Unauthorized
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    InternalError:
-      description: Internal server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    RazorpayWebhookResponse:
-      type: object
-      required:
-      - received
-      - handled
-      properties:
-        received:
-          type: boolean
-        handled:
-          type: boolean
-    StripeWebhookResponse:
-      type: object
-      required:
-      - received
-      - handled
-      properties:
-        received:
-          type: boolean
-        handled:
-          type: boolean
-        event:
-          $ref: '#/components/schemas/StripeWebhookEvent'
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          example: INVALID_INPUT
-        message:
-          type: string
-          example: 'environment: Invalid enum value'
-        statusCode:
-          type: integer
-          example: 400
-        nextActions:
-          type:
-          - string
-          - 'null'
-    StripeWebhookProcessingStatus:
-      type: string
-      enum:
-      - pending
-      - processed
-      - failed
-      - ignored
     StripeWebhookEvent:
       type: object
       required:
@@ -206,13 +138,81 @@ components:
         updatedAt:
           type: string
           format: date-time
+    StripeWebhookProcessingStatus:
+      type: string
+      enum:
+      - pending
+      - processed
+      - failed
+      - ignored
+    RazorpayWebhookResponse:
+      type: object
+      required:
+      - received
+      - handled
+      properties:
+        received:
+          type: boolean
+        handled:
+          type: boolean
+    StripeEnvironment:
+      $ref: '#/components/schemas/PaymentEnvironment'
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          example: INVALID_INPUT
+        message:
+          type: string
+          example: 'environment: Invalid enum value'
+        statusCode:
+          type: integer
+          example: 400
+        nextActions:
+          type:
+          - string
+          - 'null'
+    StripeWebhookResponse:
+      type: object
+      required:
+      - received
+      - handled
+      properties:
+        received:
+          type: boolean
+        handled:
+          type: boolean
+        event:
+          $ref: '#/components/schemas/StripeWebhookEvent'
     PaymentEnvironment:
       type: string
       enum:
       - test
       - live
-    StripeEnvironment:
-      $ref: '#/components/schemas/PaymentEnvironment'
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   parameters:
     EnvironmentPath:
       name: environment

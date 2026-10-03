@@ -161,6 +161,82 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    Message:
+      type: object
+      required:
+      - id
+      - eventName
+      - channelName
+      - payload
+      - senderType
+      - wsAudienceCount
+      - whAudienceCount
+      - whDeliveredCount
+      - createdAt
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the message
+          example: 660e8400-e29b-41d4-a716-446655440000
+        eventName:
+          type: string
+          minLength: 1
+          description: Name of the event
+          example: order.created
+        channelId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: ID of the channel this message belongs to
+          example: 550e8400-e29b-41d4-a716-446655440000
+        channelName:
+          type: string
+          minLength: 1
+          description: Resolved channel name (instance of the pattern)
+          example: order:123
+        payload:
+          type: object
+          additionalProperties: true
+          description: Message payload data
+          example:
+            orderId: '123'
+            status: pending
+        senderType:
+          type: string
+          enum:
+          - system
+          - user
+          description: Type of sender that published the message
+          example: user
+        senderId:
+          type:
+          - string
+          - 'null'
+          format: uuid
+          description: ID of the user who sent the message (null for system messages)
+          example: 770e8400-e29b-41d4-a716-446655440000
+        wsAudienceCount:
+          type: integer
+          minimum: 0
+          description: Number of WebSocket clients who received the message
+          example: 5
+        whAudienceCount:
+          type: integer
+          minimum: 0
+          description: Number of webhooks that should receive the message
+          example: 1
+        whDeliveredCount:
+          type: integer
+          minimum: 0
+          description: Number of webhooks that successfully received the message
+          example: 1
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the message was created
+          example: '2024-01-15T10:30:00Z'
     MessageStats:
       type: object
       required:
@@ -238,82 +314,6 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Check your request parameters
-    Message:
-      type: object
-      required:
-      - id
-      - eventName
-      - channelName
-      - payload
-      - senderType
-      - wsAudienceCount
-      - whAudienceCount
-      - whDeliveredCount
-      - createdAt
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the message
-          example: 660e8400-e29b-41d4-a716-446655440000
-        eventName:
-          type: string
-          minLength: 1
-          description: Name of the event
-          example: order.created
-        channelId:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: ID of the channel this message belongs to
-          example: 550e8400-e29b-41d4-a716-446655440000
-        channelName:
-          type: string
-          minLength: 1
-          description: Resolved channel name (instance of the pattern)
-          example: order:123
-        payload:
-          type: object
-          additionalProperties: true
-          description: Message payload data
-          example:
-            orderId: '123'
-            status: pending
-        senderType:
-          type: string
-          enum:
-          - system
-          - user
-          description: Type of sender that published the message
-          example: user
-        senderId:
-          type:
-          - string
-          - 'null'
-          format: uuid
-          description: ID of the user who sent the message (null for system messages)
-          example: 770e8400-e29b-41d4-a716-446655440000
-        wsAudienceCount:
-          type: integer
-          minimum: 0
-          description: Number of WebSocket clients who received the message
-          example: 5
-        whAudienceCount:
-          type: integer
-          minimum: 0
-          description: Number of webhooks that should receive the message
-          example: 1
-        whDeliveredCount:
-          type: integer
-          minimum: 0
-          description: Number of webhooks that successfully received the message
-          example: 1
-        createdAt:
-          type: string
-          format: date-time
-          description: Timestamp when the message was created
-          example: '2024-01-15T10:30:00Z'
   securitySchemes:
     bearerAuth:
       type: http
