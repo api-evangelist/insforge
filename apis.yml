@@ -45,6 +45,10 @@ specificationVersion: '0.23'
 created: '2026-07-17'
 modified: '2026-07-19'
 image: https://insforge.dev/logo.png
+x-docs-platform: mintlify
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-10-03
+x-docs-hosting: vercel
 tags:
 - Company
 - Backend-as-a-Service
@@ -200,6 +204,9 @@ apis:
   - type: OpenAPI
     url: openapi/insforge-stripe-payments-api-openapi.yml
 common:
+- type: CapabilityMap
+  url: capabilities/insforge-capability-edges.yml
+  name: Insforge Business Capability Map
 - type: Overlay
   url: overlays/insforge-auth-overlay.yaml
 - type: Website

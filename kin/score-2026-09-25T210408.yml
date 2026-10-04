@@ -1,21 +1,19 @@
-# Kin Score artifact — insforge — 2026-08-27T094438
+# Kin Score artifact — insforge — 2026-09-25T210408
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: insforge
-  schema_version: 0.15.1
-  scored_at: '2026-08-27'
-  run_ts: 2026-08-27T094438
-  composite: 57.8
-  band: strong
+  schema_version: 0.23.0
+  scored_at: '2026-09-25'
+  run_ts: 2026-09-25T210408
+  composite: 53.4
+  band: developing
   facets:
-    discoverability: 92.6
-    contract_quality: 53.6
-    governance: 16.7
+    discoverability: 76.7
+    contract_quality: 46.5
+    contract_governance: 4.5
     operational_transparency: 28.9
     developer_ergonomics: 78.6
-    commercial_clarity: 44.7
-    contract_governance: 16.7
     access_clarity: 44.7
   agent_readiness:
     score: 57.7
@@ -44,7 +42,7 @@ kin_score:
     applies: true
     regime: Payments
     regime_id: payments
-    score: 64.1
+    score: 36.6
     matched_via: tags
   provenance:
     mcp: first-party
@@ -54,4 +52,4 @@ kin_score:
       total: 11
       derived: 0
       coverage: 0.0
-      callable: 100.0
+      callable: 0.0
