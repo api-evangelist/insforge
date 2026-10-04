@@ -161,6 +161,16 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    ClearMessagesResponse:
+      type: object
+      required:
+      - deleted
+      properties:
+        deleted:
+          type: integer
+          minimum: 0
+          description: Number of realtime messages deleted
+          example: 42
     Message:
       type: object
       required:
@@ -237,6 +247,29 @@ components:
           format: date-time
           description: Timestamp when the message was created
           example: '2024-01-15T10:30:00Z'
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
     MessageStats:
       type: object
       required:
@@ -281,39 +314,6 @@ components:
           minimum: 1
           description: Number of days messages are retained. Null means messages are kept indefinitely.
           example: null
-    ClearMessagesResponse:
-      type: object
-      required:
-      - deleted
-      properties:
-        deleted:
-          type: integer
-          minimum: 0
-          description: Number of realtime messages deleted
-          example: 42
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: INVALID_INPUT
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid request
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check your request parameters
   securitySchemes:
     bearerAuth:
       type: http

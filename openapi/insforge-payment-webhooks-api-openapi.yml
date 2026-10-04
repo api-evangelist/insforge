@@ -73,6 +73,37 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    StripeEnvironment:
+      $ref: '#/components/schemas/PaymentEnvironment'
+    RazorpayWebhookResponse:
+      type: object
+      required:
+      - received
+      - handled
+      properties:
+        received:
+          type: boolean
+        handled:
+          type: boolean
+    StripeWebhookProcessingStatus:
+      type: string
+      enum:
+      - pending
+      - processed
+      - failed
+      - ignored
+    StripeWebhookResponse:
+      type: object
+      required:
+      - received
+      - handled
+      properties:
+        received:
+          type: boolean
+        handled:
+          type: boolean
+        event:
+          $ref: '#/components/schemas/StripeWebhookEvent'
     StripeWebhookEvent:
       type: object
       required:
@@ -138,25 +169,11 @@ components:
         updatedAt:
           type: string
           format: date-time
-    StripeWebhookProcessingStatus:
+    PaymentEnvironment:
       type: string
       enum:
-      - pending
-      - processed
-      - failed
-      - ignored
-    RazorpayWebhookResponse:
-      type: object
-      required:
-      - received
-      - handled
-      properties:
-        received:
-          type: boolean
-        handled:
-          type: boolean
-    StripeEnvironment:
-      $ref: '#/components/schemas/PaymentEnvironment'
+      - test
+      - live
     ErrorResponse:
       type: object
       required:
@@ -177,24 +194,13 @@ components:
           type:
           - string
           - 'null'
-    StripeWebhookResponse:
-      type: object
-      required:
-      - received
-      - handled
-      properties:
-        received:
-          type: boolean
-        handled:
-          type: boolean
-        event:
-          $ref: '#/components/schemas/StripeWebhookEvent'
-    PaymentEnvironment:
-      type: string
-      enum:
-      - test
-      - live
   responses:
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
     BadRequest:
       description: Invalid request
       content:
@@ -203,12 +209,6 @@ components:
             $ref: '#/components/schemas/ErrorResponse'
     InternalError:
       description: Internal server error
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-    Unauthorized:
-      description: Unauthorized
       content:
         application/json:
           schema:

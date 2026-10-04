@@ -3963,11 +3963,6 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
-    ListModelsResponse:
-      type: array
-      description: Normalized OpenRouter model catalog returned by GET /api/ai/models.
-      items:
-        $ref: '#/components/schemas/AIModel'
     AIModel:
       type: object
       properties:
@@ -4007,22 +4002,6 @@ components:
         outputPriceLabel:
           type: string
           description: Human-readable output pricing label, such as "$10.00 / 1M tokens" or "Free", when available.
-    AIOverviewMetricPoint:
-      type: object
-      properties:
-        label:
-          type: string
-        value:
-          type: number
-    OpenRouterKeyResponse:
-      type: object
-      properties:
-        apiKey:
-          type: string
-          description: Active OpenRouter API key for admin copy workflows
-        maskedKey:
-          type: string
-          description: Masked OpenRouter API key for display
     AIOverview:
       type: object
       properties:
@@ -4072,60 +4051,50 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/AIOverviewMetricPoint'
-    SmtpConfig:
+    ListModelsResponse:
+      type: array
+      description: Normalized OpenRouter model catalog returned by GET /api/ai/models.
+      items:
+        $ref: '#/components/schemas/AIModel'
+    AIOverviewMetricPoint:
+      type: object
+      properties:
+        label:
+          type: string
+        value:
+          type: number
+    OpenRouterKeyResponse:
+      type: object
+      properties:
+        apiKey:
+          type: string
+          description: Active OpenRouter API key for admin copy workflows
+        maskedKey:
+          type: string
+          description: Masked OpenRouter API key for display
+    EmailTemplate:
       type: object
       properties:
         id:
           type: string
           format: uuid
-        enabled:
-          type: boolean
-        host:
+        templateType:
           type: string
-        port:
-          type: integer
-        username:
+          enum:
+          - email-verification-code
+          - email-verification-link
+          - reset-password-code
+          - reset-password-link
+        subject:
           type: string
-        hasPassword:
-          type: boolean
-          description: Whether a password is set (actual password is never exposed)
-        senderEmail:
+        bodyHtml:
           type: string
-          format: email
-        senderName:
-          type: string
-        minIntervalSeconds:
-          type: integer
-          minimum: 0
         createdAt:
           type: string
           format: date-time
         updatedAt:
           type: string
           format: date-time
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: VALIDATION_ERROR
-        message:
-          type: string
-          description: Human-readable error message
-          example: Email is already in use
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Please use a different email address
     UserResponse:
       type: object
       properties:
@@ -4159,6 +4128,37 @@ components:
           type: array
           items:
             type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    SmtpConfig:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        enabled:
+          type: boolean
+        host:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        hasPassword:
+          type: boolean
+          description: Whether a password is set (actual password is never exposed)
+        senderEmail:
+          type: string
+          format: email
+        senderName:
+          type: string
+        minIntervalSeconds:
+          type: integer
+          minimum: 0
         createdAt:
           type: string
           format: date-time
@@ -4207,18 +4207,6 @@ components:
         updatedAt:
           type: string
           format: date-time
-    ProjectAdminResponse:
-      type: object
-      required:
-      - subject
-      - username
-      properties:
-        subject:
-          type: string
-          example: local:admin
-        username:
-          type: string
-          example: admin
     CustomOAuthConfig:
       type: object
       properties:
@@ -4240,29 +4228,138 @@ components:
         updatedAt:
           type: string
           format: date-time
-    EmailTemplate:
+    ProjectAdminResponse:
       type: object
+      required:
+      - subject
+      - username
       properties:
-        id:
-          type: string
-          format: uuid
-        templateType:
-          type: string
-          enum:
-          - email-verification-code
-          - email-verification-link
-          - reset-password-code
-          - reset-password-link
         subject:
           type: string
-        bodyHtml:
+          example: local:admin
+        username:
           type: string
-        createdAt:
+          example: admin
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
           type: string
-          format: date-time
-        updatedAt:
+          description: Error code for programmatic handling
+          example: VALIDATION_ERROR
+        message:
           type: string
-          format: date-time
+          description: Human-readable error message
+          example: Email is already in use
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Please use a different email address
+    DomainVerificationRecord:
+      type: object
+      required:
+      - type
+      - domain
+      - value
+      properties:
+        type:
+          type: string
+          example: TXT
+        domain:
+          type: string
+        value:
+          type: string
+    DeleteResponse:
+      type: object
+      required:
+      - success
+      - message
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+    DeploymentManifestFileEntry:
+      type: object
+      required:
+      - path
+      - sha
+      - size
+      properties:
+        path:
+          type: string
+          minLength: 1
+          maxLength: 2048
+          description: Relative source path using forward slashes.
+          example: src/App.tsx
+        sha:
+          type: string
+          pattern: ^[a-fA-F0-9]{40}$
+          description: SHA-1 hex digest of the file content.
+        size:
+          type: integer
+          minimum: 0
+          description: File size in bytes.
+    ErrorResponse_2:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling.
+        message:
+          type: string
+          description: Human-readable error message.
+        statusCode:
+          type: integer
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error.
+    UpsertEnvVarsRequest:
+      type: object
+      required:
+      - envVars
+      properties:
+        envVars:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+    AddCustomDomainRequest:
+      type: object
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
+          example: app.example.com
+          description: User-owned domain. Domains ending in `.insforge.site` are reserved.
+    UpsertEnvVarsResponse:
+      type: object
+      required:
+      - success
+      - message
+      - count
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        count:
+          type: integer
+          minimum: 1
     DeploymentStatus:
       type: string
       enum:
@@ -4273,27 +4370,26 @@ components:
       - READY
       - ERROR
       - CANCELED
-    UpdateSlugRequest:
+    DeploymentMetadata:
       type: object
       required:
-      - slug
+      - currentDeploymentId
+      - defaultDomainUrl
+      - customDomainUrl
       properties:
-        slug:
+        currentDeploymentId:
           type:
           - string
           - 'null'
-          minLength: 3
-          maxLength: 63
-          pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$
-    ListCustomDomainsResponse:
-      type: object
-      required:
-      - domains
-      properties:
-        domains:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomDomain'
+          format: uuid
+        defaultDomainUrl:
+          type:
+          - string
+          - 'null'
+        customDomainUrl:
+          type:
+          - string
+          - 'null'
     Deployment:
       type: object
       required:
@@ -4335,16 +4431,125 @@ components:
         updatedAt:
           type: string
           format: date-time
-    UpsertEnvVarsRequest:
+    ListEnvVarsResponse:
       type: object
       required:
       - envVars
       properties:
         envVars:
           type: array
+          items:
+            $ref: '#/components/schemas/DeploymentEnvVar'
+    EnvVarInput:
+      type: object
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    CreateDirectDeploymentRequest:
+      type: object
+      required:
+      - files
+      properties:
+        files:
+          type: array
           minItems: 1
+          maxItems: 5000
+          description: Source file manifest. The default backend limit is 5000 files.
+          items:
+            $ref: '#/components/schemas/DeploymentManifestFileEntry'
+    CreateDirectDeploymentResponse:
+      type: object
+      required:
+      - id
+      - status
+      - files
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/DeploymentStatus'
+        files:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeploymentManifestFile'
+    StartDeploymentRequest:
+      type: object
+      properties:
+        projectSettings:
+          $ref: '#/components/schemas/ProjectSettings'
+        envVars:
+          type: array
           items:
             $ref: '#/components/schemas/EnvVarInput'
+        meta:
+          type: object
+          additionalProperties:
+            type: string
+    UpdateSlugResponse:
+      type: object
+      required:
+      - success
+      - slug
+      - domain
+      properties:
+        success:
+          type: boolean
+        slug:
+          type:
+          - string
+          - 'null'
+        domain:
+          type:
+          - string
+          - 'null'
+    GetEnvVarResponse:
+      type: object
+      required:
+      - envVar
+      properties:
+        envVar:
+          $ref: '#/components/schemas/DeploymentEnvVarWithValue'
+    DeploymentEnvVarWithValue:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentEnvVar'
+      - type: object
+        required:
+        - value
+        properties:
+          value:
+            type: string
+    CreateDeploymentResponse:
+      type: object
+      required:
+      - id
+      - uploadUrl
+      - uploadFields
+      properties:
+        id:
+          type: string
+          format: uuid
+        uploadUrl:
+          type: string
+          format: uri
+        uploadFields:
+          type: object
+          additionalProperties:
+            type: string
+    ListCustomDomainsResponse:
+      type: object
+      required:
+      - domains
+      properties:
+        domains:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomDomain'
     DeploymentEnvVar:
       type: object
       required:
@@ -4367,20 +4572,32 @@ components:
         updatedAt:
           type: integer
           description: Unix timestamp in milliseconds.
-    DomainVerificationRecord:
+    DeploymentManifestFileUploaded:
+      allOf:
+      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
+      - type: object
+        required:
+        - fileId
+        - uploadedAt
+        properties:
+          fileId:
+            type: string
+            format: uuid
+          uploadedAt:
+            type: string
+            format: date-time
+    UpdateSlugRequest:
       type: object
       required:
-      - type
-      - domain
-      - value
+      - slug
       properties:
-        type:
-          type: string
-          example: TXT
-        domain:
-          type: string
-        value:
-          type: string
+        slug:
+          type:
+          - string
+          - 'null'
+          minLength: 3
+          maxLength: 63
+          pattern: ^[a-z0-9]([a-z0-9-]*[a-z0-9])?$
     DeploymentManifestFile:
       allOf:
       - $ref: '#/components/schemas/DeploymentManifestFileEntry'
@@ -4397,85 +4614,29 @@ components:
             - string
             - 'null'
             format: date-time
-    CreateDirectDeploymentRequest:
+    ProjectSettings:
       type: object
-      required:
-      - files
       properties:
-        files:
-          type: array
-          minItems: 1
-          maxItems: 5000
-          description: Source file manifest. The default backend limit is 5000 files.
-          items:
-            $ref: '#/components/schemas/DeploymentManifestFileEntry'
-    DeploymentMetadata:
-      type: object
-      required:
-      - currentDeploymentId
-      - defaultDomainUrl
-      - customDomainUrl
-      properties:
-        currentDeploymentId:
+        buildCommand:
           type:
           - string
           - 'null'
-          format: uuid
-        defaultDomainUrl:
+        outputDirectory:
           type:
           - string
           - 'null'
-        customDomainUrl:
+        installCommand:
           type:
           - string
           - 'null'
-    CreateDirectDeploymentResponse:
-      type: object
-      required:
-      - id
-      - status
-      - files
-      properties:
-        id:
-          type: string
-          format: uuid
-        status:
-          $ref: '#/components/schemas/DeploymentStatus'
-        files:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeploymentManifestFile'
-    UpsertEnvVarsResponse:
-      type: object
-      required:
-      - success
-      - message
-      - count
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
-        count:
-          type: integer
-          minimum: 1
-    CreateDeploymentResponse:
-      type: object
-      required:
-      - id
-      - uploadUrl
-      - uploadFields
-      properties:
-        id:
-          type: string
-          format: uuid
-        uploadUrl:
-          type: string
-          format: uri
-        uploadFields:
-          type: object
-          additionalProperties:
-            type: string
+        devCommand:
+          type:
+          - string
+          - 'null'
+        rootDirectory:
+          type:
+          - string
+          - 'null'
     CustomDomain:
       type: object
       required:
@@ -4509,167 +4670,6 @@ components:
           type:
           - string
           - 'null'
-    UpdateSlugResponse:
-      type: object
-      required:
-      - success
-      - slug
-      - domain
-      properties:
-        success:
-          type: boolean
-        slug:
-          type:
-          - string
-          - 'null'
-        domain:
-          type:
-          - string
-          - 'null'
-    AddCustomDomainRequest:
-      type: object
-      required:
-      - domain
-      properties:
-        domain:
-          type: string
-          pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
-          example: app.example.com
-          description: User-owned domain. Domains ending in `.insforge.site` are reserved.
-    StartDeploymentRequest:
-      type: object
-      properties:
-        projectSettings:
-          $ref: '#/components/schemas/ProjectSettings'
-        envVars:
-          type: array
-          items:
-            $ref: '#/components/schemas/EnvVarInput'
-        meta:
-          type: object
-          additionalProperties:
-            type: string
-    DeploymentEnvVarWithValue:
-      allOf:
-      - $ref: '#/components/schemas/DeploymentEnvVar'
-      - type: object
-        required:
-        - value
-        properties:
-          value:
-            type: string
-    EnvVarInput:
-      type: object
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-    ListEnvVarsResponse:
-      type: object
-      required:
-      - envVars
-      properties:
-        envVars:
-          type: array
-          items:
-            $ref: '#/components/schemas/DeploymentEnvVar'
-    DeploymentManifestFileEntry:
-      type: object
-      required:
-      - path
-      - sha
-      - size
-      properties:
-        path:
-          type: string
-          minLength: 1
-          maxLength: 2048
-          description: Relative source path using forward slashes.
-          example: src/App.tsx
-        sha:
-          type: string
-          pattern: ^[a-fA-F0-9]{40}$
-          description: SHA-1 hex digest of the file content.
-        size:
-          type: integer
-          minimum: 0
-          description: File size in bytes.
-    ProjectSettings:
-      type: object
-      properties:
-        buildCommand:
-          type:
-          - string
-          - 'null'
-        outputDirectory:
-          type:
-          - string
-          - 'null'
-        installCommand:
-          type:
-          - string
-          - 'null'
-        devCommand:
-          type:
-          - string
-          - 'null'
-        rootDirectory:
-          type:
-          - string
-          - 'null'
-    GetEnvVarResponse:
-      type: object
-      required:
-      - envVar
-      properties:
-        envVar:
-          $ref: '#/components/schemas/DeploymentEnvVarWithValue'
-    DeploymentManifestFileUploaded:
-      allOf:
-      - $ref: '#/components/schemas/DeploymentManifestFileEntry'
-      - type: object
-        required:
-        - fileId
-        - uploadedAt
-        properties:
-          fileId:
-            type: string
-            format: uuid
-          uploadedAt:
-            type: string
-            format: date-time
-    ErrorResponse_2:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling.
-        message:
-          type: string
-          description: Human-readable error message.
-        statusCode:
-          type: integer
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error.
-    DeleteResponse:
-      type: object
-      required:
-      - success
-      - message
-      properties:
-        success:
-          type: boolean
-        message:
-          type: string
     FunctionDetails:
       allOf:
       - $ref: '#/components/schemas/FunctionMetadata'
@@ -4680,6 +4680,26 @@ components:
             description: The function's JavaScript/TypeScript code
         required:
         - code
+    ErrorResponse_3:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        details:
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: object
+          - type: object
+          description: Additional error details
+        message:
+          type: string
+          description: Detailed error message
+        pattern:
+          type: string
+          description: Pattern that caused validation failure (for dangerous code detection)
     FunctionMetadata:
       type: object
       properties:
@@ -4728,26 +4748,6 @@ components:
       - status
       - created_at
       - updated_at
-    ErrorResponse_3:
-      type: object
-      properties:
-        error:
-          type: string
-          description: Error message
-        details:
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: object
-          - type: object
-          description: Additional error details
-        message:
-          type: string
-          description: Detailed error message
-        pattern:
-          type: string
-          description: Pattern that caused validation failure (for dangerous code detection)
     ErrorResponse_4:
       type: object
       required:
@@ -4786,6 +4786,29 @@ components:
         nextAction:
           type: string
           description: Suggested action to resolve the error
+    ErrorResponse_6:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid input data
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check the request body format
     SecretMetadata:
       type: object
       properties:
@@ -4824,7 +4847,7 @@ components:
       - isReserved
       - createdAt
       - updatedAt
-    ErrorResponse_6:
+    ErrorResponse_7:
       type: object
       required:
       - error
@@ -4834,11 +4857,11 @@ components:
         error:
           type: string
           description: Error code for programmatic handling
-          example: INVALID_INPUT
+          example: VALIDATION_ERROR
         message:
           type: string
           description: Human-readable error message
-          example: Invalid input data
+          example: Invalid request
         statusCode:
           type: integer
           description: HTTP status code
@@ -4846,7 +4869,7 @@ components:
         nextActions:
           type: string
           description: Suggested action to resolve the error
-          example: Check the request body format
+          example: Check your request parameters
     StoredFile:
       type: object
       properties:
@@ -4903,7 +4926,7 @@ components:
         updatedAt:
           type: string
           format: date-time
-    ErrorResponse_7:
+    ErrorResponse_8:
       type: object
       required:
       - error
@@ -4913,19 +4936,15 @@ components:
         error:
           type: string
           description: Error code for programmatic handling
-          example: VALIDATION_ERROR
         message:
           type: string
           description: Human-readable error message
-          example: Invalid request
         statusCode:
           type: integer
           description: HTTP status code
-          example: 400
         nextActions:
           type: string
           description: Suggested action to resolve the error
-          example: Check your request parameters
     Migration:
       type: object
       required:
@@ -4994,25 +5013,6 @@ components:
           - SET DEFAULT
           - NO ACTION
           - RESTRICT
-    ErrorResponse_8:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-        message:
-          type: string
-          description: Human-readable error message
-        statusCode:
-          type: integer
-          description: HTTP status code
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
   parameters:
     AIProvider:
       name: provider
@@ -5023,21 +5023,6 @@ components:
         enum:
         - openrouter
       description: AI provider identifier
-    DeploymentId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-        format: uuid
-      description: Deployment run ID.
-    EnvVarId:
-      name: id
-      in: path
-      required: true
-      schema:
-        type: string
-      description: Provider environment variable ID.
     Limit:
       name: limit
       in: query
@@ -5046,6 +5031,22 @@ components:
         minimum: 1
         default: 50
       description: Maximum number of deployments to return.
+    Domain:
+      name: domain
+      in: path
+      required: true
+      schema:
+        type: string
+        pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
+      description: User-owned custom domain.
+      example: app.example.com
+    EnvVarId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+      description: Provider environment variable ID.
     Offset:
       name: offset
       in: query
@@ -5062,15 +5063,14 @@ components:
         type: string
         format: uuid
       description: Direct upload file ID returned by `POST /api/deployments/direct`.
-    Domain:
-      name: domain
+    DeploymentId:
+      name: id
       in: path
       required: true
       schema:
         type: string
-        pattern: ^(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$
-      description: User-owned custom domain.
-      example: app.example.com
+        format: uuid
+      description: Deployment run ID.
   responses:
     Error:
       description: Error response
