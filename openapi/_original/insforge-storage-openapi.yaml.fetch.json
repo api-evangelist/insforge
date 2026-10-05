@@ -1,0 +1,12 @@
+{
+ "url": "https://raw.githubusercontent.com/InsForge/InsForge/main/openapi/storage.yaml",
+ "requested_url": "https://raw.githubusercontent.com/InsForge/InsForge/main/openapi/storage.yaml",
+ "status": 200,
+ "content_type": "text/plain; charset=utf-8",
+ "bytes": 50535,
+ "sha256": "d989b78e353337e0859f9431c38432f4f8739e1a48b83816de3fc90ddc398da2",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "equivalent",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the provider's current document describes the same operations (Jaccard 1.0), but the bytes differ, so the archive is an earlier or reformatted copy."
+}

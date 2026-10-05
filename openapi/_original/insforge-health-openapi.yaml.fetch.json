@@ -1,0 +1,12 @@
+{
+ "url": "https://raw.githubusercontent.com/InsForge/InsForge/main/openapi/health.yaml",
+ "requested_url": "https://raw.githubusercontent.com/InsForge/InsForge/main/openapi/health.yaml",
+ "status": 200,
+ "content_type": "text/plain; charset=utf-8",
+ "bytes": 765,
+ "sha256": "a8837a96180886a9788f6b01c26662e2b55c6a297e8675cdb7d3550c2f7d5720",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}

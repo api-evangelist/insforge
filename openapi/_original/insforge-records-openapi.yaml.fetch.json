@@ -1,0 +1,12 @@
+{
+ "url": "https://raw.githubusercontent.com/InsForge/InsForge/main/openapi/records.yaml",
+ "requested_url": "https://raw.githubusercontent.com/InsForge/InsForge/main/openapi/records.yaml",
+ "status": 200,
+ "content_type": "text/plain; charset=utf-8",
+ "bytes": 12005,
+ "sha256": "3c737b19bd57e0dbcf580c159e6e8250ca739882da7eb6ff76d3f2e477912d8c",
+ "fetched_at": "2026-10-04",
+ "fetched_by": "APIEvangelist-Harvest/1.0 (+https://apievangelist.com)",
+ "match": "byte-identical",
+ "note": "Re-fetched from the provider by verify-openapi-sources.py; the archived file is byte-identical to what the provider serves."
+}
