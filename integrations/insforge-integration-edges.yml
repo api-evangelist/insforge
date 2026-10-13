@@ -1,0 +1,19 @@
+edges:
+- partner_name: Amazon Web Services
+  partner: amazon-web-services
+  partner_match: shape-anchor
+  channel: provider-built
+  relationship: compatible
+  direction: provider-built
+  shape: aws-s3
+  type: contract
+  degree: declared-unqualified
+  evidence: https://github.com/api-evangelist/insforge/blob/main/openapi/insforge-s3-protocol-api-openapi.yml#L21
+  evidence_kind: own-contract
+  quote: 'description: "**AWS S3-compatible protocol gateway.** Speak the S3 protocol directly\nfrom any SigV4 client
+    (AWS SDKs, `aws` CLI, `rclone`, Terraform, etc.)\nagainst this endpoint. Only path-style URLs are supported;
+    SDKs must\nbe configure'
+  detected_by: sweep-shape-compat.py
+  first_seen: '2026-10-13'
+generated: '2026-10-13'
+method: searched
