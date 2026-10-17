@@ -46,6 +46,32 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    RealtimePermissions:
+      type: object
+      required:
+      - subscribe
+      - publish
+      properties:
+        subscribe:
+          type: object
+          required:
+          - policies
+          properties:
+            policies:
+              type: array
+              description: RLS policies for channel subscriptions
+              items:
+                $ref: '#/components/schemas/RlsPolicy'
+        publish:
+          type: object
+          required:
+          - policies
+          properties:
+            policies:
+              type: array
+              description: RLS policies for message publishing
+              items:
+                $ref: '#/components/schemas/RlsPolicy'
     RlsPolicy:
       type: object
       required:
@@ -85,32 +111,6 @@ components:
           - 'null'
           description: WITH CHECK clause for row-level validation
           example: null
-    RealtimePermissions:
-      type: object
-      required:
-      - subscribe
-      - publish
-      properties:
-        subscribe:
-          type: object
-          required:
-          - policies
-          properties:
-            policies:
-              type: array
-              description: RLS policies for channel subscriptions
-              items:
-                $ref: '#/components/schemas/RlsPolicy'
-        publish:
-          type: object
-          required:
-          - policies
-          properties:
-            policies:
-              type: array
-              description: RLS policies for message publishing
-              items:
-                $ref: '#/components/schemas/RlsPolicy'
   securitySchemes:
     bearerAuth:
       type: http

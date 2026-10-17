@@ -85,6 +85,31 @@ components:
           type: boolean
         handled:
           type: boolean
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          example: INVALID_INPUT
+        message:
+          type: string
+          example: 'environment: Invalid enum value'
+        statusCode:
+          type: integer
+          example: 400
+        nextActions:
+          type:
+          - string
+          - 'null'
+    PaymentEnvironment:
+      type: string
+      enum:
+      - test
+      - live
     StripeWebhookProcessingStatus:
       type: string
       enum:
@@ -169,31 +194,6 @@ components:
         updatedAt:
           type: string
           format: date-time
-    PaymentEnvironment:
-      type: string
-      enum:
-      - test
-      - live
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          example: INVALID_INPUT
-        message:
-          type: string
-          example: 'environment: Invalid enum value'
-        statusCode:
-          type: integer
-          example: 400
-        nextActions:
-          type:
-          - string
-          - 'null'
   responses:
     Unauthorized:
       description: Unauthorized

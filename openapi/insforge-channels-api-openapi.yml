@@ -264,6 +264,30 @@ components:
           type: string
           description: Suggested action to resolve the error
           example: Check your request parameters
+    UpdateChannelRequest:
+      type: object
+      properties:
+        pattern:
+          type: string
+          minLength: 1
+          description: Updated channel pattern
+          example: order:%
+        description:
+          type: string
+          description: Updated description
+          example: Updated order channel
+        webhookUrls:
+          type: array
+          items:
+            type: string
+            format: uri
+          description: Updated webhook URLs
+          example:
+          - https://example.com/webhook
+        enabled:
+          type: boolean
+          description: Updated enabled status
+          example: false
     CreateChannelRequest:
       type: object
       required:
@@ -340,30 +364,6 @@ components:
           format: date-time
           description: Timestamp when the channel was last updated
           example: '2024-01-15T10:30:00Z'
-    UpdateChannelRequest:
-      type: object
-      properties:
-        pattern:
-          type: string
-          minLength: 1
-          description: Updated channel pattern
-          example: order:%
-        description:
-          type: string
-          description: Updated description
-          example: Updated order channel
-        webhookUrls:
-          type: array
-          items:
-            type: string
-            format: uri
-          description: Updated webhook URLs
-          example:
-          - https://example.com/webhook
-        enabled:
-          type: boolean
-          description: Updated enabled status
-          example: false
   securitySchemes:
     bearerAuth:
       type: http

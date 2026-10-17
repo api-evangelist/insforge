@@ -161,6 +161,73 @@ paths:
       x-operation-id-source: derived
 components:
   schemas:
+    MessageStats:
+      type: object
+      required:
+      - totalMessages
+      - whDeliveryRate
+      - topEvents
+      - retentionDays
+      properties:
+        totalMessages:
+          type: integer
+          minimum: 0
+          description: Total number of messages
+          example: 1250
+        whDeliveryRate:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Webhook delivery success rate (0-1)
+          example: 0.98
+        topEvents:
+          type: array
+          description: Most frequent event types
+          items:
+            type: object
+            required:
+            - eventName
+            - count
+            properties:
+              eventName:
+                type: string
+                description: Name of the event
+                example: order.created
+              count:
+                type: integer
+                minimum: 0
+                description: Number of occurrences
+                example: 450
+        retentionDays:
+          type:
+          - integer
+          - 'null'
+          minimum: 1
+          description: Number of days messages are retained. Null means messages are kept indefinitely.
+          example: null
+    ErrorResponse:
+      type: object
+      required:
+      - error
+      - message
+      - statusCode
+      properties:
+        error:
+          type: string
+          description: Error code for programmatic handling
+          example: INVALID_INPUT
+        message:
+          type: string
+          description: Human-readable error message
+          example: Invalid request
+        statusCode:
+          type: integer
+          description: HTTP status code
+          example: 400
+        nextActions:
+          type: string
+          description: Suggested action to resolve the error
+          example: Check your request parameters
     ClearMessagesResponse:
       type: object
       required:
@@ -247,73 +314,6 @@ components:
           format: date-time
           description: Timestamp when the message was created
           example: '2024-01-15T10:30:00Z'
-    ErrorResponse:
-      type: object
-      required:
-      - error
-      - message
-      - statusCode
-      properties:
-        error:
-          type: string
-          description: Error code for programmatic handling
-          example: INVALID_INPUT
-        message:
-          type: string
-          description: Human-readable error message
-          example: Invalid request
-        statusCode:
-          type: integer
-          description: HTTP status code
-          example: 400
-        nextActions:
-          type: string
-          description: Suggested action to resolve the error
-          example: Check your request parameters
-    MessageStats:
-      type: object
-      required:
-      - totalMessages
-      - whDeliveryRate
-      - topEvents
-      - retentionDays
-      properties:
-        totalMessages:
-          type: integer
-          minimum: 0
-          description: Total number of messages
-          example: 1250
-        whDeliveryRate:
-          type: number
-          minimum: 0
-          maximum: 1
-          description: Webhook delivery success rate (0-1)
-          example: 0.98
-        topEvents:
-          type: array
-          description: Most frequent event types
-          items:
-            type: object
-            required:
-            - eventName
-            - count
-            properties:
-              eventName:
-                type: string
-                description: Name of the event
-                example: order.created
-              count:
-                type: integer
-                minimum: 0
-                description: Number of occurrences
-                example: 450
-        retentionDays:
-          type:
-          - integer
-          - 'null'
-          minimum: 1
-          description: Number of days messages are retained. Null means messages are kept indefinitely.
-          example: null
   securitySchemes:
     bearerAuth:
       type: http
