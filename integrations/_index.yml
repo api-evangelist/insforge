@@ -14,6 +14,37 @@
   relationship: compatible
   status: not-a-workflow
   arazzo: null
+- slug: insforge-npm-registry
+  label: npm registry
+  partner: npm
+  partner_name: npm registry
+  category: official SDK (JavaScript/TypeScript)
+  type: register
+  channel: package-registry
+  evidence: https://www.npmjs.com/package/@insforge/sdk
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@insforge/sdk'
+      version: 1.5.2
+      released: '2026-07-31'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@insforge/sdk
+      repo_leg: github-org:insforge
+      publisher_leg: email:insforge.dev
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  status: not-a-workflow
+  arazzo: null
 - slug: insforge-mcp-registry
   label: MCP Registry
   partner: mcp
@@ -30,6 +61,73 @@
     registered_name: io.github.InsForge/insforge-mcp
     register_id: io.github.InsForge/insforge-mcp
     detected_by: sweep-agent-tools.py
-    detected: '2026-10-15'
+    detected: '2026-10-19'
+  status: not-a-workflow
+  arazzo: null
+- slug: insforge-agent-skills-own-github-org
+  label: Agent Skills (own GitHub org)
+  partner_name: Agent Skills (own GitHub org)
+  category: Agent Skills package
+  type: register
+  channel: provider-built
+  evidence: https://github.com/InsForge/insforge-skills
+  source: edge
+  relationship: compatible
+  contract_reference:
+    register: 'provider''s own GitHub org (GitHub REST API: repo + git tree holds SKILL.md)'
+    spec_file: null
+    standard: Agent Skills (agentskills.io)
+    role: agent-skills-repo
+    matched_org: insforge
+    matched_by: org-profile-domain:insforge.dev
+    detected_by: sweep-agent-skills.py
+    detected: '2026-10-20'
+  status: not-a-workflow
+  arazzo: null
+- slug: insforge-skills-sh
+  label: skills.sh
+  partner_name: skills.sh
+  category: Agent Skills register
+  type: register
+  channel: standard-directory
+  evidence: https://www.skills.sh/insforge/insforge-skills
+  source: edge
+  relationship: compatible
+  contract_reference:
+    register: skills.sh (public sitemap / list)
+    spec_file: null
+    standard: Agent Skills (agentskills.io)
+    role: agent-skills-listing
+    matched_org: insforge
+    matched_by: org-profile-domain:insforge.dev
+    sample_skills:
+    - insforge
+    - insforge-cli
+    - insforge-debug
+    - insforge-integrations
+    - insta
+    detected_by: sweep-agent-skills.py
+    detected: '2026-10-20'
+  status: not-a-workflow
+  arazzo: null
+- slug: insforge-skillsmp-skillsmp-com
+  label: SkillsMP (skillsmp.com)
+  partner_name: SkillsMP (skillsmp.com)
+  category: Agent Skills register
+  type: register
+  channel: standard-directory
+  evidence: https://skillsmp.com/creators/insforge
+  source: edge
+  relationship: compatible
+  contract_reference:
+    register: SkillsMP (skillsmp.com) (public sitemap / list)
+    spec_file: null
+    standard: Agent Skills (agentskills.io)
+    role: agent-skills-listing
+    matched_org: insforge
+    matched_by: org-profile-domain:insforge.dev
+    sample_skills: []
+    detected_by: sweep-agent-skills.py
+    detected: '2026-10-20'
   status: not-a-workflow
   arazzo: null
