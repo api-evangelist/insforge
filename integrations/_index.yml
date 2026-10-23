@@ -161,3 +161,43 @@
     status: Active
   status: not-a-workflow
   arazzo: null
+- slug: insforge-pub-dev
+  label: pub.dev
+  partner: pub-dev
+  partner_name: pub.dev
+  category: official SDK (Dart/Flutter)
+  type: register
+  channel: package-registry
+  evidence: https://pub.dev/packages/insforge
+  source: edge
+  relationship: distribution-channel
+  contract_reference:
+    register: pub.dev (public registry JSON)
+    spec_file: null
+    language: Dart/Flutter
+    packages:
+    - name: insforge
+      version: 0.1.0
+      released: '2026-06-09'
+      released_field: published
+      lapsed: false
+      page: https://pub.dev/packages/insforge
+      repo_leg: not required (verified publisher)
+      publisher_leg: verified-publisher:insforge.dev
+      matched_by: domain
+    - name: insforge_flutter
+      version: 0.1.0
+      released: '2026-06-09'
+      released_field: published
+      lapsed: false
+      page: https://pub.dev/packages/insforge_flutter
+      repo_leg: not required (verified publisher)
+      publisher_leg: verified-publisher:insforge.dev
+      matched_by: domain
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-php-dart-elixir-package-registries.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
