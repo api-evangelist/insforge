@@ -204,6 +204,8 @@ apis:
   - type: OpenAPI
     url: openapi/insforge-stripe-payments-api-openapi.yml
 common:
+- type: PostmanWorkspace
+  url: https://www.postman.com/kinlaneapi/insforge/overview
 - type: CapabilityMap
   url: capabilities/insforge-capability-edges.yml
   name: Insforge Business Capability Map
