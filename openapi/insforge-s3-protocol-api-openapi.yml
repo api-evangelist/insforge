@@ -113,3 +113,9 @@ components:
         `AWS_REGION` (default `us-east-2`); service scope must be `s3`.
 
         '
+x-provenance:
+  method: harvested
+  publisher: Insforge
+  source: https://raw.githubusercontent.com/InsForge/InsForge/main/openapi/storage.yaml
+  note: split by refine-openapis from the provider's own published document, verified by fetch (openapi/_original/*.fetch.json);
+    stamped by stamp-openapi-provenance.py (roadmap#793)
