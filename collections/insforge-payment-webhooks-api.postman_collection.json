@@ -1,580 +1,738 @@
 {
+  "info": {
+    "_postman_id": "4b93a1d6-56d9-4f18-b896-a5b3f3d0bfdc",
+    "name": "Insforge Payments Payment Webhooks API",
+    "description": "Provider-specific Stripe and Razorpay payment setup, runtime flows, catalog management, sync, and webhook projections",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-10-22T02:37:08.000Z",
+    "updatedAt": "2026-10-22T02:37:08.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-4b93a1d6-56d9-4f18-b896-a5b3f3d0bfdc"
+  },
   "item": [
     {
-      "id": "7acba9d6-3764-4f99-9b84-dbc77d80f53a",
-      "name": "Payment Webhooks",
-      "description": {
-        "content": "Provider webhook ingestion routes",
-        "type": "text/plain"
-      },
+      "name": "api",
       "item": [
         {
-          "id": "1c0f0f3d-ae5e-409e-8375-1addac0f3c28",
-          "name": "Receive Stripe Webhook",
-          "request": {
-            "name": "Receive Stripe Webhook",
-            "description": {
-              "content": "Receive Stripe events for one environment. The request body must be the raw Stripe JSON body and must include the Stripe signature header.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "webhooks",
-                "stripe",
-                ":environment"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "environment",
-                  "description": "(Required) Payment provider environment."
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"key_0\": 4013.7752999032805,\n  \"key_1\": true,\n  \"key_2\": \"string\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
+          "name": "webhooks",
+          "item": [
             {
-              "id": "a90588c9-92d2-49a2-a746-f3ccd0057972",
-              "name": "Webhook received",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "webhooks",
-                    "stripe",
-                    ":environment"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "environment",
-                      "description": "(Required) Payment provider environment."
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
+              "name": "stripe",
+              "item": [
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
+                  "name": "{environment}",
+                  "item": [
+                    {
+                      "name": "Receive Stripe Webhook",
+                      "id": "4d76cdfb-3750-47c5-b4ff-fa6387170f26",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "auth": {
+                          "type": "apikey",
+                          "apikey": [
+                            {
+                              "key": "key",
+                              "value": "stripe-signature",
+                              "type": "string"
+                            },
+                            {
+                              "key": "value",
+                              "value": "{{apiKey}}",
+                              "type": "string"
+                            },
+                            {
+                              "key": "in",
+                              "value": "header",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/webhooks/stripe/:environment",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "webhooks",
+                            "stripe",
+                            ":environment"
+                          ],
+                          "variable": [
+                            {
+                              "id": "4e4ec450-3936-4750-9aa9-dcae3df81aec",
+                              "key": "environment",
+                              "value": "live",
+                              "description": "(Required) Payment provider environment."
+                            }
+                          ]
+                        },
+                        "description": "Receive Stripe events for one environment. The request body must be the raw Stripe JSON body and must include the Stripe signature header."
+                      },
+                      "response": [
+                        {
+                          "id": "fe97bd81-d1f7-47d6-89d2-d5e48c0d0c8e",
+                          "name": "Webhook received",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: apikey",
+                                "key": "stripe-signature",
+                                "value": "<API Key>"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/webhooks/stripe/:environment",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "webhooks",
+                                "stripe",
+                                ":environment"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "environment"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"received\": \"<boolean>\",\n  \"handled\": \"<boolean>\",\n  \"event\": {\n    \"environment\": \"live\",\n    \"eventId\": \"<string>\",\n    \"eventType\": \"<string>\",\n    \"livemode\": \"<boolean>\",\n    \"accountId\": \"<string,null>\",\n    \"objectType\": \"<string,null>\",\n    \"objectId\": \"<string,null>\",\n    \"processingStatus\": \"failed\",\n    \"attemptCount\": \"<integer>\",\n    \"lastError\": \"<string,null>\",\n    \"receivedAt\": \"<dateTime>\",\n    \"processedAt\": \"<string,null-date-time>\",\n    \"createdAt\": \"<dateTime>\",\n    \"updatedAt\": \"<dateTime>\"\n  }\n}",
+                          "createdAt": "2026-10-22T02:37:09.000Z",
+                          "updatedAt": "2026-10-22T02:37:09.000Z",
+                          "uid": "35240-fe97bd81-d1f7-47d6-89d2-d5e48c0d0c8e"
+                        },
+                        {
+                          "id": "012c0b6f-f5e1-4fcd-8975-46f969f7977e",
+                          "name": "Invalid request",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: apikey",
+                                "key": "stripe-signature",
+                                "value": "<API Key>"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/webhooks/stripe/:environment",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "webhooks",
+                                "stripe",
+                                ":environment"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "environment"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Bad Request",
+                          "code": 400,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string,null>\"\n}",
+                          "createdAt": "2026-10-22T02:37:09.000Z",
+                          "updatedAt": "2026-10-22T02:37:09.000Z",
+                          "uid": "35240-012c0b6f-f5e1-4fcd-8975-46f969f7977e"
+                        },
+                        {
+                          "id": "bf18d26e-fbb2-4190-b695-feca678c98fa",
+                          "name": "Unauthorized",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: apikey",
+                                "key": "stripe-signature",
+                                "value": "<API Key>"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/webhooks/stripe/:environment",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "webhooks",
+                                "stripe",
+                                ":environment"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "environment"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string,null>\"\n}",
+                          "createdAt": "2026-10-22T02:37:09.000Z",
+                          "updatedAt": "2026-10-22T02:37:09.000Z",
+                          "uid": "35240-bf18d26e-fbb2-4190-b695-feca678c98fa"
+                        },
+                        {
+                          "id": "52d78d2d-10ed-4edd-9345-2ff48ea6548b",
+                          "name": "Internal server error",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: apikey",
+                                "key": "stripe-signature",
+                                "value": "<API Key>"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/webhooks/stripe/:environment",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "webhooks",
+                                "stripe",
+                                ":environment"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "environment"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Internal Server Error",
+                          "code": 500,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string,null>\"\n}",
+                          "createdAt": "2026-10-22T02:37:09.000Z",
+                          "updatedAt": "2026-10-22T02:37:09.000Z",
+                          "uid": "35240-52d78d2d-10ed-4edd-9345-2ff48ea6548b"
+                        }
+                      ],
+                      "createdAt": "2026-10-22T02:37:09.000Z",
+                      "updatedAt": "2026-10-22T02:37:09.000Z",
+                      "uid": "35240-4d76cdfb-3750-47c5-b4ff-fa6387170f26"
+                    }
+                  ],
+                  "id": "dd3f2afe-beb2-4a13-9a9c-1fbc17c9a9c9",
+                  "createdAt": "2026-10-22T02:37:09.000Z",
+                  "updatedAt": "2026-10-22T02:37:09.000Z",
+                  "uid": "35240-dd3f2afe-beb2-4a13-9a9c-1fbc17c9a9c9"
                 }
               ],
-              "body": "{\n  \"received\": false,\n  \"handled\": true,\n  \"event\": {\n    \"environment\": \"<string>\",\n    \"eventId\": \"evt_123\",\n    \"eventType\": \"checkout.session.completed\",\n    \"livemode\": true,\n    \"accountId\": \"acct_123\",\n    \"objectType\": \"checkout.session\",\n    \"objectId\": \"cs_test_123\",\n    \"processingStatus\": \"ignored\",\n    \"attemptCount\": 5235,\n    \"lastError\": \"string\",\n    \"receivedAt\": \"1955-01-22T07:30:41.272Z\",\n    \"processedAt\": \"1969-11-27T10:07:31.405Z\",\n    \"createdAt\": \"1998-08-07T05:16:18.972Z\",\n    \"updatedAt\": \"2013-08-11T07:36:03.794Z\"\n  }\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
+              "id": "584fe113-74d3-4067-bf75-96722416f669",
+              "createdAt": "2026-10-22T02:37:09.000Z",
+              "updatedAt": "2026-10-22T02:37:09.000Z",
+              "uid": "35240-584fe113-74d3-4067-bf75-96722416f669"
             },
             {
-              "id": "504631cc-7d69-44ff-8d90-d0111d1a4c96",
-              "name": "Invalid request",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "webhooks",
-                    "stripe",
-                    ":environment"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "environment",
-                      "description": "(Required) Payment provider environment."
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
+              "name": "razorpay",
+              "item": [
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
+                  "name": "{environment}",
+                  "item": [
+                    {
+                      "name": "Receive Razorpay Webhook",
+                      "id": "60e303db-213e-49b2-8178-9b57b5f2bde6",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "auth": {
+                          "type": "apikey",
+                          "apikey": [
+                            {
+                              "key": "key",
+                              "value": "x-razorpay-signature",
+                              "type": "string"
+                            },
+                            {
+                              "key": "value",
+                              "value": "{{apiKey}}",
+                              "type": "string"
+                            },
+                            {
+                              "key": "in",
+                              "value": "header",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/webhooks/razorpay/:environment",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "webhooks",
+                            "razorpay",
+                            ":environment"
+                          ],
+                          "variable": [
+                            {
+                              "id": "580922c6-a639-403f-a3c6-414e0a51c826",
+                              "key": "environment",
+                              "value": "live",
+                              "description": "(Required) Payment provider environment."
+                            }
+                          ]
+                        },
+                        "description": "Receive Razorpay events for one environment. The request body must be the raw Razorpay JSON body and must include the Razorpay signature header."
+                      },
+                      "response": [
+                        {
+                          "id": "94951459-f26b-435d-9816-f3b4138b1509",
+                          "name": "Webhook received",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: apikey",
+                                "key": "x-razorpay-signature",
+                                "value": "<API Key>"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/webhooks/razorpay/:environment",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "webhooks",
+                                "razorpay",
+                                ":environment"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "environment"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"received\": \"<boolean>\",\n  \"handled\": \"<boolean>\"\n}",
+                          "createdAt": "2026-10-22T02:37:09.000Z",
+                          "updatedAt": "2026-10-22T02:37:09.000Z",
+                          "uid": "35240-94951459-f26b-435d-9816-f3b4138b1509"
+                        },
+                        {
+                          "id": "fc1c4069-8975-4c33-bd71-3058e4a5e4a1",
+                          "name": "Invalid request",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: apikey",
+                                "key": "x-razorpay-signature",
+                                "value": "<API Key>"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/webhooks/razorpay/:environment",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "webhooks",
+                                "razorpay",
+                                ":environment"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "environment"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Bad Request",
+                          "code": 400,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string,null>\"\n}",
+                          "createdAt": "2026-10-22T02:37:09.000Z",
+                          "updatedAt": "2026-10-22T02:37:09.000Z",
+                          "uid": "35240-fc1c4069-8975-4c33-bd71-3058e4a5e4a1"
+                        },
+                        {
+                          "id": "e5de2e7a-30fe-4ea1-8df1-f6b9b9c2c8b1",
+                          "name": "Unauthorized",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: apikey",
+                                "key": "x-razorpay-signature",
+                                "value": "<API Key>"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/webhooks/razorpay/:environment",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "webhooks",
+                                "razorpay",
+                                ":environment"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "environment"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string,null>\"\n}",
+                          "createdAt": "2026-10-22T02:37:09.000Z",
+                          "updatedAt": "2026-10-22T02:37:09.000Z",
+                          "uid": "35240-e5de2e7a-30fe-4ea1-8df1-f6b9b9c2c8b1"
+                        },
+                        {
+                          "id": "6e2d7568-c4d4-4131-8330-fed55336bd9a",
+                          "name": "Internal server error",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                              },
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: apikey",
+                                "key": "x-razorpay-signature",
+                                "value": "<API Key>"
+                              }
+                            ],
+                            "body": {
+                              "mode": "raw",
+                              "raw": "{\n  \"autec\": \"sed sint\"\n}",
+                              "options": {
+                                "raw": {
+                                  "headerFamily": "json",
+                                  "language": "json"
+                                }
+                              }
+                            },
+                            "url": {
+                              "raw": "{{baseUrl}}/api/webhooks/razorpay/:environment",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "webhooks",
+                                "razorpay",
+                                ":environment"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "environment"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Internal Server Error",
+                          "code": 500,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string,null>\"\n}",
+                          "createdAt": "2026-10-22T02:37:09.000Z",
+                          "updatedAt": "2026-10-22T02:37:09.000Z",
+                          "uid": "35240-6e2d7568-c4d4-4131-8330-fed55336bd9a"
+                        }
+                      ],
+                      "createdAt": "2026-10-22T02:37:09.000Z",
+                      "updatedAt": "2026-10-22T02:37:09.000Z",
+                      "uid": "35240-60e303db-213e-49b2-8178-9b57b5f2bde6"
+                    }
+                  ],
+                  "id": "c8a3d0e1-329b-488d-8a97-192c708b7548",
+                  "createdAt": "2026-10-22T02:37:09.000Z",
+                  "updatedAt": "2026-10-22T02:37:09.000Z",
+                  "uid": "35240-c8a3d0e1-329b-488d-8a97-192c708b7548"
                 }
               ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"environment: Invalid enum value\",\n  \"statusCode\": 400,\n  \"nextActions\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "bc66fc5d-03bf-432f-a94e-c4ace6beab15",
-              "name": "Unauthorized",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "webhooks",
-                    "stripe",
-                    ":environment"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "environment",
-                      "description": "(Required) Payment provider environment."
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"environment: Invalid enum value\",\n  \"statusCode\": 400,\n  \"nextActions\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "b885db60-e982-40e1-82a6-71ebf9d703f1",
-              "name": "Internal server error",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "webhooks",
-                    "stripe",
-                    ":environment"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "environment",
-                      "description": "(Required) Payment provider environment."
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Internal Server Error",
-              "code": 500,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"environment: Invalid enum value\",\n  \"statusCode\": 400,\n  \"nextActions\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
+              "id": "e3faebce-b57c-4f23-acf2-1c771fef3272",
+              "createdAt": "2026-10-22T02:37:09.000Z",
+              "updatedAt": "2026-10-22T02:37:09.000Z",
+              "uid": "35240-e3faebce-b57c-4f23-acf2-1c771fef3272"
             }
           ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "168357c2-55df-478b-ba05-d0b51fff4ede",
-          "name": "Receive Razorpay Webhook",
-          "request": {
-            "name": "Receive Razorpay Webhook",
-            "description": {
-              "content": "Receive Razorpay events for one environment. The request body must be the raw Razorpay JSON body and must include the Razorpay signature header.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "webhooks",
-                "razorpay",
-                ":environment"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "environment",
-                  "description": "(Required) Payment provider environment."
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "POST",
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"key_0\": 4013.7752999032805,\n  \"key_1\": true,\n  \"key_2\": \"string\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "id": "37e2d555-87ff-4217-9b24-779758285a5c",
-              "name": "Webhook received",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "webhooks",
-                    "razorpay",
-                    ":environment"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "environment",
-                      "description": "(Required) Payment provider environment."
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"received\": true,\n  \"handled\": true\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "6a0e39d2-7690-48a6-b8a3-7b137568b3e3",
-              "name": "Invalid request",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "webhooks",
-                    "razorpay",
-                    ":environment"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "environment",
-                      "description": "(Required) Payment provider environment."
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"environment: Invalid enum value\",\n  \"statusCode\": 400,\n  \"nextActions\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "3609868f-21d8-44e4-a73c-3c6191dfd206",
-              "name": "Unauthorized",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "webhooks",
-                    "razorpay",
-                    ":environment"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "environment",
-                      "description": "(Required) Payment provider environment."
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"environment: Invalid enum value\",\n  \"statusCode\": 400,\n  \"nextActions\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "f52009e8-784e-447a-995a-c675f56d38ef",
-              "name": "Internal server error",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "webhooks",
-                    "razorpay",
-                    ":environment"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "environment",
-                      "description": "(Required) Payment provider environment."
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"key_0\": \"string\",\n  \"key_1\": \"string\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Internal Server Error",
-              "code": 500,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"environment: Invalid enum value\",\n  \"statusCode\": 400,\n  \"nextActions\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
+          "id": "d51c03ac-fa37-4271-867d-fb49b07bb19e",
+          "createdAt": "2026-10-22T02:37:09.000Z",
+          "updatedAt": "2026-10-22T02:37:09.000Z",
+          "uid": "35240-d51c03ac-fa37-4271-867d-fb49b07bb19e"
         }
       ],
-      "event": []
+      "id": "8a2c4efe-892a-46af-a808-bced8057a68b",
+      "createdAt": "2026-10-22T02:37:09.000Z",
+      "updatedAt": "2026-10-22T02:37:09.000Z",
+      "uid": "35240-8a2c4efe-892a-46af-a808-bced8057a68b"
     }
   ],
-  "event": [],
   "variable": [
     {
-      "type": "string",
-      "value": "/",
-      "key": "baseUrl"
+      "key": "baseUrl",
+      "value": "/"
     }
-  ],
-  "info": {
-    "_postman_id": "ace3b40c-f839-4e94-a51b-3423b8a68f56",
-    "name": "Insforge AI Admin Payment Webhooks API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": {
-      "content": "Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes",
-      "type": "text/plain"
-    }
-  }
+  ]
 }

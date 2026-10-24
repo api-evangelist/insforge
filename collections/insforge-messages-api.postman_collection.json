@@ -1,485 +1,510 @@
 {
+  "info": {
+    "_postman_id": "32f6e421-03fd-46fd-8777-55baa28934c6",
+    "name": "Insforge Realtime Messages API",
+    "description": "Realtime channel management, message history, permissions, and retention API. Live pub/sub uses Socket.IO.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-10-22T02:37:03.000Z",
+    "updatedAt": "2026-10-22T02:37:03.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-32f6e421-03fd-46fd-8777-55baa28934c6"
+  },
   "item": [
     {
-      "id": "d702f7f8-4d29-4f64-b51c-a6af4dad7acb",
-      "name": "Messages",
-      "description": {
-        "content": "Inspect realtime message history and delivery stats.",
-        "type": "text/plain"
-      },
+      "name": "api",
       "item": [
         {
-          "id": "9cada929-ea0c-4980-a8a3-75daea4cabda",
-          "name": "List Messages",
-          "request": {
-            "name": "List Messages",
-            "description": {
-              "content": "Retrieve message history with optional filters",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "realtime",
-                "messages"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [
-                {
-                  "disabled": false,
-                  "key": "channelId",
-                  "value": "<uuid>",
-                  "description": "Filter messages by channel ID"
-                },
-                {
-                  "disabled": false,
-                  "key": "eventName",
-                  "value": "<string>",
-                  "description": "Filter messages by event name"
-                },
-                {
-                  "disabled": false,
-                  "key": "limit",
-                  "value": "100",
-                  "description": "Maximum number of messages to return"
-                },
-                {
-                  "disabled": false,
-                  "key": "offset",
-                  "value": "0",
-                  "description": "Number of messages to skip"
-                }
-              ],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearerToken}}"
-                }
-              ]
-            }
-          },
-          "response": [
+          "name": "realtime",
+          "item": [
             {
-              "id": "6bf89e95-8441-4e36-ad0e-6b28f59fe37e",
-              "name": "List of messages",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "realtime",
-                    "messages"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
+              "name": "messages",
+              "item": [
+                {
+                  "name": "stats",
+                  "item": [
                     {
-                      "key": "channelId",
-                      "value": "550e8400-e29b-41d4-a716-446655440000"
-                    },
-                    {
-                      "key": "eventName",
-                      "value": "order.created"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "100"
-                    },
-                    {
-                      "key": "offset",
-                      "value": "0"
+                      "name": "Get Message Statistics",
+                      "id": "c7fb931b-d1d5-4f0b-994e-a6235863b1a7",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "auth": {
+                          "type": "bearer",
+                          "bearer": [
+                            {
+                              "key": "token",
+                              "value": "{{bearerToken}}",
+                              "type": "string"
+                            }
+                          ]
+                        },
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/realtime/messages/stats?channelId=<uuid>&since=<dateTime>",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "realtime",
+                            "messages",
+                            "stats"
+                          ],
+                          "query": [
+                            {
+                              "description": "Filter stats by channel ID",
+                              "key": "channelId",
+                              "value": "<uuid>"
+                            },
+                            {
+                              "description": "Filter stats since this timestamp",
+                              "key": "since",
+                              "value": "<dateTime>"
+                            }
+                          ]
+                        },
+                        "description": "Retrieve aggregated statistics about messages"
+                      },
+                      "response": [
+                        {
+                          "id": "a4745a17-6666-453c-b612-16da65d4a2a3",
+                          "name": "Message statistics",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/realtime/messages/stats?channelId=<uuid>&since=<dateTime>",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "realtime",
+                                "messages",
+                                "stats"
+                              ],
+                              "query": [
+                                {
+                                  "description": "Filter stats by channel ID",
+                                  "key": "channelId",
+                                  "value": "<uuid>"
+                                },
+                                {
+                                  "description": "Filter stats since this timestamp",
+                                  "key": "since",
+                                  "value": "<dateTime>"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"totalMessages\": \"<integer>\",\n  \"whDeliveryRate\": \"<number>\",\n  \"topEvents\": [\n    {\n      \"eventName\": \"<string>\",\n      \"count\": \"<integer>\"\n    },\n    {\n      \"eventName\": \"<string>\",\n      \"count\": \"<integer>\"\n    }\n  ],\n  \"retentionDays\": \"<integer,null>\"\n}",
+                          "createdAt": "2026-10-22T02:37:03.000Z",
+                          "updatedAt": "2026-10-22T02:37:03.000Z",
+                          "uid": "35240-a4745a17-6666-453c-b612-16da65d4a2a3"
+                        },
+                        {
+                          "id": "b423e080-948c-4b7f-ac1d-ffa0ef730a67",
+                          "name": "Invalid input",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/api/realtime/messages/stats?channelId=<uuid>&since=<dateTime>",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "api",
+                                "realtime",
+                                "messages",
+                                "stats"
+                              ],
+                              "query": [
+                                {
+                                  "description": "Filter stats by channel ID",
+                                  "key": "channelId",
+                                  "value": "<uuid>"
+                                },
+                                {
+                                  "description": "Filter stats since this timestamp",
+                                  "key": "since",
+                                  "value": "<dateTime>"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Bad Request",
+                          "code": 400,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string>\"\n}",
+                          "createdAt": "2026-10-22T02:37:03.000Z",
+                          "updatedAt": "2026-10-22T02:37:03.000Z",
+                          "uid": "35240-b423e080-948c-4b7f-ac1d-ffa0ef730a67"
+                        }
+                      ],
+                      "createdAt": "2026-10-22T02:37:03.000Z",
+                      "updatedAt": "2026-10-22T02:37:03.000Z",
+                      "uid": "35240-c7fb931b-d1d5-4f0b-994e-a6235863b1a7"
                     }
                   ],
-                  "variable": []
+                  "id": "ca2ec516-2dd3-4e2a-b34c-733ddb1297c2",
+                  "createdAt": "2026-10-22T02:37:03.000Z",
+                  "updatedAt": "2026-10-22T02:37:03.000Z",
+                  "uid": "35240-ca2ec516-2dd3-4e2a-b34c-733ddb1297c2"
                 },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "[\n  {\n    \"id\": \"660e8400-e29b-41d4-a716-446655440000\",\n    \"eventName\": \"order.created\",\n    \"channelId\": \"550e8400-e29b-41d4-a716-446655440000\",\n    \"channelName\": \"order:123\",\n    \"payload\": {\n      \"orderId\": \"123\",\n      \"status\": \"pending\"\n    },\n    \"senderType\": \"user\",\n    \"senderId\": \"770e8400-e29b-41d4-a716-446655440000\",\n    \"wsAudienceCount\": 5,\n    \"whAudienceCount\": 1,\n    \"whDeliveredCount\": 1,\n    \"createdAt\": \"2024-01-15T10:30:00Z\"\n  }\n]",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "e9f4a950-f2fa-4f8c-aa02-7033a55a7797",
-              "name": "Invalid input",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "realtime",
-                    "messages"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
+                  "name": "List Messages",
+                  "id": "6e52ad98-80d9-49f8-8f98-a425e150e367",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{bearerToken}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/realtime/messages?channelId=<uuid>&eventName=<string>&limit=100&offset=0",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "realtime",
+                        "messages"
+                      ],
+                      "query": [
+                        {
+                          "description": "Filter messages by channel ID",
+                          "key": "channelId",
+                          "value": "<uuid>"
+                        },
+                        {
+                          "description": "Filter messages by event name",
+                          "key": "eventName",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Maximum number of messages to return",
+                          "key": "limit",
+                          "value": "100"
+                        },
+                        {
+                          "description": "Number of messages to skip",
+                          "key": "offset",
+                          "value": "0"
+                        }
+                      ]
+                    },
+                    "description": "Retrieve message history with optional filters"
+                  },
+                  "response": [
                     {
-                      "key": "channelId",
-                      "value": "550e8400-e29b-41d4-a716-446655440000"
+                      "id": "d159312b-d66c-43e1-8efd-099f66eaa64c",
+                      "name": "List of messages",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/realtime/messages?channelId=<uuid>&eventName=<string>&limit=100&offset=0",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "realtime",
+                            "messages"
+                          ],
+                          "query": [
+                            {
+                              "description": "Filter messages by channel ID",
+                              "key": "channelId",
+                              "value": "<uuid>"
+                            },
+                            {
+                              "description": "Filter messages by event name",
+                              "key": "eventName",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Maximum number of messages to return",
+                              "key": "limit",
+                              "value": "100"
+                            },
+                            {
+                              "description": "Number of messages to skip",
+                              "key": "offset",
+                              "value": "0"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "[\n  {\n    \"id\": \"<uuid>\",\n    \"eventName\": \"<string>\",\n    \"channelName\": \"<string>\",\n    \"payload\": {\n      \"in16\": -64255725.17261897\n    },\n    \"senderType\": \"system\",\n    \"wsAudienceCount\": \"<integer>\",\n    \"whAudienceCount\": \"<integer>\",\n    \"whDeliveredCount\": \"<integer>\",\n    \"createdAt\": \"<dateTime>\",\n    \"channelId\": \"<string,null-uuid>\",\n    \"senderId\": \"<string,null-uuid>\"\n  },\n  {\n    \"id\": \"<uuid>\",\n    \"eventName\": \"<string>\",\n    \"channelName\": \"<string>\",\n    \"payload\": {\n      \"pariaturf8\": -33710552,\n      \"in_e\": true,\n      \"est_79\": 85563998.48792845\n    },\n    \"senderType\": \"user\",\n    \"wsAudienceCount\": \"<integer>\",\n    \"whAudienceCount\": \"<integer>\",\n    \"whDeliveredCount\": \"<integer>\",\n    \"createdAt\": \"<dateTime>\",\n    \"channelId\": \"<string,null-uuid>\",\n    \"senderId\": \"<string,null-uuid>\"\n  }\n]",
+                      "createdAt": "2026-10-22T02:37:03.000Z",
+                      "updatedAt": "2026-10-22T02:37:03.000Z",
+                      "uid": "35240-d159312b-d66c-43e1-8efd-099f66eaa64c"
                     },
                     {
-                      "key": "eventName",
-                      "value": "order.created"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "100"
-                    },
-                    {
-                      "key": "offset",
-                      "value": "0"
+                      "id": "85065409-5587-4ec7-ae52-0d2d3d4eba67",
+                      "name": "Invalid input",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/realtime/messages?channelId=<uuid>&eventName=<string>&limit=100&offset=0",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "realtime",
+                            "messages"
+                          ],
+                          "query": [
+                            {
+                              "description": "Filter messages by channel ID",
+                              "key": "channelId",
+                              "value": "<uuid>"
+                            },
+                            {
+                              "description": "Filter messages by event name",
+                              "key": "eventName",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Maximum number of messages to return",
+                              "key": "limit",
+                              "value": "100"
+                            },
+                            {
+                              "description": "Number of messages to skip",
+                              "key": "offset",
+                              "value": "0"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string>\"\n}",
+                      "createdAt": "2026-10-22T02:37:03.000Z",
+                      "updatedAt": "2026-10-22T02:37:03.000Z",
+                      "uid": "35240-85065409-5587-4ec7-ae52-0d2d3d4eba67"
                     }
                   ],
-                  "variable": []
+                  "createdAt": "2026-10-22T02:37:03.000Z",
+                  "updatedAt": "2026-10-22T02:37:03.000Z",
+                  "uid": "35240-6e52ad98-80d9-49f8-8f98-a425e150e367"
                 },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
+                  "name": "Clear Messages",
+                  "id": "31d5a0ed-b5d2-4f58-b437-a60836ef4535",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{bearerToken}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/realtime/messages",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "realtime",
+                        "messages"
+                      ]
+                    },
+                    "description": "Permanently delete all stored realtime messages"
+                  },
+                  "response": [
+                    {
+                      "id": "b4bd4750-0dbd-4ff7-9f0c-0dc57864913b",
+                      "name": "Messages cleared",
+                      "originalRequest": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/realtime/messages",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "realtime",
+                            "messages"
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"deleted\": \"<integer>\"\n}",
+                      "createdAt": "2026-10-22T02:37:03.000Z",
+                      "updatedAt": "2026-10-22T02:37:03.000Z",
+                      "uid": "35240-b4bd4750-0dbd-4ff7-9f0c-0dc57864913b"
+                    }
+                  ],
+                  "createdAt": "2026-10-22T02:37:03.000Z",
+                  "updatedAt": "2026-10-22T02:37:03.000Z",
+                  "uid": "35240-31d5a0ed-b5d2-4f58-b437-a60836ef4535"
                 }
               ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"channelId: Invalid uuid\",\n  \"statusCode\": 400\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
+              "id": "efd9966d-18f4-489e-b807-d202ddc42cb6",
+              "createdAt": "2026-10-22T02:37:03.000Z",
+              "updatedAt": "2026-10-22T02:37:03.000Z",
+              "uid": "35240-efd9966d-18f4-489e-b807-d202ddc42cb6"
             }
           ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "87858cc9-0531-44eb-a326-0ae650408b3d",
-          "name": "Clear Messages",
-          "request": {
-            "name": "Clear Messages",
-            "description": {
-              "content": "Permanently delete all stored realtime messages",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "realtime",
-                "messages"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "DELETE",
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearerToken}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "id": "1342245f-ab9e-49e4-bd5d-fb1c01f016c2",
-              "name": "Messages cleared",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "realtime",
-                    "messages"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"deleted\": 42\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "b3f58aaa-a932-4aca-a4c6-a1f50cd5b8de",
-          "name": "Get Message Statistics",
-          "request": {
-            "name": "Get Message Statistics",
-            "description": {
-              "content": "Retrieve aggregated statistics about messages",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "realtime",
-                "messages",
-                "stats"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [
-                {
-                  "disabled": false,
-                  "key": "channelId",
-                  "value": "<uuid>",
-                  "description": "Filter stats by channel ID"
-                },
-                {
-                  "disabled": false,
-                  "key": "since",
-                  "value": "<dateTime>",
-                  "description": "Filter stats since this timestamp"
-                }
-              ],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearerToken}}"
-                }
-              ]
-            }
-          },
-          "response": [
-            {
-              "id": "2569329c-3c6e-4cba-b931-cad3d0730121",
-              "name": "Message statistics",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "realtime",
-                    "messages",
-                    "stats"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "channelId",
-                      "value": "550e8400-e29b-41d4-a716-446655440000"
-                    },
-                    {
-                      "key": "since",
-                      "value": "2024-01-01T00:00:00Z"
-                    }
-                  ],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"totalMessages\": 1250,\n  \"whDeliveryRate\": 0.98,\n  \"topEvents\": [\n    {\n      \"eventName\": \"order.created\",\n      \"count\": 450\n    },\n    {\n      \"eventName\": \"order.updated\",\n      \"count\": 380\n    },\n    {\n      \"eventName\": \"order.completed\",\n      \"count\": 220\n    }\n  ],\n  \"retentionDays\": null\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "09198b65-f328-4948-848e-28c99211a85f",
-              "name": "Invalid input",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "realtime",
-                    "messages",
-                    "stats"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "channelId",
-                      "value": "550e8400-e29b-41d4-a716-446655440000"
-                    },
-                    {
-                      "key": "since",
-                      "value": "2024-01-01T00:00:00Z"
-                    }
-                  ],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"since: Invalid datetime\",\n  \"statusCode\": 400\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
+          "id": "32dd7b99-9081-440c-9ba6-1e4e4982bfd2",
+          "createdAt": "2026-10-22T02:37:03.000Z",
+          "updatedAt": "2026-10-22T02:37:03.000Z",
+          "uid": "35240-32dd7b99-9081-440c-9ba6-1e4e4982bfd2"
         }
       ],
-      "event": []
+      "id": "8604b74a-98df-4964-ae02-c48106809aca",
+      "createdAt": "2026-10-22T02:37:03.000Z",
+      "updatedAt": "2026-10-22T02:37:03.000Z",
+      "uid": "35240-8604b74a-98df-4964-ae02-c48106809aca"
     }
   ],
-  "event": [],
   "variable": [
     {
-      "type": "string",
-      "value": "/",
-      "key": "baseUrl"
+      "key": "baseUrl",
+      "value": "/"
     }
-  ],
-  "info": {
-    "_postman_id": "ffea5306-abfa-473a-b65b-29dfad49271c",
-    "name": "Insforge AI Admin Messages API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": {
-      "content": "Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes",
-      "type": "text/plain"
-    }
-  }
+  ]
 }

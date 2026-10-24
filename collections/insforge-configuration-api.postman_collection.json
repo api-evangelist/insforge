@@ -1,286 +1,307 @@
 {
+  "info": {
+    "_postman_id": "b6280a8c-11f0-4d22-96e9-2ecb0e74d4b2",
+    "name": "Insforge Realtime Configuration API",
+    "description": "Realtime channel management, message history, permissions, and retention API. Live pub/sub uses Socket.IO.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-10-22T02:36:57.000Z",
+    "updatedAt": "2026-10-22T02:36:57.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-b6280a8c-11f0-4d22-96e9-2ecb0e74d4b2"
+  },
   "item": [
     {
-      "id": "c0d65278-826d-4db6-abd9-ff430d4a9edd",
-      "name": "Configuration",
-      "description": {
-        "content": "Manage realtime retention settings.",
-        "type": "text/plain"
-      },
+      "name": "api",
       "item": [
         {
-          "id": "594f3d9c-955a-4572-b4b4-1102a4eb1a5f",
-          "name": "Get Realtime Config",
-          "request": {
-            "name": "Get Realtime Config",
-            "description": {
-              "content": "Retrieve realtime message retention configuration",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "realtime",
-                "config"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearerToken}}"
-                }
-              ]
-            }
-          },
-          "response": [
+          "name": "realtime",
+          "item": [
             {
-              "id": "15e79fec-a392-42f3-808a-2fc7c55d955d",
-              "name": "Realtime configuration",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "realtime",
-                    "config"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
+              "name": "config",
+              "item": [
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
+                  "name": "Get Realtime Config",
+                  "id": "02a361f6-fdd9-4e6a-9d2a-5fdc47b78625",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{bearerToken}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/api/realtime/config",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "realtime",
+                        "config"
+                      ]
+                    },
+                    "description": "Retrieve realtime message retention configuration"
+                  },
+                  "response": [
+                    {
+                      "id": "0d707260-9077-45e9-822e-6371e242e188",
+                      "name": "Realtime configuration",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/api/realtime/config",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "realtime",
+                            "config"
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"retentionDays\": \"<integer,null>\"\n}",
+                      "createdAt": "2026-10-22T02:36:58.000Z",
+                      "updatedAt": "2026-10-22T02:36:58.000Z",
+                      "uid": "35240-0d707260-9077-45e9-822e-6371e242e188"
+                    }
+                  ],
+                  "createdAt": "2026-10-22T02:36:58.000Z",
+                  "updatedAt": "2026-10-22T02:36:58.000Z",
+                  "uid": "35240-02a361f6-fdd9-4e6a-9d2a-5fdc47b78625"
+                },
+                {
+                  "name": "Update Realtime Config",
+                  "id": "745ed327-0af3-40d5-8912-3e251ef06c3e",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "auth": {
+                      "type": "bearer",
+                      "bearer": [
+                        {
+                          "key": "token",
+                          "value": "{{bearerToken}}",
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"retentionDays\": \"<integer,null>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/api/realtime/config",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "api",
+                        "realtime",
+                        "config"
+                      ]
+                    },
+                    "description": "Update realtime message retention configuration"
+                  },
+                  "response": [
+                    {
+                      "id": "4044621c-5ceb-4332-bb0c-836ba5eba57e",
+                      "name": "Realtime configuration updated",
+                      "originalRequest": {
+                        "method": "PATCH",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"retentionDays\": \"<integer,null>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/realtime/config",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "realtime",
+                            "config"
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"message\": \"<string>\"\n}",
+                      "createdAt": "2026-10-22T02:36:58.000Z",
+                      "updatedAt": "2026-10-22T02:36:58.000Z",
+                      "uid": "35240-4044621c-5ceb-4332-bb0c-836ba5eba57e"
+                    },
+                    {
+                      "id": "37dbd9f5-8987-4896-b509-2583c03c8ab4",
+                      "name": "Invalid input",
+                      "originalRequest": {
+                        "method": "PATCH",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"retentionDays\": \"<integer,null>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/api/realtime/config",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "api",
+                            "realtime",
+                            "config"
+                          ]
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\",\n  \"message\": \"<string>\",\n  \"statusCode\": \"<integer>\",\n  \"nextActions\": \"<string>\"\n}",
+                      "createdAt": "2026-10-22T02:36:58.000Z",
+                      "updatedAt": "2026-10-22T02:36:58.000Z",
+                      "uid": "35240-37dbd9f5-8987-4896-b509-2583c03c8ab4"
+                    }
+                  ],
+                  "createdAt": "2026-10-22T02:36:58.000Z",
+                  "updatedAt": "2026-10-22T02:36:58.000Z",
+                  "uid": "35240-745ed327-0af3-40d5-8912-3e251ef06c3e"
                 }
               ],
-              "body": "{\n  \"retentionDays\": null\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
+              "id": "c5e371fa-267b-41a9-b4cf-d27228c2bdc2",
+              "createdAt": "2026-10-22T02:36:58.000Z",
+              "updatedAt": "2026-10-22T02:36:58.000Z",
+              "uid": "35240-c5e371fa-267b-41a9-b4cf-d27228c2bdc2"
             }
           ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "4328a370-8045-481a-9bb4-e6c652dc971f",
-          "name": "Update Realtime Config",
-          "request": {
-            "name": "Update Realtime Config",
-            "description": {
-              "content": "Update realtime message retention configuration",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "api",
-                "realtime",
-                "config"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": []
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "PATCH",
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{bearerToken}}"
-                }
-              ]
-            },
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"retentionDays\": \"<integer>\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "id": "50932f95-1738-418b-8b67-a8c79abb0767",
-              "name": "Realtime configuration updated",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "realtime",
-                    "config"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"retentionDays\": 90\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"message\": \"Retention config updated successfully\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "a29c20ed-12f2-4880-9454-7f2fcd8bddd6",
-              "name": "Invalid input",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "api",
-                    "realtime",
-                    "config"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"retentionDays\": 90\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"INVALID_INPUT\",\n  \"message\": \"retentionDays: Number must be greater than 0\",\n  \"statusCode\": 400\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
+          "id": "68d5d563-5d25-4b29-a74a-31117bccb2a9",
+          "createdAt": "2026-10-22T02:36:58.000Z",
+          "updatedAt": "2026-10-22T02:36:58.000Z",
+          "uid": "35240-68d5d563-5d25-4b29-a74a-31117bccb2a9"
         }
       ],
-      "event": []
+      "id": "d9dc6488-ce15-46a4-b985-4f3cb6908443",
+      "createdAt": "2026-10-22T02:36:58.000Z",
+      "updatedAt": "2026-10-22T02:36:58.000Z",
+      "uid": "35240-d9dc6488-ce15-46a4-b985-4f3cb6908443"
     }
   ],
-  "event": [],
   "variable": [
     {
-      "type": "string",
-      "value": "/",
-      "key": "baseUrl"
+      "key": "baseUrl",
+      "value": "/"
     }
-  ],
-  "info": {
-    "_postman_id": "f1cee97b-bbc2-4c2b-9643-d1c96bd7fcb0",
-    "name": "Insforge AI Admin Configuration API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": {
-      "content": "Model Gateway helper APIs for OpenRouter key provisioning, model discovery, and deprecated compatibility proxy routes",
-      "type": "text/plain"
-    }
-  }
+  ]
 }
